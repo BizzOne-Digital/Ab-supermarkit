@@ -102,6 +102,55 @@ export const updateProduct = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, product });
 });
 
+// @desc    Bulk import products from a parsed CSV/JSON array (admin)
+// @route   POST /api/products/bulk-import
+// @access  Private/Admin
+export const bulkImportProducts = asyncHandler(async (req, res) => {
+  const { products } = req.body;
+
+  if (!products || !Array.isArray(products) || products.length === 0) {
+    return res.status(400).json({ success: false, message: 'No products provided' });
+  }
+
+  const created = [];
+  const errors = [];
+
+  for (let i = 0; i < products.length; i++) {
+    const row = products[i];
+    try {
+      if (!row.name || row.regularPrice === undefined || row.regularPrice === '') {
+        throw new Error('Missing required field: name or regularPrice');
+      }
+      const product = await Product.create({
+        name: row.name,
+        sku: row.sku || undefined,
+        barcode: row.barcode || undefined,
+        description: row.description || '',
+        shortDescription: row.shortDescription || '',
+        category: row.category || undefined,
+        brand: row.brand || '',
+        regularPrice: Number(row.regularPrice),
+        salePrice: row.salePrice ? Number(row.salePrice) : undefined,
+        stockQuantity: row.stockQuantity ? Number(row.stockQuantity) : 0,
+        unit: row.unit || 'each',
+        tags: row.tags ? String(row.tags).split(',').map((t) => t.trim()).filter(Boolean) : [],
+        images: row.imageUrl ? [{ url: row.imageUrl, publicId: `bulk/${Date.now()}-${i}`, isPrimary: true }] : [],
+        status: 'active',
+      });
+      created.push(product);
+    } catch (err) {
+      errors.push({ row: i + 1, name: row.name || '(no name)', message: err.message });
+    }
+  }
+
+  res.status(201).json({
+    success: true,
+    createdCount: created.length,
+    errorCount: errors.length,
+    errors,
+  });
+});
+
 // @desc    Delete product (admin)
 // @route   DELETE /api/products/:id
 // @access  Private/Admin

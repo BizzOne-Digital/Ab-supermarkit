@@ -14,7 +14,8 @@ export default function ProductCard({ product }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.4 }}
-      className="group bg-white rounded-lg shadow-card overflow-hidden flex flex-col"
+      whileHover={{ y: -6, scale: 1.03 }}
+      className="group bg-white rounded-lg shadow-card hover:shadow-xl transition-shadow overflow-hidden flex flex-col"
     >
       <Link to={`/shop/${product.slug}`} className="relative block aspect-square bg-creme overflow-hidden">
         {image ? (

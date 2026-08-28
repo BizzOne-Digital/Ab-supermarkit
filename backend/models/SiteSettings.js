@@ -13,6 +13,10 @@ const siteSettingsSchema = new mongoose.Schema(
       twitter: { type: String, default: '' },
     },
     lowStockThreshold: { type: Number, default: 10 },
+    // Delivery pricing rules used by the checkout flow.
+    deliveryFee: { type: Number, default: 5 },
+    freeDeliveryThreshold: { type: Number, default: 100 }, // order subtotal at/above which delivery is free
+    freeDeliveryRadiusKm: { type: Number, default: 5 }, // informational only until address-distance calc is wired up
   },
   { timestamps: true }
 );

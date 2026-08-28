@@ -8,14 +8,14 @@ import { sendPasswordResetEmail } from '../services/emailService.js';
 // @route   POST /api/auth/register
 // @access  Public
 export const register = asyncHandler(async (req, res) => {
-  const { name, email, password, phone } = req.body;
+  const { name, email, password, phone, dateOfBirth } = req.body;
 
   const existing = await User.findOne({ email: email.toLowerCase() });
   if (existing) {
     return res.status(400).json({ success: false, message: 'An account with this email already exists' });
   }
 
-  const user = await User.create({ name, email, password, phone });
+  const user = await User.create({ name, email, password, phone, dateOfBirth: dateOfBirth || undefined });
   sendTokenResponse(user, 201, res);
 });
 
@@ -119,7 +119,7 @@ export const resetPassword = asyncHandler(async (req, res) => {
 // @route   PUT /api/auth/update-profile
 // @access  Private
 export const updateProfile = asyncHandler(async (req, res) => {
-  const allowedFields = ['name', 'phone', 'addresses'];
+  const allowedFields = ['name', 'phone', 'addresses', 'dateOfBirth'];
   const updates = {};
   allowedFields.forEach((field) => {
     if (req.body[field] !== undefined) updates[field] = req.body[field];

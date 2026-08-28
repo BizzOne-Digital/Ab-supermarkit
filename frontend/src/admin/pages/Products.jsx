@@ -1,11 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Plus, Pencil, Trash2, X } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload } from 'lucide-react';
 import * as productService from '../../services/productService';
 import * as categoryService from '../../services/categoryService';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import Pagination from '../../components/Pagination';
+
+// Minimal CSV parser for simple comma-separated files (no quoted-comma support needed for this use case).
+// Expected header row: name,sku,category,brand,regularPrice,salePrice,stockQuantity,unit,description,imageUrl,tags
+function parseCsv(text) {
+  const lines = text.split(/\r?\n/).filter((l) => l.trim().length > 0);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',').map((h) => h.trim());
+  return lines.slice(1).map((line) => {
+    const cells = line.split(',').map((c) => c.trim());
+    const row = {};
+    headers.forEach((h, i) => {
+      row[h] = cells[i] ?? '';
+    });
+    return row;
+  });
+}
 
 const emptyForm = {
   name: '',
@@ -37,6 +53,8 @@ export default function Products() {
   const [form, setForm] = useState(emptyForm);
   const [files, setFiles] = useState([]);
   const [saving, setSaving] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const csvInputRef = useRef(null);
 
   const loadProducts = () => {
     setLoading(true);
@@ -114,6 +132,32 @@ export default function Products() {
     }
   };
 
+  const onCsvSelected = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file) return;
+
+    setImporting(true);
+    try {
+      const text = await file.text();
+      const rows = parseCsv(text);
+      if (rows.length === 0) {
+        toast.error('No product rows found in the CSV');
+        return;
+      }
+      const res = await productService.bulkImportProducts(rows);
+      toast.success(`Imported ${res.createdCount} product(s)${res.errorCount ? `, ${res.errorCount} skipped` : ''}`);
+      if (res.errorCount > 0) {
+        console.warn('Bulk import errors:', res.errors);
+      }
+      loadProducts();
+    } catch (err) {
+      toast.error(err.message || 'Bulk import failed');
+    } finally {
+      setImporting(false);
+    }
+  };
+
   const onDelete = async (id) => {
     if (!window.confirm('Delete this product?')) return;
     try {
@@ -129,9 +173,20 @@ export default function Products() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="font-heading text-2xl sm:text-3xl text-black">Products</h1>
-        <button onClick={openCreate} className="btn-gold text-sm py-2 px-4">
-          <Plus className="h-4 w-4" /> Add Product
-        </button>
+        <div className="flex gap-3">
+          <input ref={csvInputRef} type="file" accept=".csv" onChange={onCsvSelected} className="hidden" />
+          <button
+            onClick={() => csvInputRef.current?.click()}
+            disabled={importing}
+            className="btn-outline text-sm py-2 px-4 disabled:opacity-60"
+            title="CSV columns: name,sku,category,brand,regularPrice,salePrice,stockQuantity,unit,description,imageUrl,tags"
+          >
+            <Upload className="h-4 w-4" /> {importing ? 'Importing...' : 'Bulk Import (CSV)'}
+          </button>
+          <button onClick={openCreate} className="btn-gold text-sm py-2 px-4">
+            <Plus className="h-4 w-4" /> Add Product
+          </button>
+        </div>
       </div>
 
       {loading ? (

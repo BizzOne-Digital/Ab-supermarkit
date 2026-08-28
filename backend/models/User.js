@@ -33,6 +33,8 @@ const userSchema = new mongoose.Schema(
     },
     role: { type: String, enum: ['customer', 'admin'], default: 'customer' },
     phone: { type: String, trim: true },
+    dateOfBirth: { type: Date },
+    lastBirthdayNotifiedYear: { type: Number }, // prevents sending more than one admin alert per year
     addresses: [addressSchema],
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpire: { type: Date, select: false },

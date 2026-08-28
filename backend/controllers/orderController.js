@@ -1,6 +1,7 @@
 import Order from '../models/Order.js';
 import Product from '../models/Product.js';
 import Coupon from '../models/Coupon.js';
+import SiteSettings from '../models/SiteSettings.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { paginate } from '../utils/apiFeatures.js';
 import { deductCloverInventory } from '../services/cloverService.js';
@@ -12,7 +13,7 @@ const TAX_RATE = 0.13; // default rate (adjust per province as needed)
 // @route   POST /api/orders
 // @access  Public
 export const createOrder = asyncHandler(async (req, res) => {
-  const { items, customerInfo, deliveryMethod, orderNotes, couponCode, deliveryFee = 0 } = req.body;
+  const { items, customerInfo, deliveryMethod, orderNotes, couponCode } = req.body;
 
   if (!items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ success: false, message: 'Order must contain at least one item' });
@@ -56,9 +57,16 @@ export const createOrder = asyncHandler(async (req, res) => {
     }
   }
 
+  // Delivery fee is always computed server-side from admin-configured settings — never trust a client-supplied value.
+  let deliveryFee = 0;
+  if (deliveryMethod !== 'pickup') {
+    const settings = await SiteSettings.getSettings();
+    deliveryFee = subtotal >= settings.freeDeliveryThreshold ? 0 : settings.deliveryFee;
+  }
+
   const taxableAmount = Math.max(subtotal - discount, 0);
   const tax = Number((taxableAmount * TAX_RATE).toFixed(2));
-  const total = Number((taxableAmount + tax + Number(deliveryFee || 0)).toFixed(2));
+  const total = Number((taxableAmount + tax + deliveryFee).toFixed(2));
 
   const order = await Order.create({
     user: req.user ? req.user._id : null,

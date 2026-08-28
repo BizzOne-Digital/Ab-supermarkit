@@ -30,3 +30,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </BrowserRouter>
   </React.StrictMode>
 );
+
+// Hide the static splash screen (rendered in index.html, before React even loads) once the
+// app has actually painted, so it never lingers or blinks awkwardly.
+requestAnimationFrame(() => {
+  requestAnimationFrame(() => {
+    const loader = document.getElementById('initial-loader');
+    if (!loader) return;
+    loader.style.opacity = '0';
+    setTimeout(() => loader.remove(), 500);
+  });
+});

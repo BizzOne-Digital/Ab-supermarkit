@@ -26,6 +26,7 @@ import uploadRoutes from './routes/uploadRoutes.js';
 import cloverRoutes from './routes/cloverRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
+import cronRoutes from './routes/cronRoutes.js';
 
 const app = express();
 
@@ -88,6 +89,7 @@ app.use('/api/upload', uploadRoutes);
 app.use('/api/clover', cloverRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/cron', cronRoutes);
 
 // 404 handler for unmatched API routes
 app.use('/api', (req, res) => {

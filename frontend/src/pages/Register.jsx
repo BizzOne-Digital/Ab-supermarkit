@@ -42,6 +42,11 @@ export default function Register() {
           <input {...register('phone')} className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold" />
         </div>
         <div>
+          <label className="text-sm font-medium text-charcoal/70">Date of Birth</label>
+          <input type="date" {...register('dateOfBirth')} className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold" />
+          <p className="text-xs text-charcoal/40 mt-1">Get a birthday surprise from us every year!</p>
+        </div>
+        <div>
           <label className="text-sm font-medium text-charcoal/70">Password</label>
           <input type="password" {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Minimum 6 characters' } })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold" />
           {errors.password && <p className="text-red-600 text-xs mt-1">{errors.password.message}</p>}

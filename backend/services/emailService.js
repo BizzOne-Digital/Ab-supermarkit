@@ -141,6 +141,32 @@ export const sendContactFormEmail = async (submission) => {
   });
 };
 
+export const sendBirthdayAlert = async (users) => {
+  const adminEmail = process.env.ADMIN_EMAIL || process.env.SMTP_EMAIL;
+  const rows = users
+    .map((u) => `<tr><td style="padding:6px 0;">${u.name}</td><td style="padding:6px 0;">${u.email}</td><td style="padding:6px 0;">${u.phone || 'N/A'}</td></tr>`)
+    .join('');
+  const body = `
+    <p>The following customer(s) have a birthday today:</p>
+    <table style="width:100%; border-collapse:collapse; margin:12px 0;">
+      <thead>
+        <tr style="border-bottom:1px solid #ddd;">
+          <td style="padding:6px 0;"><strong>Name</strong></td>
+          <td style="padding:6px 0;"><strong>Email</strong></td>
+          <td style="padding:6px 0;"><strong>Phone</strong></td>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>
+    <p>Consider sending them a birthday discount coupon from Admin &gt; Coupons.</p>
+  `;
+  return sendMail({
+    to: adminEmail,
+    subject: `Customer Birthday${users.length > 1 ? 's' : ''} Today`,
+    html: wrapTemplate('Birthday Reminder', body),
+  });
+};
+
 export const sendPasswordResetEmail = async (user, resetUrl) => {
   const body = `
     <p>Hi ${user.name},</p>
@@ -163,4 +189,5 @@ export default {
   sendAdminOrderNotification,
   sendContactFormEmail,
   sendPasswordResetEmail,
+  sendBirthdayAlert,
 };

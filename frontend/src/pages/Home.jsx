@@ -50,6 +50,7 @@ export default function Home() {
   const [deliveryLinks, setDeliveryLinks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
+  const [heroVideoReady, setHeroVideoReady] = useState(false);
 
   useEffect(() => {
     Promise.all([
@@ -87,13 +88,24 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section
-        className="relative bg-black text-ivory overflow-hidden bg-cover bg-center"
-        style={{ backgroundImage: "url('/hero.png')" }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-black via-black/80 to-black/40" />
+      <section className="relative bg-black text-ivory overflow-hidden">
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          src="/hero.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          onCanPlay={() => setHeroVideoReady(true)}
+        />
+        {!heroVideoReady && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black">
+            <LoadingSpinner />
+          </div>
+        )}
+        <div className="absolute inset-0 bg-black/30" />
         <div className="container-app py-24 sm:py-36 relative z-10">
-          <div className="max-w-xl text-center lg:text-left mx-auto lg:mx-0">
+          <div className="max-w-xl text-center mx-auto">
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -116,7 +128,7 @@ export default function Home() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-8 flex flex-wrap items-center justify-center lg:justify-start gap-4"
+              className="mt-8 flex flex-wrap items-center justify-center gap-4"
             >
               <Link to="/shop" className="btn-gold">Shop Groceries</Link>
               <Link to="/about" className="btn-outline border-ivory/40 text-ivory hover:bg-ivory hover:text-black">Explore Our Store</Link>

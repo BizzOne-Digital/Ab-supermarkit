@@ -7,3 +7,4 @@ export const createProduct = (formData) =>
 export const updateProduct = (id, formData) =>
   api.put(`/products/${id}`, formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then((r) => r.data);
 export const deleteProduct = (id) => api.delete(`/products/${id}`).then((r) => r.data);
+export const bulkImportProducts = (products) => api.post('/products/bulk-import', { products }).then((r) => r.data);

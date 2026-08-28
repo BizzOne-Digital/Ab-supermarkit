@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ShoppingCart, User, Search, Menu, X } from 'lucide-react';
+import { ShoppingCart, User, Search, Menu, X, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
+import * as categoryService from '../services/categoryService';
 
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About Us' },
-  { to: '/shop', label: 'Shop' },
+  { to: '/shop', label: 'Shop', hasDropdown: true },
   { to: '/faq', label: 'FAQ' },
   { to: '/contact', label: 'Contact' },
 ];
@@ -17,9 +18,18 @@ export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [search, setSearch] = useState('');
+  const [categories, setCategories] = useState([]);
+  const [openDropdown, setOpenDropdown] = useState(null);
   const { isAuthenticated } = useAuth();
   const { itemCount, subtotal } = useCart();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    categoryService
+      .getCategories()
+      .then((res) => setCategories((res.categories || []).filter((c) => c.isEnabled !== false)))
+      .catch(() => setCategories([]));
+  }, []);
 
   const onSearchSubmit = (e) => {
     e.preventDefault();
@@ -47,18 +57,57 @@ export default function Header() {
 
           <nav className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
-              <NavLink
+              <div
                 key={link.to}
-                to={link.to}
-                end={link.to === '/'}
-                className={({ isActive }) =>
-                  `relative font-medium pb-1 transition-colors after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:bg-gold after:transition-all ${
-                    isActive ? 'text-gold after:w-full' : 'text-ivory/80 hover:text-gold after:w-0 hover:after:w-full'
-                  }`
-                }
+                className="relative"
+                onMouseEnter={() => link.hasDropdown && setOpenDropdown(link.to)}
+                onMouseLeave={() => link.hasDropdown && setOpenDropdown(null)}
               >
-                {link.label}
-              </NavLink>
+                <NavLink
+                  to={link.to}
+                  end={link.to === '/'}
+                  className={({ isActive }) =>
+                    `relative flex items-center gap-1 font-medium pb-1 transition-colors after:content-[''] after:absolute after:left-0 after:-bottom-0.5 after:h-[2px] after:bg-gold after:transition-all ${
+                      isActive ? 'text-gold after:w-full' : 'text-ivory/80 hover:text-gold after:w-0 hover:after:w-full'
+                    }`
+                  }
+                >
+                  {link.label}
+                  {link.hasDropdown && <ChevronDown className="h-3.5 w-3.5" />}
+                </NavLink>
+
+                <AnimatePresence>
+                  {link.hasDropdown && openDropdown === link.to && categories.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      transition={{ duration: 0.15 }}
+                      className="absolute top-full left-1/2 -translate-x-1/2 pt-3 w-64 z-50"
+                    >
+                      <div className="bg-ivory rounded-lg shadow-xl border border-gold/20 py-2 overflow-hidden">
+                        {categories.map((c) => (
+                          <Link
+                            key={c._id}
+                            to={`/shop?category=${c._id}`}
+                            onClick={() => setOpenDropdown(null)}
+                            className="block px-4 py-2 text-sm text-charcoal hover:bg-creme hover:text-gold-dark transition-colors"
+                          >
+                            {c.name}
+                          </Link>
+                        ))}
+                        <Link
+                          to="/shop"
+                          onClick={() => setOpenDropdown(null)}
+                          className="block px-4 py-2 text-sm font-semibold text-gold-dark hover:bg-creme border-t border-charcoal/10 mt-1"
+                        >
+                          View All Products
+                        </Link>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ))}
           </nav>
 

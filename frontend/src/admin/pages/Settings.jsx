@@ -54,6 +54,47 @@ export default function Settings() {
           <label className="text-sm font-medium text-charcoal/70">Tax Rate (%)</label>
           <input type="number" value={form.taxRate ?? ''} onChange={(e) => setForm({ ...form, taxRate: e.target.value })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold" />
         </div>
+
+        <div className="pt-4 border-t border-charcoal/10">
+          <h2 className="font-heading text-lg text-black mb-3">Delivery Charges</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="text-sm font-medium text-charcoal/70">Delivery Fee ($)</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={form.deliveryFee ?? ''}
+                onChange={(e) => setForm({ ...form, deliveryFee: e.target.value })}
+                className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-charcoal/70">Free Delivery Over ($)</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={form.freeDeliveryThreshold ?? ''}
+                onChange={(e) => setForm({ ...form, freeDeliveryThreshold: e.target.value })}
+                className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-charcoal/70">Free Delivery Radius (km)</label>
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                value={form.freeDeliveryRadiusKm ?? ''}
+                onChange={(e) => setForm({ ...form, freeDeliveryRadiusKm: e.target.value })}
+                className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold"
+              />
+              <p className="text-xs text-charcoal/40 mt-1">Informational only — distance isn&apos;t calculated automatically yet.</p>
+            </div>
+          </div>
+        </div>
+
         <button type="submit" disabled={saving} className="btn-gold disabled:opacity-60">
           {saving ? 'Saving...' : 'Save Settings'}
         </button>

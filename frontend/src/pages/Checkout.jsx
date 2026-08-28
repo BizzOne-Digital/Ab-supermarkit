@@ -1,10 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import * as orderService from '../services/orderService';
+import * as settingsService from '../services/settingsService';
 import EmptyState from '../components/EmptyState';
 
 const TAX_RATE = 0.13;
@@ -14,6 +15,21 @@ export default function Checkout() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const [deliverySettings, setDeliverySettings] = useState({ deliveryFee: 5, freeDeliveryThreshold: 100 });
+
+  useEffect(() => {
+    settingsService
+      .getSettings()
+      .then((res) => {
+        if (res.settings) {
+          setDeliverySettings({
+            deliveryFee: res.settings.deliveryFee ?? 5,
+            freeDeliveryThreshold: res.settings.freeDeliveryThreshold ?? 100,
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
   const {
     register,
     handleSubmit,
@@ -45,7 +61,8 @@ export default function Checkout() {
 
   const taxableAmount = Math.max(subtotal - discount, 0);
   const tax = taxableAmount * TAX_RATE;
-  const deliveryFee = deliveryMethod === 'delivery' ? 5 : 0;
+  const freeDelivery = subtotal >= deliverySettings.freeDeliveryThreshold;
+  const deliveryFee = deliveryMethod === 'delivery' && !freeDelivery ? deliverySettings.deliveryFee : 0;
   const total = taxableAmount + tax + deliveryFee;
 
   const onSubmit = async (data) => {
@@ -120,6 +137,14 @@ export default function Checkout() {
                 <span>Delivery</span>
               </label>
             </div>
+            {deliveryMethod === 'delivery' && !freeDelivery && (
+              <p className="text-xs text-gold-dark mb-4">
+                Spend ${(deliverySettings.freeDeliveryThreshold - subtotal).toFixed(2)} more to get free delivery!
+              </p>
+            )}
+            {deliveryMethod === 'delivery' && freeDelivery && (
+              <p className="text-xs text-green-700 mb-4">Your order qualifies for free delivery.</p>
+            )}
             {deliveryMethod === 'delivery' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="sm:col-span-2">

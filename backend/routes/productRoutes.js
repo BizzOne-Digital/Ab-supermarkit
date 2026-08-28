@@ -6,6 +6,7 @@ import {
   createProduct,
   updateProduct,
   deleteProduct,
+  bulkImportProducts,
 } from '../controllers/productController.js';
 import { protect } from '../middleware/auth.js';
 import { authorize } from '../middleware/admin.js';
@@ -28,6 +29,8 @@ router.post(
   ]),
   createProduct
 );
+
+router.post('/bulk-import', protect, authorize, bulkImportProducts);
 
 router.put('/:id', protect, authorize, upload.array('images', 6), updateProduct);
 router.delete('/:id', protect, authorize, deleteProduct);
