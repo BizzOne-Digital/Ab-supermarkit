@@ -8,8 +8,11 @@ import {
   forgotPassword,
   resetPassword,
   updateProfile,
+  getCustomers,
+  adminCreateCustomer,
 } from '../controllers/authController.js';
 import { protect } from '../middleware/auth.js';
+import { authorize } from '../middleware/admin.js';
 import { runValidation } from '../middleware/validate.js';
 
 const router = express.Router();
@@ -49,5 +52,18 @@ router.post(
 );
 
 router.put('/update-profile', protect, updateProfile);
+
+router.get('/customers', protect, authorize, getCustomers);
+router.post(
+  '/admin-create-customer',
+  protect,
+  authorize,
+  runValidation([
+    body('name').trim().notEmpty().withMessage('Name is required'),
+    body('email').isEmail().withMessage('Valid email is required').normalizeEmail(),
+    body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+  ]),
+  adminCreateCustomer
+);
 
 export default router;

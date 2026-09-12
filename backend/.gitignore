@@ -9,3 +9,4 @@ yarn-error.log*
 *.log
 dist/
 .vercel/
+import-data/

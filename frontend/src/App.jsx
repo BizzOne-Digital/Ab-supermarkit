@@ -28,6 +28,7 @@ const AdminProfile = lazy(() => import('./admin/AdminProfile'));
 const Dashboard = lazy(() => import('./admin/pages/Dashboard'));
 const AdminProducts = lazy(() => import('./admin/pages/Products'));
 const AdminCategories = lazy(() => import('./admin/pages/Categories'));
+const AdminSlides = lazy(() => import('./admin/pages/Slides'));
 const AdminOrders = lazy(() => import('./admin/pages/Orders'));
 const Inventory = lazy(() => import('./admin/pages/Inventory'));
 const Customers = lazy(() => import('./admin/pages/Customers'));
@@ -83,6 +84,7 @@ export default function App() {
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="products" element={<AdminProducts />} />
           <Route path="categories" element={<AdminCategories />} />
+          <Route path="slides" element={<AdminSlides />} />
           <Route path="orders" element={<AdminOrders />} />
           <Route path="inventory" element={<Inventory />} />
           <Route path="customers" element={<Customers />} />

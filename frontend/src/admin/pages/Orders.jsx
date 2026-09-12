@@ -53,6 +53,7 @@ export default function Orders() {
                 <th className="py-3 px-4">Total</th>
                 <th className="py-3 px-4">Payment</th>
                 <th className="py-3 px-4">Status</th>
+                <th className="py-3 px-4">Fulfillment</th>
                 <th className="py-3 px-4">Date</th>
               </tr>
             </thead>
@@ -64,6 +65,11 @@ export default function Orders() {
                     <td className="py-3 px-4">{o.customerInfo?.name}</td>
                     <td className="py-3 px-4">${Number(o.total).toFixed(2)}</td>
                     <td className="py-3 px-4">{o.paymentStatus}</td>
+                    <td className="py-3 px-4">
+                      <span className={`text-xs px-2 py-0.5 rounded font-semibold ${o.paymentStatus === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-amber-100 text-amber-700'}`}>
+                        {o.paymentStatus === 'Paid' ? 'Completed' : 'Pending'}
+                      </span>
+                    </td>
                     <td className="py-3 px-4" onClick={(e) => e.stopPropagation()}>
                       <select
                         value={o.orderStatus}
@@ -77,7 +83,7 @@ export default function Orders() {
                   </tr>
                   {expanded === o._id && (
                     <tr className="bg-creme/30">
-                      <td colSpan={6} className="p-4">
+                      <td colSpan={7} className="p-4">
                         <div className="text-xs space-y-1">
                           <p><strong>Email:</strong> {o.customerInfo?.email} | <strong>Phone:</strong> {o.customerInfo?.phone}</p>
                           <p><strong>Delivery:</strong> {o.deliveryMethod}</p>

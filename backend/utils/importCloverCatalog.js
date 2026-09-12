@@ -94,10 +94,14 @@ async function run() {
     taxRates: header.findIndex((h) => /^tax rates/i.test(h)),
   };
 
+  // Normalizes category text so things like "Grocery Essentials" and "Grocery  Essentials"
+  // (double space) collapse into a single category instead of colliding on slug.
+  const normalizeCategory = (raw) => raw.trim().replace(/\s+/g, ' ');
+
   // Pass 1: collect distinct category names and upsert them.
   const categoryNames = new Set();
   for (const r of dataRows) {
-    const cat = (r[idx.category] || '').trim();
+    const cat = normalizeCategory(r[idx.category] || '');
     if (cat) categoryNames.add(cat);
   }
 
@@ -131,7 +135,7 @@ async function run() {
       continue;
     }
 
-    const categoryName = (r[idx.category] || '').trim();
+    const categoryName = normalizeCategory(r[idx.category] || '');
     const productCode = (r[idx.productCode] || '').trim();
     const skuRaw = (r[idx.sku] || '').trim();
     const sku = !looksLikeScientificNotation(skuRaw) && skuRaw ? skuRaw : (!looksLikeScientificNotation(productCode) ? productCode : '');

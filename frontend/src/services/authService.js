@@ -8,3 +8,5 @@ export const forgotPassword = (email) => api.post('/auth/forgot-password', { ema
 export const resetPassword = (token, password) =>
   api.post(`/auth/reset-password/${token}`, { password }).then((r) => r.data);
 export const updateProfile = (data) => api.put('/auth/update-profile', data).then((r) => r.data);
+export const getCustomers = () => api.get('/auth/customers').then((r) => r.data);
+export const adminCreateCustomer = (data) => api.post('/auth/admin-create-customer', data).then((r) => r.data);

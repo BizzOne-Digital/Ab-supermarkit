@@ -21,7 +21,7 @@ export default function Header() {
   const [categories, setCategories] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(null);
   const { isAuthenticated } = useAuth();
-  const { itemCount, subtotal } = useCart();
+  const { itemCount } = useCart();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -139,7 +139,6 @@ export default function Header() {
                   </span>
                 )}
               </span>
-              <span className="hidden sm:inline text-sm font-semibold">${subtotal.toFixed(2)}</span>
             </Link>
             <button
               onClick={() => setMobileOpen(true)}

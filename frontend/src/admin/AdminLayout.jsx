@@ -20,6 +20,7 @@ import {
   Menu,
   X,
   LogOut,
+  Images,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -27,6 +28,7 @@ const navItems = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/admin/products', label: 'Products', icon: Package },
   { to: '/admin/categories', label: 'Categories', icon: Tags },
+  { to: '/admin/slides', label: 'Homepage Slides', icon: Images },
   { to: '/admin/orders', label: 'Orders', icon: ShoppingBag },
   { to: '/admin/inventory', label: 'Inventory', icon: Warehouse },
   { to: '/admin/customers', label: 'Customers', icon: Users },

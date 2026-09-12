@@ -115,6 +115,29 @@ export const resetPassword = asyncHandler(async (req, res) => {
   sendTokenResponse(user, 200, res);
 });
 
+// @desc    List all customer accounts (admin)
+// @route   GET /api/auth/customers
+// @access  Private/Admin
+export const getCustomers = asyncHandler(async (req, res) => {
+  const users = await User.find({ role: 'customer' }).sort({ createdAt: -1 });
+  res.status(200).json({ success: true, customers: users });
+});
+
+// @desc    Create a customer account (admin)
+// @route   POST /api/auth/admin-create-customer
+// @access  Private/Admin
+export const adminCreateCustomer = asyncHandler(async (req, res) => {
+  const { name, email, password, phone } = req.body;
+
+  const existing = await User.findOne({ email: email?.toLowerCase() });
+  if (existing) {
+    return res.status(400).json({ success: false, message: 'An account with this email already exists' });
+  }
+
+  const user = await User.create({ name, email, password, phone, role: 'customer' });
+  res.status(201).json({ success: true, user });
+});
+
 // @desc    Update logged-in user's profile
 // @route   PUT /api/auth/update-profile
 // @access  Private

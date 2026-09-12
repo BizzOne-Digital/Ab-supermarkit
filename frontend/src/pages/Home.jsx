@@ -7,10 +7,12 @@ import { Truck, ShieldCheck, Leaf, Clock, Send, Coffee, Tag, ShoppingBasket, Han
 import * as categoryService from '../services/categoryService';
 import * as productService from '../services/productService';
 import * as dealService from '../services/dealService';
+import * as offerService from '../services/offerService';
 import * as testimonialService from '../services/testimonialService';
 import * as faqService from '../services/faqService';
 import * as deliveryLinkService from '../services/deliveryLinkService';
 import * as newsletterService from '../services/newsletterService';
+import * as heroSlideService from '../services/heroSlideService';
 
 import CategoryCard from '../components/CategoryCard';
 import ProductCard from '../components/ProductCard';
@@ -19,6 +21,7 @@ import TestimonialCard from '../components/TestimonialCard';
 import FaqAccordionItem from '../components/FaqAccordionItem';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
+import HeroCarousel from '../components/HeroCarousel';
 
 const whyShop = [
   { icon: Leaf, title: 'Freshness Guaranteed', desc: 'We source the freshest products daily for your family.' },
@@ -45,28 +48,33 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [featured, setFeatured] = useState([]);
   const [deals, setDeals] = useState([]);
+  const [offers, setOffers] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [faqs, setFaqs] = useState([]);
   const [deliveryLinks, setDeliveryLinks] = useState([]);
+  const [heroSlides, setHeroSlides] = useState([]);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
-  const [heroVideoReady, setHeroVideoReady] = useState(false);
 
   useEffect(() => {
     Promise.all([
       categoryService.getCategories().catch(() => ({ categories: [] })),
       productService.getProducts({ featured: 'true', limit: 8 }).catch(() => ({ products: [] })),
       dealService.getDeals().catch(() => ({ deals: [] })),
+      offerService.getOffers().catch(() => ({ offers: [] })),
       testimonialService.getTestimonials().catch(() => ({ testimonials: [] })),
       faqService.getFaqs().catch(() => ({ faqs: [] })),
       deliveryLinkService.getDeliveryLinks().catch(() => ({ deliveryLinks: [] })),
-    ]).then(([catRes, prodRes, dealRes, testRes, faqRes, delRes]) => {
+      heroSlideService.getHeroSlides().catch(() => ({ slides: [] })),
+    ]).then(([catRes, prodRes, dealRes, offerRes, testRes, faqRes, delRes, slideRes]) => {
       setCategories((catRes.categories || []).filter((c) => c.isEnabled !== false));
       setFeatured(prodRes.products || []);
       setDeals((dealRes.deals || []).filter((d) => d.isActive));
+      setOffers(offerRes.offers || []);
       setTestimonials((testRes.testimonials || []).filter((t) => t.isEnabled !== false));
       setFaqs((faqRes.faqs || []).filter((f) => f.isEnabled !== false).slice(0, 6));
       setDeliveryLinks((delRes.deliveryLinks || []).filter((l) => l.isEnabled));
+      setHeroSlides(slideRes.slides || []);
       setLoading(false);
     });
   }, []);
@@ -88,54 +96,87 @@ export default function Home() {
   return (
     <div>
       {/* Hero */}
-      <section className="relative bg-black text-ivory overflow-hidden">
-        <video
-          className="absolute inset-0 h-full w-full object-cover"
-          src="/hero.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          onCanPlay={() => setHeroVideoReady(true)}
-        />
-        {!heroVideoReady && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black">
-            <LoadingSpinner />
+      {heroSlides.length > 0 ? (
+        <HeroCarousel slides={heroSlides} />
+      ) : (
+        <section className="relative bg-black text-ivory overflow-hidden">
+          <div className="container-app py-24 sm:py-36 relative z-10">
+            <div className="max-w-xl text-center mx-auto">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6 }}
+                className="font-heading text-4xl sm:text-6xl font-bold leading-tight"
+              >
+                <span className="block text-gold">Best Quality,</span>
+                <span className="block">Best Price,</span>
+                <span className="block">Best Service</span>
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.15 }}
+                className="mt-5 text-ivory/70 text-lg"
+              >
+                Your neighbourhood destination for fresh groceries, everyday essentials, international favourites and café delights.
+              </motion.p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="mt-8 flex flex-wrap items-center justify-center gap-4"
+              >
+                <Link to="/shop" className="btn-gold">Shop Groceries</Link>
+                <Link to="/about" className="btn-outline border-ivory/40 text-ivory hover:bg-ivory hover:text-black">Explore Our Store</Link>
+              </motion.div>
+            </div>
           </div>
-        )}
-        <div className="absolute inset-0 bg-black/30" />
-        <div className="container-app py-24 sm:py-36 relative z-10">
-          <div className="max-w-xl text-center mx-auto">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              className="font-heading text-4xl sm:text-6xl font-bold leading-tight"
-            >
-              <span className="block text-gold">Best Quality,</span>
-              <span className="block">Best Price,</span>
-              <span className="block">Best Service</span>
-            </motion.h1>
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              className="mt-5 text-ivory/70 text-lg"
-            >
-              Your neighbourhood destination for fresh groceries, everyday essentials, international favourites and café delights.
-            </motion.p>
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="mt-8 flex flex-wrap items-center justify-center gap-4"
-            >
-              <Link to="/shop" className="btn-gold">Shop Groceries</Link>
-              <Link to="/about" className="btn-outline border-ivory/40 text-ivory hover:bg-ivory hover:text-black">Explore Our Store</Link>
-            </motion.div>
+        </section>
+      )}
+
+      {/* Deals & Offers */}
+      {(deals.length > 0 || offers.length > 0) && (
+        <Section className="section-py bg-black">
+          <div className="container-app grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {deals.length > 0 && (
+              <div className={offers.length > 0 ? 'lg:col-span-1' : 'lg:col-span-3'}>
+                <div className="flex items-center justify-between mb-5">
+                  <h2 className="font-heading text-2xl text-gold flex items-center gap-2">
+                    <Flame className="h-5 w-5" /> Weekly Deals
+                  </h2>
+                  <Link to="/shop?sale=true" className="text-xs font-semibold text-ivory/60 hover:text-gold">
+                    View all
+                  </Link>
+                </div>
+                <div className="bg-charcoal/40 rounded-2xl p-6 space-y-4">
+                  {deals.slice(0, 4).map((d) => (
+                    <DealCard key={d._id} deal={d} compact />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {offers.length > 0 && (
+              <div className={deals.length > 0 ? 'lg:col-span-2' : 'lg:col-span-3'}>
+                <h2 className="font-heading text-2xl text-gold mb-5">Special Offers</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {offers.slice(0, 4).map((o) => (
+                    <div key={o._id} className="bg-white rounded-2xl overflow-hidden shadow-card">
+                      <div className="aspect-video bg-creme">
+                        {o.image?.url && <img src={o.image.url} alt={o.heading} className="h-full w-full object-cover" />}
+                      </div>
+                      <div className="p-4">
+                        <p className="font-heading text-lg text-black">{o.heading}</p>
+                        {o.discountText && <p className="text-sm text-gold-dark font-semibold">{o.discountText}</p>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        </div>
-      </section>
+        </Section>
+      )}
 
       {/* Categories */}
       <Section className="section-py container-app">
@@ -173,24 +214,6 @@ export default function Home() {
           </div>
 
           <div className="space-y-6">
-            {deals.length > 0 && (
-              <div className="bg-black rounded-2xl p-6">
-                <div className="flex items-center justify-between mb-5">
-                  <h3 className="font-heading text-xl text-gold flex items-center gap-2">
-                    <Flame className="h-5 w-5" /> Weekly Deals
-                  </h3>
-                  <Link to="/shop?sale=true" className="text-xs font-semibold text-ivory/60 hover:text-gold">
-                    View all deals
-                  </Link>
-                </div>
-                <div className="space-y-4">
-                  {deals.slice(0, 3).map((d) => (
-                    <DealCard key={d._id} deal={d} compact />
-                  ))}
-                </div>
-              </div>
-            )}
-
             {deliveryLinks.length > 0 && (
               <div className="bg-white rounded-2xl p-6 shadow-card">
                 <h3 className="font-heading text-lg text-black mb-1 flex items-center gap-2">

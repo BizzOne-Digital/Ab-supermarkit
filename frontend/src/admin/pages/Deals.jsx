@@ -75,6 +75,7 @@ export default function Deals() {
             <thead>
               <tr className="text-left text-charcoal/50 border-b border-charcoal/10">
                 <th className="py-3 px-4">Product</th>
+                <th className="py-3 px-4">Regular Price</th>
                 <th className="py-3 px-4">Sale Price</th>
                 <th className="py-3 px-4">Ends</th>
                 <th className="py-3 px-4">Active</th>
@@ -85,7 +86,10 @@ export default function Deals() {
               {deals.map((d) => (
                 <tr key={d._id} className="border-b border-charcoal/5">
                   <td className="py-3 px-4">{d.product?.name || '—'}</td>
-                  <td className="py-3 px-4">${Number(d.salePrice).toFixed(2)}</td>
+                  <td className="py-3 px-4 text-charcoal/50 line-through">
+                    {d.product?.regularPrice ? `$${Number(d.product.regularPrice).toFixed(2)}` : '—'}
+                  </td>
+                  <td className="py-3 px-4 font-semibold text-gold-dark">${Number(d.salePrice).toFixed(2)}</td>
                   <td className="py-3 px-4">{new Date(d.endDate).toLocaleDateString()}</td>
                   <td className="py-3 px-4">
                     <button onClick={() => toggleActive(d)} className={`text-xs px-2 py-0.5 rounded ${d.isActive ? 'bg-green-100 text-green-700' : 'bg-charcoal/10 text-charcoal/60'}`}>
@@ -116,10 +120,27 @@ export default function Deals() {
                   <option value="">Select product</option>
                   {products.map((p) => <option key={p._id} value={p._id}>{p.name}</option>)}
                 </select>
+                {form.product && (() => {
+                  const selected = products.find((p) => p._id === form.product);
+                  return selected ? (
+                    <p className="text-xs text-charcoal/60 mt-1">
+                      Regular price: <span className="font-semibold text-charcoal">${Number(selected.regularPrice).toFixed(2)}</span>
+                    </p>
+                  ) : null;
+                })()}
               </div>
               <div>
                 <label className="text-sm font-medium text-charcoal/70">Sale Price</label>
                 <input type="number" step="0.01" required value={form.salePrice} onChange={(e) => setForm({ ...form, salePrice: e.target.value })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2 px-3" />
+                {(() => {
+                  const selected = products.find((p) => p._id === form.product);
+                  const sale = parseFloat(form.salePrice);
+                  if (selected && Number.isFinite(sale) && sale > 0 && sale < selected.regularPrice) {
+                    const pct = Math.round(((selected.regularPrice - sale) / selected.regularPrice) * 100);
+                    return <p className="text-xs text-green-700 mt-1">{pct}% off regular price</p>;
+                  }
+                  return null;
+                })()}
               </div>
               <div>
                 <label className="text-sm font-medium text-charcoal/70">End Date</label>
