@@ -18,7 +18,7 @@ export default function Shop() {
 
   const category = searchParams.get('category') || '';
   const search = searchParams.get('search') || '';
-  const sort = searchParams.get('sort') || 'newest';
+  const sort = searchParams.get('sort') || 'name';
   const page = Number(searchParams.get('page')) || 1;
 
   useEffect(() => {
@@ -100,18 +100,17 @@ export default function Shop() {
         </aside>
 
         <div>
-          <div className="flex items-center justify-between mb-6">
-            <p className="text-sm text-charcoal/60">{pagination.total ?? products.length} products</p>
+          <div className="flex items-center justify-end mb-6">
             <select
               value={sort}
               onChange={(e) => updateParam('sort', e.target.value)}
               className="border border-charcoal/20 rounded-md py-2 px-3 text-sm focus:outline-none focus:border-gold"
             >
-              <option value="newest">Newest</option>
-              <option value="oldest">Oldest</option>
+              <option value="name">Name A-Z</option>
               <option value="price-asc">Price: Low to High</option>
               <option value="price-desc">Price: High to Low</option>
-              <option value="name">Name A-Z</option>
+              <option value="newest">Newest</option>
+              <option value="oldest">Oldest</option>
             </select>
           </div>
 

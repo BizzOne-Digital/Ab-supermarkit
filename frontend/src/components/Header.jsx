@@ -5,6 +5,7 @@ import { ShoppingCart, User, Search, Menu, X, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import * as categoryService from '../services/categoryService';
+import * as deliveryLinkService from '../services/deliveryLinkService';
 
 const navLinks = [
   { to: '/', label: 'Home' },
@@ -19,6 +20,7 @@ export default function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [categories, setCategories] = useState([]);
+  const [deliveryLinks, setDeliveryLinks] = useState([]);
   const [openDropdown, setOpenDropdown] = useState(null);
   const { isAuthenticated } = useAuth();
   const { itemCount } = useCart();
@@ -29,6 +31,10 @@ export default function Header() {
       .getCategories()
       .then((res) => setCategories((res.categories || []).filter((c) => c.isEnabled !== false)))
       .catch(() => setCategories([]));
+    deliveryLinkService
+      .getDeliveryLinks()
+      .then((res) => setDeliveryLinks((res.deliveryLinks || []).filter((l) => l.isEnabled)))
+      .catch(() => setDeliveryLinks([]));
   }, []);
 
   const onSearchSubmit = (e) => {
@@ -39,12 +45,27 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 shadow-sm">
-      <div className="hidden sm:flex bg-gold text-black text-center text-xs py-2 px-4 items-center justify-between">
+      <div className="hidden sm:flex bg-gold text-black text-xs py-2 px-4 items-center justify-between gap-4">
         <span className="flex-1 text-center">
           <span className="font-semibold">Fresh Groceries. Great Prices. Exceptional Service.</span>
           <span className="mx-2 opacity-50">|</span>
           Delivering quality to your doorstep.
         </span>
+        {deliveryLinks.length > 0 && (
+          <div className="flex items-center gap-2 shrink-0">
+            {deliveryLinks.map((link) => (
+              <a
+                key={link._id}
+                href={link.url}
+                target="_blank"
+                rel="noreferrer"
+                className="font-semibold px-2 py-0.5 rounded bg-black/10 hover:bg-black/20 transition-colors"
+              >
+                {link.platform}
+              </a>
+            ))}
+          </div>
+        )}
       </div>
       <div className="sm:hidden bg-gold text-black text-center text-xs py-2 px-4">
         Fresh Groceries • Great Prices • Exceptional Service

@@ -4,9 +4,11 @@ import toast from 'react-hot-toast';
 import { Facebook, Instagram, MapPin, Phone, Mail, Send } from 'lucide-react';
 import * as deliveryLinkService from '../services/deliveryLinkService';
 import * as newsletterService from '../services/newsletterService';
+import * as settingsService from '../services/settingsService';
 
 export default function Footer() {
   const [deliveryLinks, setDeliveryLinks] = useState([]);
+  const [settings, setSettings] = useState(null);
   const [email, setEmail] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -15,6 +17,10 @@ export default function Footer() {
       .getDeliveryLinks()
       .then((res) => setDeliveryLinks((res.deliveryLinks || []).filter((l) => l.isEnabled)))
       .catch(() => setDeliveryLinks([]));
+    settingsService
+      .getSettings()
+      .then((res) => setSettings(res.settings || {}))
+      .catch(() => setSettings({}));
   }, []);
 
   const onSubscribe = async (e) => {
@@ -41,12 +47,16 @@ export default function Footer() {
             Premium groceries, fresh produce, and everyday essentials — delivered with care.
           </p>
           <div className="flex gap-3">
-            <a href="#" aria-label="Facebook" className="h-9 w-9 flex items-center justify-center rounded-full border border-gold/30 hover:bg-gold hover:text-black transition-colors">
-              <Facebook className="h-4 w-4" />
-            </a>
-            <a href="#" aria-label="Instagram" className="h-9 w-9 flex items-center justify-center rounded-full border border-gold/30 hover:bg-gold hover:text-black transition-colors">
-              <Instagram className="h-4 w-4" />
-            </a>
+            {settings?.socialLinks?.facebook && (
+              <a href={settings.socialLinks.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="h-9 w-9 flex items-center justify-center rounded-full border border-gold/30 hover:bg-gold hover:text-black transition-colors">
+                <Facebook className="h-4 w-4" />
+              </a>
+            )}
+            {settings?.socialLinks?.instagram && (
+              <a href={settings.socialLinks.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="h-9 w-9 flex items-center justify-center rounded-full border border-gold/30 hover:bg-gold hover:text-black transition-colors">
+                <Instagram className="h-4 w-4" />
+              </a>
+            )}
           </div>
         </div>
 
@@ -91,9 +101,15 @@ export default function Footer() {
         <div>
           <h4 className="font-heading text-lg text-ivory mb-4">Stay Connected</h4>
           <ul className="space-y-2 text-sm mb-4">
-            <li className="flex items-center gap-2 text-creme/70"><MapPin className="h-4 w-4 text-gold shrink-0" /> 123 Market Street</li>
-            <li className="flex items-center gap-2 text-creme/70"><Phone className="h-4 w-4 text-gold shrink-0" /> (555) 123-4567</li>
-            <li className="flex items-center gap-2 text-creme/70"><Mail className="h-4 w-4 text-gold shrink-0" /> hello@absupermarket.com</li>
+            {settings?.address && (
+              <li className="flex items-center gap-2 text-creme/70"><MapPin className="h-4 w-4 text-gold shrink-0" /> {settings.address}</li>
+            )}
+            {settings?.contactPhone && (
+              <li className="flex items-center gap-2 text-creme/70"><Phone className="h-4 w-4 text-gold shrink-0" /> {settings.contactPhone}</li>
+            )}
+            {settings?.contactEmail && (
+              <li className="flex items-center gap-2 text-creme/70"><Mail className="h-4 w-4 text-gold shrink-0" /> {settings.contactEmail}</li>
+            )}
           </ul>
           <form onSubmit={onSubscribe} className="relative">
             <input

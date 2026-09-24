@@ -28,7 +28,9 @@ export const getProducts = asyncHandler(async (req, res) => {
     query.$text = { $search: req.query.search };
   }
 
-  let sort = { createdAt: -1 };
+  // Default to alphabetical so browsing/category order is predictable rather than
+  // reflecting whatever order products happened to be imported/created in.
+  let sort = { name: 1 };
   if (req.query.sort) {
     const sortMap = {
       'price-asc': { regularPrice: 1 },

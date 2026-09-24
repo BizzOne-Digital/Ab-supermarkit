@@ -56,6 +56,30 @@ export default function Settings() {
         </div>
 
         <div className="pt-4 border-t border-charcoal/10">
+          <h2 className="font-heading text-lg text-black mb-3">Social Links</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium text-charcoal/70">Facebook URL</label>
+              <input
+                value={form.socialLinks?.facebook || ''}
+                onChange={(e) => setForm({ ...form, socialLinks: { ...form.socialLinks, facebook: e.target.value } })}
+                placeholder="https://facebook.com/..."
+                className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium text-charcoal/70">Instagram URL</label>
+              <input
+                value={form.socialLinks?.instagram || ''}
+                onChange={(e) => setForm({ ...form, socialLinks: { ...form.socialLinks, instagram: e.target.value } })}
+                placeholder="https://instagram.com/..."
+                className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-4 border-t border-charcoal/10">
           <h2 className="font-heading text-lg text-black mb-3">Delivery Charges</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>

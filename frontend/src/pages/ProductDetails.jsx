@@ -77,8 +77,8 @@ export default function ProductDetails() {
           </div>
           {product.shortDescription && <p className="text-charcoal/70 mb-6">{product.shortDescription}</p>}
 
-          <p className={`text-sm mb-6 ${product.stockQuantity > 0 ? 'text-green-700' : 'text-red-600'}`}>
-            {product.stockQuantity > 0 ? `In Stock (${product.stockQuantity} available)` : 'Out of Stock'}
+          <p className={`text-sm mb-6 font-semibold ${product.stockQuantity > 0 ? 'text-green-700' : 'text-red-600'}`}>
+            {product.stockQuantity > 0 ? 'In Stock' : 'Out of Stock'}
           </p>
 
           <div className="flex items-center gap-4 mb-8">
