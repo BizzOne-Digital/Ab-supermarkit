@@ -102,14 +102,25 @@ export default function Home() {
     <div>
       {/* Hero + Category Sidebar */}
       <section className="bg-creme">
-        <div className="container-app py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
+        <div className="w-full pr-4 sm:pr-6 lg:pr-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-0 lg:gap-6 items-start">
           <CategorySidebar categories={categories} />
 
           {heroSlides.length > 0 ? (
-            <HeroCarousel slides={heroSlides} />
+            <div className="py-6 sm:py-8">
+              <HeroCarousel slides={heroSlides} />
+            </div>
           ) : (
-            <div className="relative bg-black text-ivory overflow-hidden rounded-2xl h-[420px] sm:h-[480px] flex items-center justify-center px-6">
-              <div className="max-w-xl text-center">
+            <div className="relative bg-black text-ivory overflow-hidden lg:rounded-2xl h-[420px] sm:h-[480px] flex items-center justify-center px-6 lg:my-8">
+              <video
+                className="absolute inset-0 h-full w-full object-cover"
+                src="/hero.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+              <div className="absolute inset-0 bg-black/40" />
+              <div className="relative max-w-xl text-center z-10">
                 <motion.h1
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
