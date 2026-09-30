@@ -17,7 +17,7 @@ export default function HeroCarousel({ slides }) {
   const slide = slides[index];
 
   return (
-    <section className="relative bg-black text-ivory overflow-hidden">
+    <div className="relative bg-black text-ivory overflow-hidden rounded-2xl h-[420px] sm:h-[480px]">
       <AnimatePresence mode="wait">
         <motion.div
           key={slide._id}
@@ -31,7 +31,7 @@ export default function HeroCarousel({ slides }) {
       </AnimatePresence>
       <div className="absolute inset-0 bg-black/30" />
 
-      <div className="container-app py-24 sm:py-36 relative z-10">
+      <div className="relative z-10 h-full flex items-center justify-center px-6">
         <AnimatePresence mode="wait">
           <motion.div
             key={slide._id}
@@ -39,14 +39,14 @@ export default function HeroCarousel({ slides }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.6 }}
-            className="max-w-xl text-center mx-auto"
+            className="max-w-xl text-center"
           >
             {slide.heading && (
-              <h1 className="font-heading text-4xl sm:text-6xl font-bold leading-tight text-gold">{slide.heading}</h1>
+              <h1 className="font-heading text-3xl sm:text-5xl font-bold leading-tight text-gold">{slide.heading}</h1>
             )}
-            {slide.subheading && <p className="mt-5 text-ivory/70 text-lg">{slide.subheading}</p>}
+            {slide.subheading && <p className="mt-4 text-ivory/70 text-base sm:text-lg">{slide.subheading}</p>}
             {slide.ctaLabel && (
-              <div className="mt-8 flex items-center justify-center gap-4">
+              <div className="mt-6 flex items-center justify-center gap-4">
                 <Link to={slide.ctaLink || '/shop'} className="btn-gold">
                   {slide.ctaLabel}
                 </Link>
@@ -57,7 +57,7 @@ export default function HeroCarousel({ slides }) {
       </div>
 
       {slides.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
+        <div className="absolute bottom-5 left-1/2 -translate-x-1/2 z-10 flex gap-2">
           {slides.map((s, i) => (
             <button
               key={s._id}
@@ -68,6 +68,6 @@ export default function HeroCarousel({ slides }) {
           ))}
         </div>
       )}
-    </section>
+    </div>
   );
 }

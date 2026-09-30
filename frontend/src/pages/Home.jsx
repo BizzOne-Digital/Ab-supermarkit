@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Truck, ShieldCheck, Leaf, Clock, Send, Coffee, Tag, ShoppingBasket, Handshake, ArrowRight, Flame } from 'lucide-react';
+import { Truck, ShieldCheck, Leaf, Clock, Send, Coffee, Tag, ShoppingBasket, Handshake, ArrowRight, Flame, Percent, Megaphone } from 'lucide-react';
 
 import * as categoryService from '../services/categoryService';
 import * as productService from '../services/productService';
@@ -13,6 +13,7 @@ import * as faqService from '../services/faqService';
 import * as deliveryLinkService from '../services/deliveryLinkService';
 import * as newsletterService from '../services/newsletterService';
 import * as heroSlideService from '../services/heroSlideService';
+import * as settingsService from '../services/settingsService';
 
 import CategoryCard from '../components/CategoryCard';
 import ProductCard from '../components/ProductCard';
@@ -22,6 +23,7 @@ import FaqAccordionItem from '../components/FaqAccordionItem';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import HeroCarousel from '../components/HeroCarousel';
+import CategorySidebar from '../components/CategorySidebar';
 
 const whyShop = [
   { icon: Leaf, title: 'Freshness Guaranteed', desc: 'We source the freshest products daily for your family.' },
@@ -53,6 +55,7 @@ export default function Home() {
   const [faqs, setFaqs] = useState([]);
   const [deliveryLinks, setDeliveryLinks] = useState([]);
   const [heroSlides, setHeroSlides] = useState([]);
+  const [siteSettings, setSiteSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
 
@@ -66,7 +69,8 @@ export default function Home() {
       faqService.getFaqs().catch(() => ({ faqs: [] })),
       deliveryLinkService.getDeliveryLinks().catch(() => ({ deliveryLinks: [] })),
       heroSlideService.getHeroSlides().catch(() => ({ slides: [] })),
-    ]).then(([catRes, prodRes, dealRes, offerRes, testRes, faqRes, delRes, slideRes]) => {
+      settingsService.getSettings().catch(() => ({ settings: null })),
+    ]).then(([catRes, prodRes, dealRes, offerRes, testRes, faqRes, delRes, slideRes, settingsRes]) => {
       setCategories((catRes.categories || []).filter((c) => c.isEnabled !== false));
       setFeatured(prodRes.products || []);
       setDeals((dealRes.deals || []).filter((d) => d.isActive));
@@ -74,6 +78,7 @@ export default function Home() {
       setTestimonials((testRes.testimonials || []).filter((t) => t.isEnabled !== false));
       setFaqs((faqRes.faqs || []).filter((f) => f.isEnabled !== false).slice(0, 6));
       setDeliveryLinks((delRes.deliveryLinks || []).filter((l) => l.isEnabled));
+      setSiteSettings(settingsRes.settings || null);
       setHeroSlides(slideRes.slides || []);
       setLoading(false);
     });
@@ -95,44 +100,97 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero */}
-      {heroSlides.length > 0 ? (
-        <HeroCarousel slides={heroSlides} />
-      ) : (
-        <section className="relative bg-black text-ivory overflow-hidden">
-          <div className="container-app py-24 sm:py-36 relative z-10">
-            <div className="max-w-xl text-center mx-auto">
-              <motion.h1
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="font-heading text-4xl sm:text-6xl font-bold leading-tight"
-              >
-                <span className="block text-gold">Best Quality,</span>
-                <span className="block">Best Price,</span>
-                <span className="block">Best Service</span>
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.15 }}
-                className="mt-5 text-ivory/70 text-lg"
-              >
-                Your neighbourhood destination for fresh groceries, everyday essentials, international favourites and café delights.
-              </motion.p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-                className="mt-8 flex flex-wrap items-center justify-center gap-4"
-              >
-                <Link to="/shop" className="btn-gold">Shop Groceries</Link>
-                <Link to="/about" className="btn-outline border-ivory/40 text-ivory hover:bg-ivory hover:text-black">Explore Our Store</Link>
-              </motion.div>
+      {/* Hero + Category Sidebar */}
+      <section className="bg-creme">
+        <div className="container-app py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-6">
+          <CategorySidebar categories={categories} />
+
+          {heroSlides.length > 0 ? (
+            <HeroCarousel slides={heroSlides} />
+          ) : (
+            <div className="relative bg-black text-ivory overflow-hidden rounded-2xl h-[420px] sm:h-[480px] flex items-center justify-center px-6">
+              <div className="max-w-xl text-center">
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6 }}
+                  className="font-heading text-3xl sm:text-5xl font-bold leading-tight"
+                >
+                  <span className="block text-gold">Best Quality,</span>
+                  <span className="block">Best Price,</span>
+                  <span className="block">Best Service</span>
+                </motion.h1>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.15 }}
+                  className="mt-4 text-ivory/70 text-base sm:text-lg"
+                >
+                  Your neighbourhood destination for fresh groceries, everyday essentials, international favourites and café delights.
+                </motion.p>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 0.3 }}
+                  className="mt-6 flex flex-wrap items-center justify-center gap-4"
+                >
+                  <Link to="/shop" className="btn-gold">Shop Groceries</Link>
+                  <Link to="/about" className="btn-outline border-ivory/40 text-ivory hover:bg-ivory hover:text-black">Explore Our Store</Link>
+                </motion.div>
+              </div>
             </div>
-          </div>
-        </section>
-      )}
+          )}
+        </div>
+      </section>
+
+      {/* Promo Tiles */}
+      <Section className="container-app -mt-2 pb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {deals.length > 0 && (() => {
+            const best = deals.reduce((max, d) => {
+              const pct = d.product?.regularPrice ? ((d.product.regularPrice - d.salePrice) / d.product.regularPrice) * 100 : 0;
+              const maxPct = max?.product?.regularPrice ? ((max.product.regularPrice - max.salePrice) / max.product.regularPrice) * 100 : -1;
+              return pct > maxPct ? d : max;
+            }, null);
+            const pct = best?.product?.regularPrice ? Math.round(((best.product.regularPrice - best.salePrice) / best.product.regularPrice) * 100) : null;
+            return (
+              <Link to="/shop?sale=true" className="group bg-black rounded-2xl p-6 flex items-center gap-4 hover:shadow-xl transition-shadow">
+                <div className="h-14 w-14 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                  <Percent className="h-6 w-6 text-gold" />
+                </div>
+                <div>
+                  <p className="text-ivory/60 text-xs uppercase tracking-wide">Weekly Deals</p>
+                  <p className="font-heading text-xl text-gold">{pct ? `Up to ${pct}% Off` : 'Shop Deals'}</p>
+                </div>
+              </Link>
+            );
+          })()}
+
+          {offers.length > 0 && (
+            <Link to="/shop" className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
+              <div className="h-14 w-14 rounded-full bg-creme flex items-center justify-center shrink-0">
+                <Megaphone className="h-6 w-6 text-gold-dark" />
+              </div>
+              <div>
+                <p className="text-charcoal/50 text-xs uppercase tracking-wide">Special Offer</p>
+                <p className="font-heading text-xl text-black line-clamp-1">{offers[0].heading}</p>
+              </div>
+            </Link>
+          )}
+
+          {siteSettings?.freeDeliveryThreshold != null && (
+            <Link to="/shop" className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
+              <div className="h-14 w-14 rounded-full bg-creme flex items-center justify-center shrink-0">
+                <Truck className="h-6 w-6 text-gold-dark" />
+              </div>
+              <div>
+                <p className="text-charcoal/50 text-xs uppercase tracking-wide">Free Delivery</p>
+                <p className="font-heading text-xl text-black">Over ${Number(siteSettings.freeDeliveryThreshold).toFixed(0)}</p>
+              </div>
+            </Link>
+          )}
+        </div>
+      </Section>
 
       {/* Deals & Offers */}
       {(deals.length > 0 || offers.length > 0) && (
