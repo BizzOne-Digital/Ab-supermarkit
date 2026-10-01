@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -58,6 +58,18 @@ export default function Home() {
   const [siteSettings, setSiteSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
+  const heroColumnRef = useRef(null);
+  const [sidebarHeight, setSidebarHeight] = useState(null);
+
+  useEffect(() => {
+    const el = heroColumnRef.current;
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    const observer = new ResizeObserver((entries) => {
+      setSidebarHeight(entries[0].contentRect.height);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [loading]);
 
   useEffect(() => {
     Promise.all([
@@ -102,12 +114,16 @@ export default function Home() {
     <div>
       {/* Hero + Category Sidebar */}
       <section className="bg-creme">
-        <div className="w-full pr-4 sm:pr-6 lg:pr-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
-          {/* Sidebar stretches to match the full hero + promo tiles column height (grid default
-              stretch), so it runs the whole way down instead of stopping at the hero alone. */}
-          <CategorySidebar categories={categories} className="h-full" />
+        <div className="w-full pr-4 sm:pr-6 lg:pr-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
+          {/* Height is measured from the hero+promo column via ResizeObserver, so the sidebar
+              matches it exactly instead of CSS grid stretch inflating to fit the full
+              (unclipped) category list, which was dragging the whole box down over later sections. */}
+          <CategorySidebar
+            categories={categories}
+            style={sidebarHeight ? { height: `${sidebarHeight}px` } : undefined}
+          />
 
-          <div className="flex flex-col gap-6">
+          <div ref={heroColumnRef} className="flex flex-col gap-6">
             {heroSlides.length > 0 ? (
               <HeroCarousel slides={heroSlides} />
             ) : (
