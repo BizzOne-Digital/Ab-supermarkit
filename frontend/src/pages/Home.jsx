@@ -215,6 +215,26 @@ export default function Home() {
                 </Link>
               )}
             </div>
+
+            {/* Shop by Category — kept in this same measured column so the sidebar spans
+                down far enough to run alongside it too, not just the hero/tiles. */}
+            <div className="pt-4">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="font-heading text-3xl sm:text-4xl text-black">Shop by Category</h2>
+                <Link to="/shop" className="hidden sm:flex items-center gap-1 text-sm font-semibold text-gold-dark hover:text-gold">
+                  View all categories <ArrowRight className="h-4 w-4" />
+                </Link>
+              </div>
+              {categories.length === 0 ? (
+                <EmptyState title="No categories yet" message="Categories will appear here once added." />
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+                  {categories.slice(0, 12).map((c) => (
+                    <CategoryCard key={c._id} category={c} />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </section>
@@ -262,25 +282,6 @@ export default function Home() {
           </div>
         </Section>
       )}
-
-      {/* Categories */}
-      <Section className="section-py container-app">
-        <div className="flex items-center justify-between mb-10">
-          <h2 className="font-heading text-3xl sm:text-4xl text-black">Shop by Category</h2>
-          <Link to="/shop" className="hidden sm:flex items-center gap-1 text-sm font-semibold text-gold-dark hover:text-gold">
-            View all categories <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        {categories.length === 0 ? (
-          <EmptyState title="No categories yet" message="Categories will appear here once added." />
-        ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
-            {categories.slice(0, 12).map((c) => (
-              <CategoryCard key={c._id} category={c} />
-            ))}
-          </div>
-        )}
-      </Section>
 
       {/* Featured Products + Weekly Deals / Delivery sidebar */}
       <Section className="section-py bg-creme">
