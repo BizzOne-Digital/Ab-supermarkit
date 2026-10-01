@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 
-export default function CategorySidebar({ categories }) {
+export default function CategorySidebar({ categories, className = '' }) {
   return (
-    <aside className="hidden lg:flex flex-col bg-black rounded-r-2xl overflow-hidden border-y border-r border-gold/15">
+    <aside className={`hidden lg:flex flex-col bg-black rounded-r-2xl overflow-hidden border-y border-r border-gold/15 ${className}`}>
       <div className="px-5 py-4 border-b border-gold/15">
         <h3 className="font-heading text-gold text-lg">Shop by Category</h3>
       </div>

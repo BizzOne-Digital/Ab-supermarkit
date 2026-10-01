@@ -101,16 +101,13 @@ export default function Home() {
   return (
     <div>
       {/* Hero + Category Sidebar */}
-      <section className="bg-creme relative">
-        <div className="w-full pr-4 sm:pr-6 lg:pr-8 relative">
-          {/* Positioned out of flow so the rest of the page starts right after the hero,
-              regardless of how tall the category list makes the sidebar. */}
-          <div className="hidden lg:block absolute top-0 left-0 z-20">
-            <CategorySidebar categories={categories} />
-          </div>
+      <section className="bg-creme">
+        <div className="w-full pr-4 sm:pr-6 lg:pr-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
+          {/* Sidebar is capped to the hero column's height and scrolls internally instead of
+              growing taller than it — avoids both the dead gap and overlapping later sections. */}
+          <CategorySidebar categories={categories} className="lg:h-[480px]" />
 
-          {/* Hero + Promo Tiles — this column's own height is all the section reserves */}
-          <div className="flex flex-col gap-6 py-6 sm:py-8 lg:pl-[304px]">
+          <div className="flex flex-col gap-6">
             {heroSlides.length > 0 ? (
               <HeroCarousel slides={heroSlides} />
             ) : (
