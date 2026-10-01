@@ -103,9 +103,9 @@ export default function Home() {
       {/* Hero + Category Sidebar */}
       <section className="bg-creme">
         <div className="w-full pr-4 sm:pr-6 lg:pr-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
-          {/* Sidebar is capped to the hero column's height and scrolls internally instead of
-              growing taller than it — avoids both the dead gap and overlapping later sections. */}
-          <CategorySidebar categories={categories} className="lg:h-[480px]" />
+          {/* Sidebar stretches to match the full hero + promo tiles column height (grid default
+              stretch), so it runs the whole way down instead of stopping at the hero alone. */}
+          <CategorySidebar categories={categories} className="h-full" />
 
           <div className="flex flex-col gap-6">
             {heroSlides.length > 0 ? (
