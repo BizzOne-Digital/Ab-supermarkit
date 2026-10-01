@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Truck, ShieldCheck, Leaf, Clock, Send, Coffee, Tag, ShoppingBasket, Handshake, ArrowRight, Flame, Percent, Megaphone } from 'lucide-react';
+import { Truck, ShieldCheck, Leaf, Clock, Send, Coffee, Tag, ShoppingBasket, Handshake, Flame, Percent, Megaphone } from 'lucide-react';
 
 import * as categoryService from '../services/categoryService';
 import * as productService from '../services/productService';
@@ -15,7 +15,6 @@ import * as newsletterService from '../services/newsletterService';
 import * as heroSlideService from '../services/heroSlideService';
 import * as settingsService from '../services/settingsService';
 
-import CategoryCard from '../components/CategoryCard';
 import ProductCard from '../components/ProductCard';
 import DealCard from '../components/DealCard';
 import TestimonialCard from '../components/TestimonialCard';
@@ -114,7 +113,7 @@ export default function Home() {
     <div>
       {/* Hero + Category Sidebar */}
       <section className="bg-creme">
-        <div className="w-full pr-4 sm:pr-6 lg:pr-8 py-6 sm:py-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
+        <div className="w-full pr-4 sm:pr-6 lg:pr-8 pb-6 sm:pb-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
           {/* Height is measured from the hero+promo column via ResizeObserver, so the sidebar
               matches it exactly instead of CSS grid stretch inflating to fit the full
               (unclipped) category list, which was dragging the whole box down over later sections. */}
@@ -216,21 +215,17 @@ export default function Home() {
               )}
             </div>
 
-            {/* Shop by Category — kept in this same measured column so the sidebar spans
-                down far enough to run alongside it too, not just the hero/tiles. */}
+            {/* Featured Products — in Shop by Category's old slot, since categories are
+                already covered by the sidebar on the left. Kept in this measured column so
+                the sidebar keeps spanning down alongside it. */}
             <div className="pt-4">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="font-heading text-3xl sm:text-4xl text-black">Shop by Category</h2>
-                <Link to="/shop" className="hidden sm:flex items-center gap-1 text-sm font-semibold text-gold-dark hover:text-gold">
-                  View all categories <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
-              {categories.length === 0 ? (
-                <EmptyState title="No categories yet" message="Categories will appear here once added." />
+              <h2 className="font-heading text-3xl sm:text-4xl text-black mb-8">Featured Products</h2>
+              {featured.length === 0 ? (
+                <EmptyState title="No featured products" message="Check back soon for featured picks." />
               ) : (
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
-                  {categories.slice(0, 12).map((c) => (
-                    <CategoryCard key={c._id} category={c} />
+                  {featured.map((p) => (
+                    <ProductCard key={p._id} product={p} />
                   ))}
                 </div>
               )}
@@ -284,49 +279,34 @@ export default function Home() {
       )}
 
       {/* Featured Products + Weekly Deals / Delivery sidebar */}
-      <Section className="section-py bg-creme">
-        <div className="container-app grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-          <div className="lg:col-span-2">
-            <h2 className="font-heading text-3xl sm:text-4xl text-black mb-8">Featured Products</h2>
-            {featured.length === 0 ? (
-              <EmptyState title="No featured products" message="Check back soon for featured picks." />
-            ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-5 sm:gap-6">
-                {featured.map((p) => (
-                  <ProductCard key={p._id} product={p} />
+      {deliveryLinks.length > 0 && (
+        <Section className="section-py bg-creme">
+          <div className="container-app">
+            <div className="bg-white rounded-2xl p-6 shadow-card max-w-2xl mx-auto text-center">
+              <h3 className="font-heading text-lg text-black mb-1 flex items-center justify-center gap-2">
+                <Truck className="h-5 w-5 text-gold-dark" /> We Deliver to You
+              </h3>
+              <p className="text-sm text-charcoal/60 mb-4">Fast, reliable. Right to your door.</p>
+              <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
+                {deliveryLinks.map((link) => (
+                  <a
+                    key={link._id}
+                    href={link.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-semibold px-3 py-2 rounded-md border border-charcoal/15 hover:border-gold hover:text-gold-dark transition-colors"
+                  >
+                    {link.platform}
+                  </a>
                 ))}
               </div>
-            )}
+              <a href={deliveryLinks[0]?.url} target="_blank" rel="noreferrer" className="btn-gold">
+                Order Now
+              </a>
+            </div>
           </div>
-
-          <div className="space-y-6">
-            {deliveryLinks.length > 0 && (
-              <div className="bg-white rounded-2xl p-6 shadow-card">
-                <h3 className="font-heading text-lg text-black mb-1 flex items-center gap-2">
-                  <Truck className="h-5 w-5 text-gold-dark" /> We Deliver to You
-                </h3>
-                <p className="text-sm text-charcoal/60 mb-4">Fast, reliable. Right to your door.</p>
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {deliveryLinks.map((link) => (
-                    <a
-                      key={link._id}
-                      href={link.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="text-xs font-semibold px-3 py-2 rounded-md border border-charcoal/15 hover:border-gold hover:text-gold-dark transition-colors"
-                    >
-                      {link.platform}
-                    </a>
-                  ))}
-                </div>
-                <a href={deliveryLinks[0]?.url} target="_blank" rel="noreferrer" className="btn-gold w-full justify-center">
-                  Order Now
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
-      </Section>
+        </Section>
+      )}
 
       {/* Why Shop */}
       <Section className="section-py container-app">
