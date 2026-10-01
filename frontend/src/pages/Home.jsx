@@ -113,7 +113,7 @@ export default function Home() {
     <div>
       {/* Hero + Category Sidebar */}
       <section className="bg-creme">
-        <div className="w-full pr-4 sm:pr-6 lg:pr-8 pb-6 sm:pb-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
+        <div className="w-full pr-4 sm:pr-6 lg:pr-8 pb-6 sm:pb-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 lg:gap-x-0 items-start">
           {/* Height is measured from the hero+promo column via ResizeObserver, so the sidebar
               matches it exactly instead of CSS grid stretch inflating to fit the full
               (unclipped) category list, which was dragging the whole box down over later sections. */}
@@ -126,7 +126,7 @@ export default function Home() {
             {heroSlides.length > 0 ? (
               <HeroCarousel slides={heroSlides} />
             ) : (
-              <div className="relative bg-black text-ivory overflow-hidden lg:rounded-2xl h-[420px] sm:h-[480px] flex items-center justify-center px-6">
+              <div className="relative bg-black text-ivory overflow-hidden rounded-2xl lg:rounded-l-none h-[420px] sm:h-[480px] flex items-center justify-center px-6">
                 <video
                   className="absolute inset-0 h-full w-full object-cover"
                   src="/hero.mp4"
