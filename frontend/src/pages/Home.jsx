@@ -102,106 +102,105 @@ export default function Home() {
     <div>
       {/* Hero + Category Sidebar */}
       <section className="bg-creme">
-        <div className="w-full pr-4 sm:pr-6 lg:pr-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-0 lg:gap-6 items-start">
+        <div className="w-full pr-4 sm:pr-6 lg:pr-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
           <CategorySidebar categories={categories} />
 
-          {heroSlides.length > 0 ? (
-            <div className="py-6 sm:py-8">
+          {/* Hero + Promo Tiles share this column so its height never depends on the sidebar */}
+          <div className="flex flex-col gap-6 py-6 sm:py-8">
+            {heroSlides.length > 0 ? (
               <HeroCarousel slides={heroSlides} />
-            </div>
-          ) : (
-            <div className="relative bg-black text-ivory overflow-hidden lg:rounded-2xl h-[420px] sm:h-[480px] flex items-center justify-center px-6 lg:my-8">
-              <video
-                className="absolute inset-0 h-full w-full object-cover"
-                src="/hero.mp4"
-                autoPlay
-                loop
-                muted
-                playsInline
-              />
-              <div className="absolute inset-0 bg-black/40" />
-              <div className="relative max-w-xl text-center z-10">
-                <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6 }}
-                  className="font-heading text-3xl sm:text-5xl font-bold leading-tight"
-                >
-                  <span className="block text-gold">Best Quality,</span>
-                  <span className="block">Best Price,</span>
-                  <span className="block">Best Service</span>
-                </motion.h1>
-                <motion.p
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.15 }}
-                  className="mt-4 text-ivory/70 text-base sm:text-lg"
-                >
-                  Your neighbourhood destination for fresh groceries, everyday essentials, international favourites and café delights.
-                </motion.p>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.6, delay: 0.3 }}
-                  className="mt-6 flex flex-wrap items-center justify-center gap-4"
-                >
-                  <Link to="/shop" className="btn-gold">Shop Groceries</Link>
-                  <Link to="/about" className="btn-outline border-ivory/40 text-ivory hover:bg-ivory hover:text-black">Explore Our Store</Link>
-                </motion.div>
+            ) : (
+              <div className="relative bg-black text-ivory overflow-hidden lg:rounded-2xl h-[420px] sm:h-[480px] flex items-center justify-center px-6">
+                <video
+                  className="absolute inset-0 h-full w-full object-cover"
+                  src="/hero.mp4"
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                />
+                <div className="absolute inset-0 bg-black/40" />
+                <div className="relative max-w-xl text-center z-10">
+                  <motion.h1
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6 }}
+                    className="font-heading text-3xl sm:text-5xl font-bold leading-tight"
+                  >
+                    <span className="block text-gold">Best Quality,</span>
+                    <span className="block">Best Price,</span>
+                    <span className="block">Best Service</span>
+                  </motion.h1>
+                  <motion.p
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.15 }}
+                    className="mt-4 text-ivory/70 text-base sm:text-lg"
+                  >
+                    Your neighbourhood destination for fresh groceries, everyday essentials, international favourites and café delights.
+                  </motion.p>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.6, delay: 0.3 }}
+                    className="mt-6 flex flex-wrap items-center justify-center gap-4"
+                  >
+                    <Link to="/shop" className="btn-gold">Shop Groceries</Link>
+                    <Link to="/about" className="btn-outline border-ivory/40 text-ivory hover:bg-ivory hover:text-black">Explore Our Store</Link>
+                  </motion.div>
+                </div>
               </div>
+            )}
+
+            {/* Promo Tiles */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {deals.length > 0 && (() => {
+                const best = deals.reduce((max, d) => {
+                  const pct = d.product?.regularPrice ? ((d.product.regularPrice - d.salePrice) / d.product.regularPrice) * 100 : 0;
+                  const maxPct = max?.product?.regularPrice ? ((max.product.regularPrice - max.salePrice) / max.product.regularPrice) * 100 : -1;
+                  return pct > maxPct ? d : max;
+                }, null);
+                const pct = best?.product?.regularPrice ? Math.round(((best.product.regularPrice - best.salePrice) / best.product.regularPrice) * 100) : null;
+                return (
+                  <Link to="/shop?sale=true" className="group bg-black rounded-2xl p-6 flex items-center gap-4 hover:shadow-xl transition-shadow">
+                    <div className="h-14 w-14 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
+                      <Percent className="h-6 w-6 text-gold" />
+                    </div>
+                    <div>
+                      <p className="text-ivory/60 text-xs uppercase tracking-wide">Weekly Deals</p>
+                      <p className="font-heading text-xl text-gold">{pct ? `Up to ${pct}% Off` : 'Shop Deals'}</p>
+                    </div>
+                  </Link>
+                );
+              })()}
+
+              {offers.length > 0 && (
+                <Link to="/shop" className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
+                  <div className="h-14 w-14 rounded-full bg-creme flex items-center justify-center shrink-0">
+                    <Megaphone className="h-6 w-6 text-gold-dark" />
+                  </div>
+                  <div>
+                    <p className="text-charcoal/50 text-xs uppercase tracking-wide">Special Offer</p>
+                    <p className="font-heading text-xl text-black line-clamp-1">{offers[0].heading}</p>
+                  </div>
+                </Link>
+              )}
+
+              {siteSettings?.freeDeliveryThreshold != null && (
+                <Link to="/shop" className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
+                  <div className="h-14 w-14 rounded-full bg-creme flex items-center justify-center shrink-0">
+                    <Truck className="h-6 w-6 text-gold-dark" />
+                  </div>
+                  <div>
+                    <p className="text-charcoal/50 text-xs uppercase tracking-wide">Free Delivery</p>
+                    <p className="font-heading text-xl text-black">Over ${Number(siteSettings.freeDeliveryThreshold).toFixed(0)}</p>
+                  </div>
+                </Link>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </section>
-
-      {/* Promo Tiles */}
-      <Section className="container-app -mt-2 pb-10">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {deals.length > 0 && (() => {
-            const best = deals.reduce((max, d) => {
-              const pct = d.product?.regularPrice ? ((d.product.regularPrice - d.salePrice) / d.product.regularPrice) * 100 : 0;
-              const maxPct = max?.product?.regularPrice ? ((max.product.regularPrice - max.salePrice) / max.product.regularPrice) * 100 : -1;
-              return pct > maxPct ? d : max;
-            }, null);
-            const pct = best?.product?.regularPrice ? Math.round(((best.product.regularPrice - best.salePrice) / best.product.regularPrice) * 100) : null;
-            return (
-              <Link to="/shop?sale=true" className="group bg-black rounded-2xl p-6 flex items-center gap-4 hover:shadow-xl transition-shadow">
-                <div className="h-14 w-14 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
-                  <Percent className="h-6 w-6 text-gold" />
-                </div>
-                <div>
-                  <p className="text-ivory/60 text-xs uppercase tracking-wide">Weekly Deals</p>
-                  <p className="font-heading text-xl text-gold">{pct ? `Up to ${pct}% Off` : 'Shop Deals'}</p>
-                </div>
-              </Link>
-            );
-          })()}
-
-          {offers.length > 0 && (
-            <Link to="/shop" className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
-              <div className="h-14 w-14 rounded-full bg-creme flex items-center justify-center shrink-0">
-                <Megaphone className="h-6 w-6 text-gold-dark" />
-              </div>
-              <div>
-                <p className="text-charcoal/50 text-xs uppercase tracking-wide">Special Offer</p>
-                <p className="font-heading text-xl text-black line-clamp-1">{offers[0].heading}</p>
-              </div>
-            </Link>
-          )}
-
-          {siteSettings?.freeDeliveryThreshold != null && (
-            <Link to="/shop" className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
-              <div className="h-14 w-14 rounded-full bg-creme flex items-center justify-center shrink-0">
-                <Truck className="h-6 w-6 text-gold-dark" />
-              </div>
-              <div>
-                <p className="text-charcoal/50 text-xs uppercase tracking-wide">Free Delivery</p>
-                <p className="font-heading text-xl text-black">Over ${Number(siteSettings.freeDeliveryThreshold).toFixed(0)}</p>
-              </div>
-            </Link>
-          )}
-        </div>
-      </Section>
 
       {/* Deals & Offers */}
       {(deals.length > 0 || offers.length > 0) && (
