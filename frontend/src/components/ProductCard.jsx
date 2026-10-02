@@ -28,7 +28,7 @@ export default function ProductCard({ product }) {
           <div className="h-full w-full flex items-center justify-center text-charcoal/30 text-sm">No image</div>
         )}
         {product.isOnSale && (
-          <span className="absolute top-2 left-2 bg-gold text-black text-xs font-bold px-2 py-1 rounded">SALE</span>
+          <span className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">SALE</span>
         )}
       </Link>
       <div className="p-4 flex flex-col flex-1">

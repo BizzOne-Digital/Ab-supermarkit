@@ -22,7 +22,7 @@ export default function DealCard({ deal, compact = false }) {
           </div>
         </div>
         {Number.isFinite(percentOff) && percentOff > 0 && (
-          <span className="shrink-0 bg-gold/10 text-gold text-[11px] font-bold px-2 py-1 rounded">
+          <span className="shrink-0 bg-red-600/15 text-red-500 text-[11px] font-bold px-2 py-1 rounded">
             {percentOff}% OFF
           </span>
         )}
@@ -41,7 +41,7 @@ export default function DealCard({ deal, compact = false }) {
       <Link to={`/shop/${product.slug}`} className="relative block aspect-square bg-charcoal overflow-hidden">
         {image && <img src={image} alt={product.name} className="h-full w-full object-cover" />}
         {Number.isFinite(percentOff) && percentOff > 0 && (
-          <span className="absolute top-2 left-2 bg-gold text-black text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
+          <span className="absolute top-2 left-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded flex items-center gap-1">
             <Tag className="h-3 w-3" /> {percentOff}% OFF
           </span>
         )}
