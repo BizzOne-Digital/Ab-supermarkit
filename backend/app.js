@@ -22,7 +22,7 @@ import faqRoutes from './routes/faqRoutes.js';
 import deliveryLinkRoutes from './routes/deliveryLinkRoutes.js';
 import contactRoutes from './routes/contactRoutes.js';
 import newsletterRoutes from './routes/newsletterRoutes.js';
-import uploadRoutes from './routes/uploadRoutes.js';
+import uploadRoutes, { serveUpload } from './routes/uploadRoutes.js';
 import cloverRoutes from './routes/cloverRoutes.js';
 import dashboardRoutes from './routes/dashboardRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
@@ -57,6 +57,11 @@ app.use(cookieParser());
 if (process.env.NODE_ENV !== 'production') {
   app.use(morgan('dev'));
 }
+
+// Image streaming is mounted before the rate limiter: pages can easily request dozens of
+// product images, and the resulting responses are aggressively browser-cached anyway
+// (Cache-Control: immutable), so there's no real abuse surface here.
+app.get('/api/uploads/:folder/:filename', serveUpload);
 
 // Rate limiting for the API surface
 const apiLimiter = rateLimit({

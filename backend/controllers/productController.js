@@ -1,6 +1,6 @@
 import Product from '../models/Product.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import { uploadImage, deleteImage } from '../services/cloudinaryService.js';
+import { uploadImage, deleteImage } from '../services/storedUploadService.js';
 import { paginate } from '../utils/apiFeatures.js';
 
 // @desc    List products with pagination/filter/search/sort
@@ -72,7 +72,7 @@ export const createProduct = asyncHandler(async (req, res) => {
   const productData = { ...req.body };
 
   if (req.files && req.files.length > 0) {
-    const uploads = await Promise.all(req.files.map((file) => uploadImage(file.buffer, 'ab-supermarket/products')));
+    const uploads = await Promise.all(req.files.map((file) => uploadImage(file, 'products')));
     productData.images = uploads.map((img, idx) => ({ ...img, isPrimary: idx === 0 }));
   }
 
@@ -92,11 +92,11 @@ export const updateProduct = asyncHandler(async (req, res) => {
   Object.assign(product, req.body);
 
   if (req.files && req.files.length > 0) {
-    // Delete old images from Cloudinary before replacing.
+    // Delete old stored images before replacing.
     await Promise.all(
       (product.images || []).map((img) => deleteImage(img.publicId).catch(() => null))
     );
-    const uploads = await Promise.all(req.files.map((file) => uploadImage(file.buffer, 'ab-supermarket/products')));
+    const uploads = await Promise.all(req.files.map((file) => uploadImage(file, 'products')));
     product.images = uploads.map((img, idx) => ({ ...img, isPrimary: idx === 0 }));
   }
 

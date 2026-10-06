@@ -1,6 +1,6 @@
 import Offer from '../models/Offer.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import { uploadImage, deleteImage } from '../services/cloudinaryService.js';
+import { uploadImage, deleteImage } from '../services/storedUploadService.js';
 
 export const getOffers = asyncHandler(async (req, res) => {
   const filter = req.query.all === 'true' ? {} : { isEnabled: true, expiryDate: { $gte: new Date() } };
@@ -11,7 +11,7 @@ export const getOffers = asyncHandler(async (req, res) => {
 export const createOffer = asyncHandler(async (req, res) => {
   const data = { ...req.body };
   if (req.file) {
-    data.image = await uploadImage(req.file.buffer, 'ab-supermarket/offers');
+    data.image = await uploadImage(req.file, 'offers');
   }
   const offer = await Offer.create(data);
   res.status(201).json({ success: true, offer });
@@ -24,7 +24,7 @@ export const updateOffer = asyncHandler(async (req, res) => {
   Object.assign(offer, req.body);
   if (req.file) {
     if (offer.image?.publicId) await deleteImage(offer.image.publicId).catch(() => null);
-    offer.image = await uploadImage(req.file.buffer, 'ab-supermarket/offers');
+    offer.image = await uploadImage(req.file, 'offers');
   }
   await offer.save();
   res.status(200).json({ success: true, offer });

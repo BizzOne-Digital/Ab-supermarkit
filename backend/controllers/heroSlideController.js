@@ -1,6 +1,6 @@
 import HeroSlide from '../models/HeroSlide.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import { uploadImage, deleteImage } from '../services/cloudinaryService.js';
+import { uploadImage, deleteImage } from '../services/storedUploadService.js';
 
 export const getHeroSlides = asyncHandler(async (req, res) => {
   const filter = req.query.all === 'true' ? {} : { isEnabled: true };
@@ -13,7 +13,7 @@ export const createHeroSlide = asyncHandler(async (req, res) => {
     return res.status(400).json({ success: false, message: 'Slide image is required' });
   }
   const data = { ...req.body };
-  data.image = await uploadImage(req.file.buffer, 'ab-supermarket/hero-slides');
+  data.image = await uploadImage(req.file, 'hero-slides');
   const slide = await HeroSlide.create(data);
   res.status(201).json({ success: true, slide });
 });
@@ -25,7 +25,7 @@ export const updateHeroSlide = asyncHandler(async (req, res) => {
   Object.assign(slide, req.body);
   if (req.file) {
     if (slide.image?.publicId) await deleteImage(slide.image.publicId).catch(() => null);
-    slide.image = await uploadImage(req.file.buffer, 'ab-supermarket/hero-slides');
+    slide.image = await uploadImage(req.file, 'hero-slides');
   }
   await slide.save();
   res.status(200).json({ success: true, slide });

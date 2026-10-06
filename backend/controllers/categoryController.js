@@ -1,6 +1,6 @@
 import Category from '../models/Category.js';
 import asyncHandler from '../utils/asyncHandler.js';
-import { uploadImage, deleteImage } from '../services/cloudinaryService.js';
+import { uploadImage, deleteImage } from '../services/storedUploadService.js';
 
 // @desc    List categories
 // @route   GET /api/categories
@@ -31,7 +31,7 @@ export const getCategory = asyncHandler(async (req, res) => {
 export const createCategory = asyncHandler(async (req, res) => {
   const data = { ...req.body };
   if (req.file) {
-    const img = await uploadImage(req.file.buffer, 'ab-supermarket/categories');
+    const img = await uploadImage(req.file, 'categories');
     data.image = img;
   }
   const category = await Category.create(data);
@@ -53,7 +53,7 @@ export const updateCategory = asyncHandler(async (req, res) => {
     if (category.image?.publicId) {
       await deleteImage(category.image.publicId).catch(() => null);
     }
-    category.image = await uploadImage(req.file.buffer, 'ab-supermarket/categories');
+    category.image = await uploadImage(req.file, 'categories');
   }
 
   await category.save();
