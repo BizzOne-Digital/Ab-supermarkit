@@ -20,6 +20,10 @@ export default function Shop() {
   const search = searchParams.get('search') || '';
   const sort = searchParams.get('sort') || 'name';
   const page = Number(searchParams.get('page')) || 1;
+  const minPrice = searchParams.get('minPrice') || '';
+  const maxPrice = searchParams.get('maxPrice') || '';
+  const [minPriceInput, setMinPriceInput] = useState(minPrice);
+  const [maxPriceInput, setMaxPriceInput] = useState(maxPrice);
 
   useEffect(() => {
     categoryService
@@ -33,6 +37,8 @@ export default function Shop() {
     const params = { page, limit: 12, sort };
     if (category) params.category = category;
     if (search) params.search = search;
+    if (minPrice) params.minPrice = minPrice;
+    if (maxPrice) params.maxPrice = maxPrice;
     productService
       .getProducts(params)
       .then((res) => {
@@ -43,7 +49,18 @@ export default function Shop() {
         setProducts([]);
       })
       .finally(() => setLoading(false));
-  }, [category, search, sort, page]);
+  }, [category, search, sort, page, minPrice, maxPrice]);
+
+  const applyPriceFilter = (e) => {
+    e.preventDefault();
+    const next = new URLSearchParams(searchParams);
+    if (minPriceInput) next.set('minPrice', minPriceInput);
+    else next.delete('minPrice');
+    if (maxPriceInput) next.set('maxPrice', maxPriceInput);
+    else next.delete('maxPrice');
+    next.delete('page');
+    setSearchParams(next);
+  };
 
   const updateParam = (key, value) => {
     const next = new URLSearchParams(searchParams);
@@ -96,6 +113,34 @@ export default function Shop() {
                 </li>
               ))}
             </ul>
+
+            <form onSubmit={applyPriceFilter} className="mt-6 pt-6 border-t border-charcoal/10">
+              <h3 className="font-heading text-lg text-black mb-3">Price Range</h3>
+              <div className="flex items-center gap-2">
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={minPriceInput}
+                  onChange={(e) => setMinPriceInput(e.target.value)}
+                  placeholder="Min"
+                  className="w-full border border-charcoal/20 rounded-md py-2 px-3 text-sm focus:outline-none focus:border-gold"
+                />
+                <span className="text-charcoal/40">–</span>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={maxPriceInput}
+                  onChange={(e) => setMaxPriceInput(e.target.value)}
+                  placeholder="Max"
+                  className="w-full border border-charcoal/20 rounded-md py-2 px-3 text-sm focus:outline-none focus:border-gold"
+                />
+              </div>
+              <button type="submit" className="btn-outline w-full justify-center text-sm py-2 mt-3">
+                Apply
+              </button>
+            </form>
           </div>
         </aside>
 

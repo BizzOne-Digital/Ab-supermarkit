@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Plus, Pencil, Trash2, X, Upload } from 'lucide-react';
+import { Plus, Pencil, Trash2, X, Upload, Search } from 'lucide-react';
 import * as productService from '../../services/productService';
 import * as categoryService from '../../services/categoryService';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -54,12 +54,15 @@ export default function Products() {
   const [files, setFiles] = useState([]);
   const [saving, setSaving] = useState(false);
   const [importing, setImporting] = useState(false);
+  const [search, setSearch] = useState('');
   const csvInputRef = useRef(null);
 
   const loadProducts = () => {
     setLoading(true);
+    const params = { page, limit: 10 };
+    if (search) params.search = search;
     productService
-      .getProducts({ page, limit: 10 })
+      .getProducts(params)
       .then((res) => {
         setProducts(res.products || []);
         setPagination(res.pagination || { page: 1, totalPages: 1 });
@@ -75,7 +78,12 @@ export default function Products() {
   useEffect(() => {
     loadProducts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page]);
+  }, [page, search]);
+
+  const onSearchSubmit = (e) => {
+    e.preventDefault();
+    if (page !== 1) setPage(1);
+  };
 
   const openCreate = () => {
     setEditing(null);
@@ -171,9 +179,9 @@ export default function Products() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <h1 className="font-heading text-2xl sm:text-3xl text-black">Products</h1>
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-wrap">
           <input ref={csvInputRef} type="file" accept=".csv" onChange={onCsvSelected} className="hidden" />
           <button
             onClick={() => csvInputRef.current?.click()}
@@ -188,6 +196,19 @@ export default function Products() {
           </button>
         </div>
       </div>
+
+      <form onSubmit={onSearchSubmit} className="relative mb-6 max-w-sm">
+        <input
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          type="text"
+          placeholder="Search products by name, SKU, brand..."
+          className="w-full border border-charcoal/20 rounded-md py-2.5 pl-3 pr-9 text-sm focus:outline-none focus:border-gold"
+        />
+        <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-charcoal/50 hover:text-gold-dark" aria-label="Search">
+          <Search className="h-4 w-4" />
+        </button>
+      </form>
 
       {loading ? (
         <LoadingSpinner full />
