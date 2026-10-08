@@ -9,3 +9,5 @@ yarn-error.log*
 .DS_Store
 *.log
 .vercel/
+public/product-images/
+public/*.zip
