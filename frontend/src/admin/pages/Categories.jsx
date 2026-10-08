@@ -4,6 +4,7 @@ import { Plus, Pencil, Trash2, X } from 'lucide-react';
 import * as categoryService from '../../services/categoryService';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
+import resolveImageUrl from '../../utils/resolveImageUrl';
 
 const emptyForm = { name: '', description: '', isEnabled: true, sortOrder: 0 };
 
@@ -74,7 +75,7 @@ export default function Categories() {
           {categories.map((c) => (
             <div key={c._id} className="bg-white rounded-lg shadow-card overflow-hidden">
               <div className="aspect-video bg-creme">
-                {c.image?.url && <img src={c.image.url} alt={c.name} className="h-full w-full object-cover" />}
+                {c.image?.url && <img src={resolveImageUrl(c.image.url)} alt={c.name} className="h-full w-full object-cover" />}
               </div>
               <div className="p-3">
                 <p className="font-heading text-black">{c.name}</p>

@@ -13,6 +13,7 @@ import * as faqService from '../services/faqService';
 import * as deliveryLinkService from '../services/deliveryLinkService';
 import * as newsletterService from '../services/newsletterService';
 import * as heroSlideService from '../services/heroSlideService';
+import resolveImageUrl from '../utils/resolveImageUrl';
 import * as settingsService from '../services/settingsService';
 
 import ProductCard from '../components/ProductCard';
@@ -263,7 +264,7 @@ export default function Home() {
                   {offers.slice(0, 4).map((o) => (
                     <div key={o._id} className="bg-white rounded-2xl overflow-hidden shadow-card">
                       <div className="aspect-video bg-creme">
-                        {o.image?.url && <img src={o.image.url} alt={o.heading} className="h-full w-full object-cover" />}
+                        {o.image?.url && <img src={resolveImageUrl(o.image.url)} alt={o.heading} className="h-full w-full object-cover" />}
                       </div>
                       <div className="p-4">
                         <p className="font-heading text-lg text-black">{o.heading}</p>

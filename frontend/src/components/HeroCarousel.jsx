@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
+import resolveImageUrl from '../utils/resolveImageUrl';
 
 const AUTO_ROTATE_MS = 6000;
 
@@ -26,7 +27,7 @@ export default function HeroCarousel({ slides }) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8 }}
           className="absolute inset-0 bg-cover bg-center"
-          style={{ backgroundImage: `url('${slide.image?.url}')` }}
+          style={{ backgroundImage: `url('${resolveImageUrl(slide.image?.url)}')` }}
         />
       </AnimatePresence>
       <div className="absolute inset-0 bg-black/30" />

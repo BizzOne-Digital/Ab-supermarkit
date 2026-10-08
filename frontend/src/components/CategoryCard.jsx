@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
+import resolveImageUrl from '../utils/resolveImageUrl';
 
 export default function CategoryCard({ category }) {
   return (
@@ -19,7 +20,7 @@ export default function CategoryCard({ category }) {
         <div className="aspect-square w-full bg-creme overflow-hidden">
           {category.image?.url ? (
             <img
-              src={category.image.url}
+              src={resolveImageUrl(category.image.url)}
               alt={category.name}
               className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
             />

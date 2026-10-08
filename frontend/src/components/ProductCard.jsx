@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import resolveImageUrl from '../utils/resolveImageUrl';
 
 export default function ProductCard({ product }) {
   const { addItem } = useCart();
-  const image = product.images?.[0]?.url;
+  const image = resolveImageUrl(product.images?.[0]?.url);
   const price = product.isOnSale && product.salePrice ? product.salePrice : product.regularPrice;
 
   return (

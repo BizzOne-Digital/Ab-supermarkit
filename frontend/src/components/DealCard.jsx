@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Tag } from 'lucide-react';
+import resolveImageUrl from '../utils/resolveImageUrl';
 
 export default function DealCard({ deal, compact = false }) {
   const product = deal.product;
   if (!product) return null;
-  const image = product.images?.[0]?.url;
+  const image = resolveImageUrl(product.images?.[0]?.url);
   const percentOff = Math.round(((product.regularPrice - deal.salePrice) / product.regularPrice) * 100);
 
   if (compact) {

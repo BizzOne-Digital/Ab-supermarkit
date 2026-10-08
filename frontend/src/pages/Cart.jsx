@@ -5,6 +5,7 @@ import { Trash2, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import QuantitySelector from '../components/QuantitySelector';
 import EmptyState from '../components/EmptyState';
+import resolveImageUrl from '../utils/resolveImageUrl';
 
 export default function Cart() {
   const { items, updateQty, removeItem, subtotal, coupon, discount, applyCoupon, removeCoupon } = useCart();
@@ -52,7 +53,7 @@ export default function Cart() {
           {items.map((item) => (
             <div key={item._id} className="flex items-center gap-4 bg-white rounded-lg shadow-card p-4">
               <div className="h-20 w-20 bg-creme rounded-md overflow-hidden shrink-0">
-                {item.image && <img src={item.image} alt={item.name} className="h-full w-full object-cover" />}
+                {item.image && <img src={resolveImageUrl(item.image)} alt={item.name} className="h-full w-full object-cover" />}
               </div>
               <div className="flex-1 min-w-0">
                 <Link to={`/shop/${item.slug}`} className="font-heading text-black hover:text-gold-dark line-clamp-1">

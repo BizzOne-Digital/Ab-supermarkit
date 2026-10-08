@@ -7,6 +7,7 @@ import { useCart } from '../context/CartContext';
 import QuantitySelector from '../components/QuantitySelector';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
+import resolveImageUrl from '../utils/resolveImageUrl';
 
 export default function ProductDetails() {
   const { slug } = useParams();
@@ -43,7 +44,7 @@ export default function ProductDetails() {
         <div>
           <div className="aspect-square bg-creme rounded-lg overflow-hidden mb-4">
             {images[activeImage]?.url ? (
-              <img src={images[activeImage].url} alt={product.name} className="h-full w-full object-cover" />
+              <img src={resolveImageUrl(images[activeImage].url)} alt={product.name} className="h-full w-full object-cover" />
             ) : (
               <div className="h-full w-full flex items-center justify-center text-charcoal/30">No image</div>
             )}
@@ -56,7 +57,7 @@ export default function ProductDetails() {
                   onClick={() => setActiveImage(idx)}
                   className={`h-16 w-16 rounded-md overflow-hidden border-2 ${activeImage === idx ? 'border-gold' : 'border-transparent'}`}
                 >
-                  {img.url && <img src={img.url} alt="" className="h-full w-full object-cover" />}
+                  {img.url && <img src={resolveImageUrl(img.url)} alt="" className="h-full w-full object-cover" />}
                 </button>
               ))}
             </div>

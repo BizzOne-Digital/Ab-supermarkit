@@ -4,6 +4,7 @@ import { Plus, Trash2, X } from 'lucide-react';
 import * as offerService from '../../services/offerService';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
+import resolveImageUrl from '../../utils/resolveImageUrl';
 
 const emptyForm = { heading: '', discountText: '', expiryDate: '', isEnabled: true };
 
@@ -65,7 +66,7 @@ export default function Offers() {
           {offers.map((o) => (
             <div key={o._id} className="bg-white rounded-lg shadow-card overflow-hidden">
               <div className="aspect-video bg-creme">
-                {o.image?.url && <img src={o.image.url} alt={o.heading} className="h-full w-full object-cover" />}
+                {o.image?.url && <img src={resolveImageUrl(o.image.url)} alt={o.heading} className="h-full w-full object-cover" />}
               </div>
               <div className="p-4">
                 <p className="font-heading text-black">{o.heading}</p>

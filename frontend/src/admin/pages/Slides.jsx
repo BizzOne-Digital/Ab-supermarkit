@@ -4,6 +4,7 @@ import { Plus, Trash2, X, Pencil } from 'lucide-react';
 import * as heroSlideService from '../../services/heroSlideService';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
+import resolveImageUrl from '../../utils/resolveImageUrl';
 
 const emptyForm = { heading: '', subheading: '', ctaLabel: '', ctaLink: '', sortOrder: 0, isEnabled: true };
 
@@ -120,7 +121,7 @@ export default function Slides() {
             .map((s) => (
               <div key={s._id} className="bg-white rounded-lg shadow-card overflow-hidden">
                 <div className="aspect-video bg-creme">
-                  {s.image?.url && <img src={s.image.url} alt={s.heading} className="h-full w-full object-cover" />}
+                  {s.image?.url && <img src={resolveImageUrl(s.image.url)} alt={s.heading} className="h-full w-full object-cover" />}
                 </div>
                 <div className="p-4">
                   <p className="font-heading text-black">{s.heading || <span className="text-charcoal/40">No heading</span>}</p>

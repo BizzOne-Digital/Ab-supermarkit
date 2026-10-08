@@ -3,6 +3,7 @@ import toast from 'react-hot-toast';
 import { Plus, Pencil, Trash2, X, Upload, Search } from 'lucide-react';
 import * as productService from '../../services/productService';
 import * as categoryService from '../../services/categoryService';
+import resolveImageUrl from '../../utils/resolveImageUrl';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import Pagination from '../../components/Pagination';
@@ -233,7 +234,7 @@ export default function Products() {
                 <tr key={p._id} className="border-b border-charcoal/5">
                   <td className="py-3 px-4">
                     <div className="h-10 w-10 bg-creme rounded overflow-hidden">
-                      {p.images?.[0]?.url && <img src={p.images[0].url} alt="" className="h-full w-full object-cover" />}
+                      {p.images?.[0]?.url && <img src={resolveImageUrl(p.images[0].url)} alt="" className="h-full w-full object-cover" />}
                     </div>
                   </td>
                   <td className="py-3 px-4">{p.name}</td>
