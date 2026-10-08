@@ -35,7 +35,10 @@ const app = express();
 app.set('trust proxy', 1);
 
 // Security & core middleware
-app.use(helmet());
+// crossOriginResourcePolicy defaults to "same-origin", which blocks the frontend
+// (a different Vercel domain) from loading /api/uploads/* images. Images aren't
+// sensitive like API responses, so relax it to allow cross-origin loads.
+app.use(helmet({ crossOriginResourcePolicy: { policy: 'cross-origin' } }));
 
 const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:3000')
   .split(',')
