@@ -127,7 +127,7 @@ export default function Home() {
             {heroSlides.length > 0 ? (
               <HeroCarousel slides={heroSlides} />
             ) : (
-              <div className="relative bg-black text-ivory overflow-hidden rounded-2xl lg:rounded-none lg:-ml-6 lg:-mr-8 h-[420px] sm:h-[480px] flex items-center justify-center px-6">
+              <div className="relative bg-ivory text-black overflow-hidden rounded-2xl lg:rounded-none lg:-ml-6 lg:-mr-8 h-[420px] sm:h-[480px] flex items-center justify-center px-6 border border-gold/10">
                 <video
                   className="absolute inset-0 h-full w-full object-cover"
                   src="/hero.mp4"
@@ -136,15 +136,15 @@ export default function Home() {
                   muted
                   playsInline
                 />
-                <div className="absolute inset-0 bg-black/40" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ivory via-ivory/60 to-ivory/10" />
                 <div className="relative max-w-xl text-center z-10">
                   <motion.h1
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6 }}
-                    className="font-heading text-3xl sm:text-5xl font-bold leading-tight"
+                    className="font-heading text-3xl sm:text-5xl font-bold leading-tight text-black"
                   >
-                    <span className="block text-gold">Best Quality,</span>
+                    <span className="block text-gold-dark">Best Quality,</span>
                     <span className="block">Best Price,</span>
                     <span className="block">Best Service</span>
                   </motion.h1>
@@ -152,7 +152,7 @@ export default function Home() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.6, delay: 0.15 }}
-                    className="mt-4 text-ivory/70 text-base sm:text-lg"
+                    className="mt-4 text-charcoal/70 text-base sm:text-lg"
                   >
                     Your neighbourhood destination for fresh groceries, everyday essentials, international favourites and café delights.
                   </motion.p>
@@ -163,7 +163,7 @@ export default function Home() {
                     className="mt-6 flex flex-wrap items-center justify-center gap-4"
                   >
                     <Link to="/shop" className="btn-gold">Shop Groceries</Link>
-                    <Link to="/about" className="btn-outline border-ivory/40 text-ivory hover:bg-ivory hover:text-black">Explore Our Store</Link>
+                    <Link to="/about" className="btn-outline border-charcoal/30 text-black hover:bg-black hover:text-ivory">Explore Our Store</Link>
                   </motion.div>
                 </div>
               </div>
@@ -179,13 +179,13 @@ export default function Home() {
                 }, null);
                 const pct = best?.product?.regularPrice ? Math.round(((best.product.regularPrice - best.salePrice) / best.product.regularPrice) * 100) : null;
                 return (
-                  <Link to="/shop?sale=true" className="group bg-black rounded-2xl p-6 flex items-center gap-4 hover:shadow-xl transition-shadow">
-                    <div className="h-14 w-14 rounded-full bg-gold/10 flex items-center justify-center shrink-0">
-                      <Percent className="h-6 w-6 text-gold" />
+                  <Link to="/shop?sale=true" className="group bg-creme rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
+                    <div className="h-14 w-14 rounded-full bg-white flex items-center justify-center shrink-0">
+                      <Percent className="h-6 w-6 text-gold-dark" />
                     </div>
                     <div>
-                      <p className="text-ivory/60 text-xs uppercase tracking-wide">Weekly Deals</p>
-                      <p className="font-heading text-xl text-gold">{pct ? `Up to ${pct}% Off` : 'Shop Deals'}</p>
+                      <p className="text-charcoal/50 text-xs uppercase tracking-wide">Weekly Deals</p>
+                      <p className="font-heading text-xl text-black">{pct ? `Up to ${pct}% Off` : 'Shop Deals'}</p>
                     </div>
                   </Link>
                 );
@@ -237,19 +237,19 @@ export default function Home() {
 
       {/* Deals & Offers */}
       {(deals.length > 0 || offers.length > 0) && (
-        <Section className="section-py bg-black">
+        <Section className="section-py bg-creme">
           <div className="container-app grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             {deals.length > 0 && (
               <div className={offers.length > 0 ? 'lg:col-span-1' : 'lg:col-span-3'}>
                 <div className="flex items-center justify-between mb-5">
-                  <h2 className="font-heading text-2xl text-gold flex items-center gap-2">
-                    <Flame className="h-5 w-5" /> Weekly Deals
+                  <h2 className="font-heading text-2xl text-black flex items-center gap-2">
+                    <Flame className="h-5 w-5 text-gold-dark" /> Weekly Deals
                   </h2>
-                  <Link to="/shop?sale=true" className="text-xs font-semibold text-ivory/60 hover:text-gold">
+                  <Link to="/shop?sale=true" className="text-xs font-semibold text-charcoal/50 hover:text-gold-dark">
                     View all
                   </Link>
                 </div>
-                <div className="bg-charcoal/40 rounded-2xl p-6 space-y-4">
+                <div className="bg-white rounded-2xl p-6 space-y-4 shadow-card">
                   {deals.slice(0, 4).map((d) => (
                     <DealCard key={d._id} deal={d} compact />
                   ))}
@@ -259,7 +259,7 @@ export default function Home() {
 
             {offers.length > 0 && (
               <div className={deals.length > 0 ? 'lg:col-span-2' : 'lg:col-span-3'}>
-                <h2 className="font-heading text-2xl text-gold mb-5">Special Offers</h2>
+                <h2 className="font-heading text-2xl text-black mb-5">Special Offers</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {offers.slice(0, 4).map((o) => (
                     <div key={o._id} className="bg-white rounded-2xl overflow-hidden shadow-card">

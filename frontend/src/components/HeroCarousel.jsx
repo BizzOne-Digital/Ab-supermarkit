@@ -18,7 +18,7 @@ export default function HeroCarousel({ slides }) {
   const slide = slides[index];
 
   return (
-    <div className="relative bg-black text-ivory overflow-hidden rounded-2xl lg:rounded-none lg:-ml-6 lg:-mr-8 h-[420px] sm:h-[480px]">
+    <div className="relative bg-ivory text-black overflow-hidden rounded-2xl lg:rounded-none lg:-ml-6 lg:-mr-8 h-[420px] sm:h-[480px] border border-gold/10">
       <AnimatePresence mode="wait">
         <motion.div
           key={slide._id}
@@ -30,9 +30,9 @@ export default function HeroCarousel({ slides }) {
           style={{ backgroundImage: `url('${resolveImageUrl(slide.image?.url)}')` }}
         />
       </AnimatePresence>
-      <div className="absolute inset-0 bg-black/30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/70 to-transparent" />
 
-      <div className="relative z-10 h-full flex items-center justify-center px-6">
+      <div className="relative z-10 h-full flex items-center justify-start px-6 sm:px-12">
         <AnimatePresence mode="wait">
           <motion.div
             key={slide._id}
@@ -40,14 +40,14 @@ export default function HeroCarousel({ slides }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.6 }}
-            className="max-w-xl text-center"
+            className="max-w-xl text-left"
           >
             {slide.heading && (
-              <h1 className="font-heading text-3xl sm:text-5xl font-bold leading-tight text-gold">{slide.heading}</h1>
+              <h1 className="font-heading text-3xl sm:text-5xl font-bold leading-tight text-black">{slide.heading}</h1>
             )}
-            {slide.subheading && <p className="mt-4 text-ivory/70 text-base sm:text-lg">{slide.subheading}</p>}
+            {slide.subheading && <p className="mt-4 text-charcoal/70 text-base sm:text-lg">{slide.subheading}</p>}
             {slide.ctaLabel && (
-              <div className="mt-6 flex items-center justify-center gap-4">
+              <div className="mt-6 flex items-center gap-4">
                 <Link to={slide.ctaLink || '/shop'} className="btn-gold">
                   {slide.ctaLabel}
                 </Link>
@@ -64,7 +64,7 @@ export default function HeroCarousel({ slides }) {
               key={s._id}
               onClick={() => setIndex(i)}
               aria-label={`Go to slide ${i + 1}`}
-              className={`h-2 rounded-full transition-all ${i === index ? 'w-6 bg-gold' : 'w-2 bg-ivory/50 hover:bg-ivory/80'}`}
+              className={`h-2 rounded-full transition-all ${i === index ? 'w-6 bg-gold' : 'w-2 bg-charcoal/30 hover:bg-charcoal/50'}`}
             />
           ))}
         </div>

@@ -10,12 +10,12 @@ const values = [
 export default function About() {
   return (
     <div>
-      <section className="bg-black text-ivory section-py">
+      <section className="bg-creme text-black section-py">
         <div className="container-app text-center">
           <h1 className="font-heading text-4xl sm:text-5xl mb-4">
-            About <span className="text-gold">AB&apos;s Supermarket</span>
+            About <span className="text-gold-dark">AB&apos;s Supermarket</span>
           </h1>
-          <p className="text-ivory/70 max-w-2xl mx-auto text-lg">
+          <p className="text-charcoal/70 max-w-2xl mx-auto text-lg">
             A trusted grocery destination built on quality, community, and everyday value.
           </p>
         </div>
