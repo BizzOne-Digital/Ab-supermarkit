@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import * as orderService from '../services/orderService';
 import * as settingsService from '../services/settingsService';
+import { suggestDomainFix } from '../utils/validateEmail';
 import EmptyState from '../components/EmptyState';
 
 const TAX_RATE = 0.13;
@@ -119,6 +120,10 @@ export default function Checkout() {
                   {...register('email', {
                     required: 'Email is required',
                     pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address' },
+                    validate: (value) => {
+                      const suggestion = suggestDomainFix(value);
+                      return suggestion ? `Did you mean "${value.slice(0, value.lastIndexOf('@') + 1)}${suggestion}"?` : true;
+                    },
                   })}
                   className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold"
                 />

@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import * as contactService from '../services/contactService';
+import { suggestDomainFix } from '../utils/validateEmail';
 
 export default function Contact() {
   const {
@@ -70,6 +71,10 @@ export default function Contact() {
               {...register('email', {
                 required: 'Email is required',
                 pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address' },
+                validate: (value) => {
+                  const suggestion = suggestDomainFix(value);
+                  return suggestion ? `Did you mean "${value.slice(0, value.lastIndexOf('@') + 1)}${suggestion}"?` : true;
+                },
               })}
               className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold"
             />
