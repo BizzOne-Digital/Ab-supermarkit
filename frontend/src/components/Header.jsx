@@ -7,6 +7,11 @@ import { useCart } from '../context/CartContext';
 import * as categoryService from '../services/categoryService';
 import * as deliveryLinkService from '../services/deliveryLinkService';
 
+const deliveryLogos = {
+  DoorDash: { src: '/doordash-transparent.png', label: 'DoorDash', width: 'w-[72px]' },
+  SkipTheDishes: { src: '/skip-the-dishes-transparent.png', label: 'Skip the Dishes', width: 'w-[56px]' },
+  UberEats: { src: '/uber-eats-transparent.png', label: 'Uber Eats', width: 'w-[48px]' },
+};
 const navLinks = [
   { to: '/', label: 'Home' },
   { to: '/about', label: 'About Us' },
@@ -59,9 +64,19 @@ export default function Header() {
                 href={link.url}
                 target="_blank"
                 rel="noreferrer"
-                className="font-semibold px-2 py-0.5 rounded bg-black/10 hover:bg-black/20 transition-colors"
+                aria-label={`Order on ${deliveryLogos[link.platform]?.label || link.platform}`}
+                title={deliveryLogos[link.platform]?.label || link.platform}
+                className="flex h-10 items-center justify-center rounded-md bg-black px-2 py-1 hover:bg-charcoal transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black"
               >
-                {link.platform}
+                {deliveryLogos[link.platform] ? (
+                  <img
+                    src={deliveryLogos[link.platform].src}
+                    alt={deliveryLogos[link.platform].label}
+                    className={`h-8 ${deliveryLogos[link.platform].width} object-contain`}
+                  />
+                ) : (
+                  <span className="font-semibold text-ivory">{link.platform}</span>
+                )}
               </a>
             ))}
           </div>
