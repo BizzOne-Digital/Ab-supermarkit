@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { SlidersHorizontal, X } from 'lucide-react';
+import { SlidersHorizontal, X, Search } from 'lucide-react';
 import * as productService from '../services/productService';
 import * as categoryService from '../services/categoryService';
 import ProductCard from '../components/ProductCard';
@@ -25,6 +25,12 @@ export default function Shop() {
   const sale = searchParams.get('sale') || '';
   const [minPriceInput, setMinPriceInput] = useState(minPrice);
   const [maxPriceInput, setMaxPriceInput] = useState(maxPrice);
+  const [searchInput, setSearchInput] = useState(search);
+
+  const onSearchSubmit = (e) => {
+    e.preventDefault();
+    updateParam('search', searchInput.trim());
+  };
 
   useEffect(() => {
     categoryService
@@ -147,7 +153,19 @@ export default function Shop() {
         </aside>
 
         <div>
-          <div className="flex items-center justify-end mb-6">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6">
+            <form onSubmit={onSearchSubmit} className="relative flex-1 max-w-sm">
+              <input
+                type="text"
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                placeholder="Search products..."
+                className="w-full border border-charcoal/20 rounded-md py-2 pl-9 pr-3 text-sm focus:outline-none focus:border-gold"
+              />
+              <button type="submit" aria-label="Search" className="absolute left-2.5 top-1/2 -translate-y-1/2 text-charcoal/40 hover:text-gold-dark">
+                <Search className="h-4 w-4" />
+              </button>
+            </form>
             <select
               value={sort}
               onChange={(e) => updateParam('sort', e.target.value)}
