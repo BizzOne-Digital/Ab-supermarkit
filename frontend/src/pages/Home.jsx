@@ -341,18 +341,18 @@ export default function Home() {
             <Link to="/about" className="link-underline font-semibold text-gold-dark">Read our story</Link>
           </div>
           <div
-            className="aspect-video bg-black rounded-lg bg-cover bg-center"
+            className="aspect-video bg-creme rounded-lg bg-cover bg-center border border-gold/10"
             style={{ backgroundImage: "url('/store.png')" }}
           />
         </div>
       </Section>
 
       {/* Café Section */}
-      <Section className="section-py bg-black text-ivory">
+      <Section className="section-py bg-ivory">
         <div className="container-app text-center max-w-2xl mx-auto">
-          <Coffee className="h-10 w-10 text-gold mx-auto mb-4" />
-          <h2 className="font-heading text-3xl sm:text-4xl mb-4">Visit Our In-Store Café</h2>
-          <p className="text-ivory/70">
+          <Coffee className="h-10 w-10 text-gold-dark mx-auto mb-4" />
+          <h2 className="font-heading text-3xl sm:text-4xl text-black mb-4">Visit Our In-Store Café</h2>
+          <p className="text-charcoal/70">
             Take a break while you shop — enjoy fresh coffee, pastries, and light bites at our in-store café.
           </p>
         </div>
@@ -387,10 +387,10 @@ export default function Home() {
       )}
 
       {/* Newsletter */}
-      <Section className="section-py bg-black">
+      <Section className="section-py bg-creme">
         <div className="container-app text-center max-w-xl mx-auto">
-          <h2 className="font-heading text-3xl text-ivory mb-3">Get Deals in Your Inbox</h2>
-          <p className="text-ivory/60 mb-6">Subscribe for weekly offers and new arrivals.</p>
+          <h2 className="font-heading text-3xl text-black mb-3">Get Deals in Your Inbox</h2>
+          <p className="text-charcoal/60 mb-6">Subscribe for weekly offers and new arrivals.</p>
           <form onSubmit={onSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"
@@ -398,7 +398,7 @@ export default function Home() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Your email address"
-              className="flex-1 rounded-md py-3 px-4 text-sm bg-charcoal text-ivory placeholder:text-ivory/40 border border-gold/20 focus:outline-none focus:border-gold"
+              className="flex-1 rounded-md py-3 px-4 text-sm bg-white text-black placeholder:text-charcoal/40 border border-charcoal/15 focus:outline-none focus:border-gold"
             />
             <button type="submit" className="btn-gold">
               <Send className="h-4 w-4" /> Subscribe

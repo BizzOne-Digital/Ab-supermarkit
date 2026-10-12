@@ -38,7 +38,7 @@ export default function About() {
           initial={{ opacity: 0, x: 20 }}
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
-          className="aspect-video bg-black rounded-lg bg-cover bg-center"
+          className="aspect-video bg-creme rounded-lg bg-cover bg-center border border-gold/10"
           style={{ backgroundImage: "url('/store.png')" }}
         />
       </section>
