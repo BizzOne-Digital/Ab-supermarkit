@@ -23,10 +23,22 @@ export function CartProvider({ children }) {
   }, [items, coupon]);
 
   const addItem = useCallback((product, qty = 1) => {
+    const stock = Number.isFinite(product.stockQuantity) ? product.stockQuantity : Infinity;
+    if (stock <= 0) {
+      toast.error(`${product.name} is out of stock`);
+      return;
+    }
+
+    let clamped = false;
     setItems((prev) => {
       const existing = prev.find((i) => i._id === product._id);
+      const currentQty = existing?.qty || 0;
+      const wanted = currentQty + qty;
+      const allowed = Math.min(wanted, stock);
+      clamped = allowed < wanted;
+
       if (existing) {
-        return prev.map((i) => (i._id === product._id ? { ...i, qty: i.qty + qty } : i));
+        return prev.map((i) => (i._id === product._id ? { ...i, qty: allowed } : i));
       }
       const price = product.isOnSale && product.salePrice ? product.salePrice : product.regularPrice;
       return [
@@ -37,11 +49,16 @@ export function CartProvider({ children }) {
           slug: product.slug,
           price,
           image: product.images?.[0]?.url || '',
-          qty,
+          qty: allowed,
         },
       ];
     });
-    toast.success(`${product.name} added to cart`);
+
+    if (clamped) {
+      toast.error(`Only ${stock} of ${product.name} in stock`);
+    } else {
+      toast.success(`${product.name} added to cart`);
+    }
   }, []);
 
   const removeItem = useCallback((id) => {

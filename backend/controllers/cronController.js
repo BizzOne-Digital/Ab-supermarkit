@@ -1,4 +1,6 @@
 import User from '../models/User.js';
+import Deal from '../models/Deal.js';
+import Product from '../models/Product.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { sendBirthdayAlert } from '../services/emailService.js';
 
@@ -36,4 +38,33 @@ export const checkBirthdays = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json({ success: true, notified: todaysBirthdays.length });
+});
+
+// @desc    Clear salePrice on products whose deal has passed its endDate or been
+//          deactivated, so an expired deal stops discounting the product everywhere
+//          (cart, product page, shop) instead of being stuck at the sale price forever.
+// @route   GET /api/cron/expire-deals
+// @access  Protected by CRON_SECRET (query param or header) when configured
+export const expireDeals = asyncHandler(async (req, res) => {
+  const secret = process.env.CRON_SECRET;
+  if (secret) {
+    const provided = req.headers['x-cron-secret'] || req.query.secret;
+    if (provided !== secret) {
+      return res.status(401).json({ success: false, message: 'Unauthorized' });
+    }
+  }
+
+  const now = new Date();
+  const expired = await Deal.find({
+    $or: [{ isActive: false }, { endDate: { $lt: now } }],
+  });
+
+  if (expired.length > 0) {
+    await Product.updateMany(
+      { _id: { $in: expired.map((d) => d.product) } },
+      { $unset: { salePrice: '' } }
+    );
+  }
+
+  res.status(200).json({ success: true, expired: expired.length });
 });

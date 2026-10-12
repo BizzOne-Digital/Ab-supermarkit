@@ -6,7 +6,7 @@ import * as productService from '../../services/productService';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 
-const emptyForm = { product: '', salePrice: '', endDate: '', isActive: true };
+const emptyForm = { product: '', salePrice: '', startDate: '', endDate: '', isActive: true };
 
 export default function Deals() {
   const [deals, setDeals] = useState([]);
@@ -29,7 +29,9 @@ export default function Deals() {
     e.preventDefault();
     setSaving(true);
     try {
-      await dealService.createDeal(form);
+      const payload = { ...form };
+      if (!payload.startDate) delete payload.startDate;
+      await dealService.createDeal(payload);
       toast.success('Deal created');
       setModalOpen(false);
       setForm(emptyForm);
@@ -77,6 +79,7 @@ export default function Deals() {
                 <th className="py-3 px-4">Product</th>
                 <th className="py-3 px-4">Regular Price</th>
                 <th className="py-3 px-4">Sale Price</th>
+                <th className="py-3 px-4">Starts</th>
                 <th className="py-3 px-4">Ends</th>
                 <th className="py-3 px-4">Active</th>
                 <th className="py-3 px-4 text-right">Actions</th>
@@ -90,6 +93,7 @@ export default function Deals() {
                     {d.product?.regularPrice ? `$${Number(d.product.regularPrice).toFixed(2)}` : '—'}
                   </td>
                   <td className="py-3 px-4 font-semibold text-gold-dark">${Number(d.salePrice).toFixed(2)}</td>
+                  <td className="py-3 px-4">{new Date(d.startDate).toLocaleDateString()}</td>
                   <td className="py-3 px-4">{new Date(d.endDate).toLocaleDateString()}</td>
                   <td className="py-3 px-4">
                     <button onClick={() => toggleActive(d)} className={`text-xs px-2 py-0.5 rounded ${d.isActive ? 'bg-green-100 text-green-700' : 'bg-charcoal/10 text-charcoal/60'}`}>
@@ -142,9 +146,16 @@ export default function Deals() {
                   return null;
                 })()}
               </div>
-              <div>
-                <label className="text-sm font-medium text-charcoal/70">End Date</label>
-                <input type="date" required value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2 px-3" />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="text-sm font-medium text-charcoal/70">Start Date</label>
+                  <input type="date" value={form.startDate} onChange={(e) => setForm({ ...form, startDate: e.target.value })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2 px-3" />
+                  <p className="text-xs text-charcoal/40 mt-1">Leave blank to start now</p>
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-charcoal/70">End Date</label>
+                  <input type="date" required value={form.endDate} onChange={(e) => setForm({ ...form, endDate: e.target.value })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2 px-3" />
+                </div>
               </div>
               <div className="flex justify-end gap-3">
                 <button type="button" onClick={() => setModalOpen(false)} className="btn-outline text-sm py-2 px-4">Cancel</button>

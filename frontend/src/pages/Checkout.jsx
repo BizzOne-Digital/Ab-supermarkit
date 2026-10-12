@@ -114,12 +114,26 @@ export default function Checkout() {
               </div>
               <div>
                 <label className="text-sm font-medium text-charcoal/70">Email</label>
-                <input type="email" {...register('email', { required: 'Email is required' })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold" />
+                <input
+                  type="email"
+                  {...register('email', {
+                    required: 'Email is required',
+                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Enter a valid email address' },
+                  })}
+                  className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold"
+                />
                 {errors.email && <p className="text-red-600 text-xs mt-1">{errors.email.message}</p>}
               </div>
               <div className="sm:col-span-2">
                 <label className="text-sm font-medium text-charcoal/70">Phone</label>
-                <input {...register('phone', { required: 'Phone is required' })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold" />
+                <input
+                  type="tel"
+                  {...register('phone', {
+                    required: 'Phone is required',
+                    pattern: { value: /^[0-9+\-\s()]{7,15}$/, message: 'Enter a valid phone number' },
+                  })}
+                  className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold"
+                />
                 {errors.phone && <p className="text-red-600 text-xs mt-1">{errors.phone.message}</p>}
               </div>
             </div>

@@ -22,6 +22,7 @@ export default function Shop() {
   const page = Number(searchParams.get('page')) || 1;
   const minPrice = searchParams.get('minPrice') || '';
   const maxPrice = searchParams.get('maxPrice') || '';
+  const sale = searchParams.get('sale') || '';
   const [minPriceInput, setMinPriceInput] = useState(minPrice);
   const [maxPriceInput, setMaxPriceInput] = useState(maxPrice);
 
@@ -39,6 +40,7 @@ export default function Shop() {
     if (search) params.search = search;
     if (minPrice) params.minPrice = minPrice;
     if (maxPrice) params.maxPrice = maxPrice;
+    if (sale) params.sale = sale;
     productService
       .getProducts(params)
       .then((res) => {
@@ -49,7 +51,7 @@ export default function Shop() {
         setProducts([]);
       })
       .finally(() => setLoading(false));
-  }, [category, search, sort, page, minPrice, maxPrice]);
+  }, [category, search, sort, page, minPrice, maxPrice, sale]);
 
   const applyPriceFilter = (e) => {
     e.preventDefault();
@@ -74,7 +76,7 @@ export default function Shop() {
     <div className="container-app section-py">
       <h1 className="font-heading text-3xl sm:text-4xl text-black mb-2">Shop</h1>
       <p className="text-charcoal/60 mb-8">
-        {search ? `Results for "${search}"` : 'Browse our full range of premium groceries.'}
+        {search ? `Results for "${search}"` : sale ? 'This week\'s deals and discounted products.' : 'Browse our full range of premium groceries.'}
       </p>
 
       <button

@@ -239,7 +239,17 @@ export default function Products() {
                   </td>
                   <td className="py-3 px-4">{p.name}</td>
                   <td className="py-3 px-4">{p.category?.name || '—'}</td>
-                  <td className="py-3 px-4">${Number(p.regularPrice).toFixed(2)}</td>
+                  <td className="py-3 px-4">
+                    {p.isOnSale ? (
+                      <span className="flex items-center gap-2">
+                        <span className="text-gold-dark font-semibold">${Number(p.salePrice).toFixed(2)}</span>
+                        <span className="text-charcoal/40 line-through text-xs">${Number(p.regularPrice).toFixed(2)}</span>
+                        <span className="text-[10px] font-bold bg-red-600 text-white px-1.5 py-0.5 rounded">DEAL</span>
+                      </span>
+                    ) : (
+                      `$${Number(p.regularPrice).toFixed(2)}`
+                    )}
+                  </td>
                   <td className="py-3 px-4">{p.stockQuantity}</td>
                   <td className="py-3 px-4">
                     <span className={`text-xs px-2 py-0.5 rounded ${p.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-charcoal/10 text-charcoal/60'}`}>

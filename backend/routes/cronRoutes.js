@@ -1,8 +1,9 @@
 import express from 'express';
-import { checkBirthdays } from '../controllers/cronController.js';
+import { checkBirthdays, expireDeals } from '../controllers/cronController.js';
 
 const router = express.Router();
 
 router.get('/birthdays', checkBirthdays);
+router.get('/expire-deals', expireDeals);
 
 export default router;
