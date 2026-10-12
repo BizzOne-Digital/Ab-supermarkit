@@ -237,7 +237,7 @@ export default function Home() {
 
       {/* Deals & Offers */}
       {(deals.length > 0 || offers.length > 0) && (
-        <Section className="section-py bg-creme">
+        <Section className="section-py bg-gold/10 border-y border-gold/20">
           <div className="container-app grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
             {deals.length > 0 && (
               <div className={offers.length > 0 ? 'lg:col-span-1' : 'lg:col-span-3'}>
