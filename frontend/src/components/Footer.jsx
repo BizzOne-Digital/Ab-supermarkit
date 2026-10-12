@@ -5,6 +5,7 @@ import { Facebook, Instagram, MapPin, Phone, Mail, Send } from 'lucide-react';
 import * as deliveryLinkService from '../services/deliveryLinkService';
 import * as newsletterService from '../services/newsletterService';
 import * as settingsService from '../services/settingsService';
+import { DELIVERY_PLATFORM_LOGOS } from '../utils/deliveryPlatforms';
 
 export default function Footer() {
   const [deliveryLinks, setDeliveryLinks] = useState([]);
@@ -81,16 +82,21 @@ export default function Footer() {
           {deliveryLinks.length > 0 && (
             <div className="mt-5">
               <h5 className="text-sm font-semibold text-gold-dark mb-2">Order Delivery</h5>
-              <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap gap-2">
                 {deliveryLinks.map((link) => (
                   <a
                     key={link._id}
                     href={link.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-charcoal/70 hover:text-gold-dark text-sm transition-colors"
+                    aria-label={link.platform}
+                    className="flex items-center justify-center h-10 px-3 rounded-md bg-white border border-charcoal/10 hover:border-gold transition-colors"
                   >
-                    {link.platform}
+                    {DELIVERY_PLATFORM_LOGOS[link.platform] ? (
+                      <img src={DELIVERY_PLATFORM_LOGOS[link.platform]} alt={link.platform} className="h-5 w-auto object-contain" />
+                    ) : (
+                      <span className="text-charcoal/70 text-sm">{link.platform}</span>
+                    )}
                   </a>
                 ))}
               </div>

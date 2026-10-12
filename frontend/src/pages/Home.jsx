@@ -14,6 +14,7 @@ import * as deliveryLinkService from '../services/deliveryLinkService';
 import * as newsletterService from '../services/newsletterService';
 import * as heroSlideService from '../services/heroSlideService';
 import resolveImageUrl from '../utils/resolveImageUrl';
+import { DELIVERY_PLATFORM_LOGOS } from '../utils/deliveryPlatforms';
 import * as settingsService from '../services/settingsService';
 
 import ProductCard from '../components/ProductCard';
@@ -288,16 +289,21 @@ export default function Home() {
                 <Truck className="h-5 w-5 text-gold-dark" /> We Deliver to You
               </h3>
               <p className="text-sm text-charcoal/60 mb-4">Fast, reliable. Right to your door.</p>
-              <div className="flex flex-wrap items-center justify-center gap-2 mb-4">
+              <div className="flex flex-wrap items-center justify-center gap-3 mb-4">
                 {deliveryLinks.map((link) => (
                   <a
                     key={link._id}
                     href={link.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-xs font-semibold px-3 py-2 rounded-md border border-charcoal/15 hover:border-gold hover:text-gold-dark transition-colors"
+                    aria-label={link.platform}
+                    className="flex items-center justify-center h-12 px-5 rounded-md border border-charcoal/15 bg-white hover:border-gold hover:shadow-card transition-all"
                   >
-                    {link.platform}
+                    {DELIVERY_PLATFORM_LOGOS[link.platform] ? (
+                      <img src={DELIVERY_PLATFORM_LOGOS[link.platform]} alt={link.platform} className="h-7 w-auto object-contain" />
+                    ) : (
+                      <span className="text-xs font-semibold">{link.platform}</span>
+                    )}
                   </a>
                 ))}
               </div>

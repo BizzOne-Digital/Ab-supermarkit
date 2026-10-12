@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Plus, Trash2, X } from 'lucide-react';
 import * as deliveryLinkService from '../../services/deliveryLinkService';
+import { DELIVERY_PLATFORM_LOGOS } from '../../utils/deliveryPlatforms';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 
@@ -78,7 +79,14 @@ export default function DeliveryLinks() {
             <tbody>
               {links.map((l) => (
                 <tr key={l._id} className="border-b border-charcoal/5">
-                  <td className="py-3 px-4 font-medium">{l.platform}</td>
+                  <td className="py-3 px-4 font-medium">
+                    <span className="flex items-center gap-2">
+                      {DELIVERY_PLATFORM_LOGOS[l.platform] && (
+                        <img src={DELIVERY_PLATFORM_LOGOS[l.platform]} alt="" className="h-5 w-auto object-contain" />
+                      )}
+                      {l.platform}
+                    </span>
+                  </td>
                   <td className="py-3 px-4 truncate max-w-xs"><a href={l.url} target="_blank" rel="noreferrer" className="text-gold-dark hover:underline">{l.url}</a></td>
                   <td className="py-3 px-4">
                     <button onClick={() => toggleEnabled(l)} className={`text-xs px-2 py-0.5 rounded ${l.isEnabled ? 'bg-green-100 text-green-700' : 'bg-charcoal/10 text-charcoal/60'}`}>
