@@ -115,7 +115,7 @@ export default function Home() {
     <div>
       {/* Hero + Category Sidebar */}
       <section className="bg-creme">
-        <div className="w-full pr-4 sm:pr-6 lg:pr-8 pb-6 sm:pb-8 grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6 items-start">
+        <div className="w-full pr-4 sm:pr-6 lg:pr-8 pb-6 sm:pb-8 grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6 items-start">
           {/* Height is measured from the hero+promo column via ResizeObserver, so the sidebar
               matches it exactly instead of CSS grid stretch inflating to fit the full
               (unclipped) category list, which was dragging the whole box down over later sections. */}
@@ -225,9 +225,9 @@ export default function Home() {
               {featured.length === 0 ? (
                 <EmptyState title="No featured products" message="Check back soon for featured picks." />
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
                   {featured.map((p) => (
-                    <ProductCard key={p._id} product={p} />
+                    <ProductCard key={p._id} product={p} compact />
                   ))}
                 </div>
               )}
@@ -282,7 +282,7 @@ export default function Home() {
 
       {/* Featured Products + Weekly Deals / Delivery sidebar */}
       {deliveryLinks.length > 0 && (
-        <Section className="section-py bg-creme">
+        <Section className="section-py bg-ivory">
           <div className="container-app">
             <div className="bg-white rounded-2xl p-6 shadow-card max-w-2xl mx-auto text-center">
               <h3 className="font-heading text-lg text-black mb-1 flex items-center justify-center gap-2">
@@ -316,27 +316,29 @@ export default function Home() {
       )}
 
       {/* Why Shop */}
-      <Section className="section-py container-app">
-        <h2 className="font-heading text-3xl sm:text-4xl text-black text-center mb-10">Why Shop at AB&apos;s</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {whyShop.map(({ icon: Icon, title, desc }) => (
-            <motion.div
-              key={title}
-              whileHover={{ y: -6 }}
-              className="bg-white rounded-lg shadow-card p-6 text-center"
-            >
-              <div className="h-12 w-12 mx-auto rounded-full bg-creme flex items-center justify-center mb-4">
-                <Icon className="h-6 w-6 text-gold-dark" />
-              </div>
-              <h3 className="font-heading text-lg text-black mb-2">{title}</h3>
-              <p className="text-sm text-charcoal/70">{desc}</p>
-            </motion.div>
-          ))}
+      <Section className="section-py bg-creme">
+        <div className="container-app">
+          <h2 className="font-heading text-3xl sm:text-4xl text-black text-center mb-10">Why Shop at AB&apos;s</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {whyShop.map(({ icon: Icon, title, desc }) => (
+              <motion.div
+                key={title}
+                whileHover={{ y: -6 }}
+                className="bg-white rounded-lg shadow-card p-6 text-center"
+              >
+                <div className="h-12 w-12 mx-auto rounded-full bg-creme flex items-center justify-center mb-4">
+                  <Icon className="h-6 w-6 text-gold-dark" />
+                </div>
+                <h3 className="font-heading text-lg text-black mb-2">{title}</h3>
+                <p className="text-sm text-charcoal/70">{desc}</p>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </Section>
 
       {/* About Split */}
-      <Section className="section-py bg-creme">
+      <Section className="section-py bg-ivory">
         <div className="container-app grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div>
             <h2 className="font-heading text-3xl sm:text-4xl text-black mb-4">Our Story</h2>
@@ -354,7 +356,7 @@ export default function Home() {
       </Section>
 
       {/* Café Section */}
-      <Section className="section-py bg-ivory">
+      <Section className="section-py bg-creme">
         <div className="container-app text-center max-w-2xl mx-auto">
           <Coffee className="h-10 w-10 text-gold-dark mx-auto mb-4" />
           <h2 className="font-heading text-3xl sm:text-4xl text-black mb-4">Visit Our In-Store Café</h2>
@@ -365,7 +367,7 @@ export default function Home() {
       </Section>
 
       {/* Testimonials */}
-      <Section className="section-py bg-creme">
+      <Section className="section-py bg-ivory">
         <div className="container-app">
           <h2 className="font-heading text-3xl sm:text-4xl text-black text-center mb-10">What Our Customers Say</h2>
           {testimonials.length === 0 ? (
@@ -382,18 +384,20 @@ export default function Home() {
 
       {/* FAQ */}
       {faqs.length > 0 && (
-        <Section className="section-py container-app max-w-3xl">
-          <h2 className="font-heading text-3xl sm:text-4xl text-black text-center mb-8">Frequently Asked Questions</h2>
-          <div>
-            {faqs.map((f) => (
-              <FaqAccordionItem key={f._id} faq={f} />
-            ))}
+        <Section className="section-py bg-creme">
+          <div className="container-app max-w-3xl mx-auto">
+            <h2 className="font-heading text-3xl sm:text-4xl text-black text-center mb-8">Frequently Asked Questions</h2>
+            <div>
+              {faqs.map((f) => (
+                <FaqAccordionItem key={f._id} faq={f} />
+              ))}
+            </div>
           </div>
         </Section>
       )}
 
       {/* Newsletter */}
-      <Section className="section-py bg-creme">
+      <Section className="section-py bg-gold/10 border-y border-gold/20">
         <div className="container-app text-center max-w-xl mx-auto">
           <h2 className="font-heading text-3xl text-black mb-3">Get Deals in Your Inbox</h2>
           <p className="text-charcoal/60 mb-6">Subscribe for weekly offers and new arrivals.</p>
