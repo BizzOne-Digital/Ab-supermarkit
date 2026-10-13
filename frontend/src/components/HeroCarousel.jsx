@@ -18,7 +18,7 @@ export default function HeroCarousel({ slides }) {
   const slide = slides[index];
 
   return (
-    <div className="relative w-full bg-ivory text-black overflow-hidden h-[420px] sm:h-[480px]">
+    <div className="relative w-full bg-ivory text-black overflow-hidden h-[480px] sm:h-[560px]">
       <AnimatePresence mode="wait">
         <motion.div
           key={slide._id}

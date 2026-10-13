@@ -106,7 +106,7 @@ export default function Home() {
         {heroSlides.length > 0 ? (
           <HeroCarousel slides={heroSlides} />
         ) : (
-          <div className="relative w-full bg-ivory text-black overflow-hidden h-[420px] sm:h-[480px] flex items-center justify-center container-app">
+          <div className="relative w-full bg-ivory text-black overflow-hidden h-[480px] sm:h-[560px] flex items-center justify-center container-app">
                 <video
                   className="absolute inset-0 h-full w-full object-cover"
                   src="/hero.mp4"
