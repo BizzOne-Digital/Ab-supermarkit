@@ -18,7 +18,7 @@ export default function HeroCarousel({ slides }) {
   const slide = slides[index];
 
   return (
-    <div className="relative bg-ivory text-black overflow-hidden rounded-2xl lg:rounded-none lg:-ml-6 lg:-mr-8 h-[420px] sm:h-[480px] border border-gold/10">
+    <div className="relative w-full bg-ivory text-black overflow-hidden h-[420px] sm:h-[480px]">
       <AnimatePresence mode="wait">
         <motion.div
           key={slide._id}
@@ -32,7 +32,7 @@ export default function HeroCarousel({ slides }) {
       </AnimatePresence>
       <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/70 to-transparent" />
 
-      <div className="relative z-10 h-full flex items-center justify-start px-6 sm:px-12">
+      <div className="relative z-10 h-full flex items-center justify-start container-app">
         <AnimatePresence mode="wait">
           <motion.div
             key={slide._id}

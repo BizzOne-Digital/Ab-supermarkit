@@ -101,14 +101,12 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero banner, full width */}
+      {/* Hero banner, full width (edge-to-edge like the navbar above it) */}
       <section className="bg-creme">
-        <div className="container-app pb-6 sm:pb-8">
-          <div className="flex flex-col gap-6">
-            {heroSlides.length > 0 ? (
-              <HeroCarousel slides={heroSlides} />
-            ) : (
-              <div className="relative bg-ivory text-black overflow-hidden rounded-2xl h-[420px] sm:h-[480px] flex items-center justify-center px-6 border border-gold/10">
+        {heroSlides.length > 0 ? (
+          <HeroCarousel slides={heroSlides} />
+        ) : (
+          <div className="relative w-full bg-ivory text-black overflow-hidden h-[420px] sm:h-[480px] flex items-center justify-center container-app">
                 <video
                   className="absolute inset-0 h-full w-full object-cover"
                   src="/hero.mp4"
@@ -148,8 +146,9 @@ export default function Home() {
                   </motion.div>
                 </div>
               </div>
-            )}
+        )}
 
+        <div className="container-app pt-6 sm:pt-8 pb-6 sm:pb-8">
             {/* Promo Tiles */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {deals.length > 0 && (() => {
@@ -210,7 +209,6 @@ export default function Home() {
                 </div>
               )}
             </div>
-          </div>
         </div>
       </section>
 
