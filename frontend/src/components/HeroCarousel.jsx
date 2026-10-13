@@ -30,9 +30,12 @@ export default function HeroCarousel({ slides }) {
           style={{ backgroundImage: `url('${resolveImageUrl(slide.image?.url)}')` }}
         />
       </AnimatePresence>
-      <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/70 to-transparent" />
+      <div
+        className="absolute inset-0"
+        style={{ background: 'radial-gradient(ellipse at center, rgba(255,253,248,0.85) 0%, rgba(255,253,248,0.55) 45%, rgba(255,253,248,0) 75%)' }}
+      />
 
-      <div className="relative z-10 h-full flex items-center justify-start container-app">
+      <div className="relative z-10 h-full flex items-center justify-center container-app">
         <AnimatePresence mode="wait">
           <motion.div
             key={slide._id}
@@ -40,14 +43,14 @@ export default function HeroCarousel({ slides }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.6 }}
-            className="max-w-xl text-left"
+            className="max-w-xl mx-auto text-center"
           >
             {slide.heading && (
               <h1 className="font-heading text-3xl sm:text-5xl font-bold leading-tight text-black">{slide.heading}</h1>
             )}
             {slide.subheading && <p className="mt-4 text-charcoal/70 text-base sm:text-lg">{slide.subheading}</p>}
             {slide.ctaLabel && (
-              <div className="mt-6 flex items-center gap-4">
+              <div className="mt-6 flex items-center justify-center gap-4">
                 <Link to={slide.ctaLink || '/shop'} className="btn-gold">
                   {slide.ctaLabel}
                 </Link>
