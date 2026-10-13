@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -24,7 +24,7 @@ import FaqAccordionItem from '../components/FaqAccordionItem';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import HeroCarousel from '../components/HeroCarousel';
-import CategorySidebar from '../components/CategorySidebar';
+import CategoryMenuBar from '../components/CategoryMenuBar';
 
 const whyShop = [
   { icon: Leaf, title: 'Freshness Guaranteed', desc: 'We source the freshest products daily for your family.' },
@@ -59,18 +59,6 @@ export default function Home() {
   const [siteSettings, setSiteSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
-  const heroColumnRef = useRef(null);
-  const [sidebarHeight, setSidebarHeight] = useState(null);
-
-  useEffect(() => {
-    const el = heroColumnRef.current;
-    if (!el || typeof ResizeObserver === 'undefined') return;
-    const observer = new ResizeObserver((entries) => {
-      setSidebarHeight(entries[0].contentRect.height);
-    });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [loading]);
 
   useEffect(() => {
     Promise.all([
@@ -113,22 +101,14 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero + Category Sidebar */}
+      {/* Hero banner, full width */}
       <section className="bg-creme">
-        <div className="w-full pr-4 sm:pr-6 lg:pr-8 pb-6 sm:pb-8 grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6 items-start">
-          {/* Height is measured from the hero+promo column via ResizeObserver, so the sidebar
-              matches it exactly instead of CSS grid stretch inflating to fit the full
-              (unclipped) category list, which was dragging the whole box down over later sections. */}
-          <CategorySidebar
-            categories={categories}
-            style={sidebarHeight ? { height: `${sidebarHeight}px` } : undefined}
-          />
-
-          <div ref={heroColumnRef} className="flex flex-col gap-6">
+        <div className="container-app pb-6 sm:pb-8">
+          <div className="flex flex-col gap-6">
             {heroSlides.length > 0 ? (
               <HeroCarousel slides={heroSlides} />
             ) : (
-              <div className="relative bg-ivory text-black overflow-hidden rounded-2xl lg:rounded-none lg:-ml-6 lg:-mr-8 h-[420px] sm:h-[480px] flex items-center justify-center px-6 border border-gold/10">
+              <div className="relative bg-ivory text-black overflow-hidden rounded-2xl h-[420px] sm:h-[480px] flex items-center justify-center px-6 border border-gold/10">
                 <video
                   className="absolute inset-0 h-full w-full object-cover"
                   src="/hero.mp4"
@@ -217,9 +197,7 @@ export default function Home() {
               )}
             </div>
 
-            {/* Featured Products — in Shop by Category's old slot, since categories are
-                already covered by the sidebar on the left. Kept in this measured column so
-                the sidebar keeps spanning down alongside it. */}
+            {/* Featured Products */}
             <div className="pt-4">
               <h2 className="font-heading text-3xl sm:text-4xl text-black mb-8">Featured Products</h2>
               {featured.length === 0 ? (
@@ -235,6 +213,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Category menu, full width directly below the banner */}
+      <CategoryMenuBar categories={categories} />
 
       {/* Deals & Offers */}
       {(deals.length > 0 || offers.length > 0) && (
