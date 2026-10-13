@@ -24,7 +24,7 @@ import FaqAccordionItem from '../components/FaqAccordionItem';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import HeroCarousel from '../components/HeroCarousel';
-import CategoryMenuBar from '../components/CategoryMenuBar';
+import CategorySidebar from '../components/CategorySidebar';
 
 const whyShop = [
   { icon: Leaf, title: 'Freshness Guaranteed', desc: 'We source the freshest products daily for your family.' },
@@ -149,11 +149,10 @@ export default function Home() {
         )}
       </section>
 
-      {/* Category menu, directly below the banner */}
-      <CategoryMenuBar categories={categories} />
-
       <section className="bg-creme">
-        <div className="container-app pt-6 sm:pt-8 pb-6 sm:pb-8">
+        <div className="container-app grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6 items-start pt-6 sm:pt-8 pb-6 sm:pb-8">
+          <CategorySidebar categories={categories} />
+          <div>
             {/* Promo Tiles */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {deals.length > 0 && (() => {
@@ -214,6 +213,7 @@ export default function Home() {
                 </div>
               )}
             </div>
+          </div>
         </div>
       </section>
 
