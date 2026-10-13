@@ -147,7 +147,12 @@ export default function Home() {
                 </div>
               </div>
         )}
+      </section>
 
+      {/* Category menu, directly below the banner */}
+      <CategoryMenuBar categories={categories} />
+
+      <section className="bg-creme">
         <div className="container-app pt-6 sm:pt-8 pb-6 sm:pb-8">
             {/* Promo Tiles */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -211,9 +216,6 @@ export default function Home() {
             </div>
         </div>
       </section>
-
-      {/* Category menu, full width directly below the banner */}
-      <CategoryMenuBar categories={categories} />
 
       {/* Deals & Offers */}
       {(deals.length > 0 || offers.length > 0) && (
