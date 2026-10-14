@@ -112,7 +112,7 @@ export default function Home() {
         </div>
       </Section>
 
-      <section className="bg-ivory">
+      <section className="bg-creme">
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] items-stretch">
           <CategorySidebar categories={categories} className="lg:pb-6" />
           <div className="px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-6 sm:pb-8">
@@ -204,10 +204,10 @@ export default function Home() {
 
       {/* Special Offers */}
       {offers.length > 0 && (
-        <Section id="special-offers" className="section-py bg-ivory scroll-mt-24">
+        <Section id="special-offers" className="section-py bg-black scroll-mt-24">
           <div className="container-app">
-            <h2 className="font-heading text-2xl sm:text-3xl text-black mb-5 flex items-center gap-2">
-              <Megaphone className="h-6 w-6 text-gold-dark" /> Special Offers
+            <h2 className="font-heading text-2xl sm:text-3xl text-ivory mb-5 flex items-center gap-2">
+              <Megaphone className="h-6 w-6 text-gold" /> Special Offers
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {offers.slice(0, 4).map((o) => (
@@ -227,7 +227,7 @@ export default function Home() {
       )}
 
       {/* Featured Categories */}
-      <Section className="section-py bg-ivory">
+      <Section className="section-py bg-creme">
         <div className="container-app">
           <h2 className="font-heading text-2xl sm:text-3xl text-black mb-1">Featured Categories</h2>
           <p className="text-sm text-charcoal/60 mb-6">Everything you need, always fresh</p>
@@ -259,7 +259,7 @@ export default function Home() {
 
       {/* Featured Products + Weekly Deals / Delivery sidebar */}
       {deliveryLinks.length > 0 && (
-        <Section className="section-py bg-ivory">
+        <Section className="section-py bg-gold/10 border-y border-gold/20">
           <div className="container-app">
             <div className="bg-white rounded-2xl p-6 shadow-card max-w-2xl mx-auto text-center">
               <h3 className="font-heading text-lg text-black mb-1 flex items-center justify-center gap-2">
@@ -293,9 +293,9 @@ export default function Home() {
       )}
 
       {/* Why Shop */}
-      <Section className="section-py bg-ivory">
+      <Section className="section-py bg-black">
         <div className="container-app">
-          <h2 className="font-heading text-3xl sm:text-4xl text-black text-center mb-10">Why Shop at AB&apos;s</h2>
+          <h2 className="font-heading text-3xl sm:text-4xl text-ivory text-center mb-10">Why Shop at AB&apos;s</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {whyShop.map(({ icon: Icon, title, desc }) => (
               <motion.div
@@ -315,7 +315,7 @@ export default function Home() {
       </Section>
 
       {/* About Split */}
-      <Section className="section-py bg-ivory">
+      <Section className="section-py bg-creme">
         <div className="container-app grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div>
             <h2 className="font-heading text-3xl sm:text-4xl text-black mb-4">Our Story</h2>
@@ -333,11 +333,11 @@ export default function Home() {
       </Section>
 
       {/* Café Section */}
-      <Section className="section-py bg-ivory">
+      <Section className="section-py bg-black">
         <div className="container-app text-center max-w-2xl mx-auto">
-          <Coffee className="h-10 w-10 text-gold-dark mx-auto mb-4" />
-          <h2 className="font-heading text-3xl sm:text-4xl text-black mb-4">Visit Our In-Store Café</h2>
-          <p className="text-charcoal/70">
+          <Coffee className="h-10 w-10 text-gold mx-auto mb-4" />
+          <h2 className="font-heading text-3xl sm:text-4xl text-ivory mb-4">Visit Our In-Store Café</h2>
+          <p className="text-ivory/70">
             Take a break while you shop — enjoy fresh coffee, pastries, and light bites at our in-store café.
           </p>
         </div>
@@ -361,7 +361,7 @@ export default function Home() {
 
       {/* FAQ */}
       {faqs.length > 0 && (
-        <Section className="section-py bg-ivory">
+        <Section className="section-py bg-creme">
           <div className="container-app max-w-3xl mx-auto">
             <h2 className="font-heading text-3xl sm:text-4xl text-black text-center mb-8">Frequently Asked Questions</h2>
             <div>
@@ -374,10 +374,10 @@ export default function Home() {
       )}
 
       {/* Newsletter */}
-      <Section className="section-py bg-ivory">
+      <Section className="section-py bg-black">
         <div className="container-app text-center max-w-xl mx-auto">
-          <h2 className="font-heading text-3xl sm:text-4xl text-black mb-3">Good Food Brings People Together</h2>
-          <p className="text-charcoal/60 mb-6">Subscribe to our newsletter for exclusive deals, fresh arrivals and more.</p>
+          <h2 className="font-heading text-3xl sm:text-4xl text-ivory mb-3">Good Food Brings People Together</h2>
+          <p className="text-ivory/60 mb-6">Subscribe to our newsletter for exclusive deals, fresh arrivals and more.</p>
           <form onSubmit={onSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"
