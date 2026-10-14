@@ -71,6 +71,9 @@ export const getProductBySlug = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 export const createProduct = asyncHandler(async (req, res) => {
   const productData = { ...req.body };
+  if (productData.category === '') {
+    productData.category = undefined;
+  }
 
   if (req.files && req.files.length > 0) {
     const uploads = await Promise.all(req.files.map((file) => uploadImage(file, 'products')));
@@ -90,7 +93,13 @@ export const updateProduct = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, message: 'Product not found' });
   }
 
-  Object.assign(product, req.body);
+  const updates = { ...req.body };
+  // An empty category select ("No category") comes through as "" — Mongoose can't cast that
+  // to an ObjectId, so drop it instead of assigning and letting save() throw a CastError.
+  if (updates.category === '') {
+    updates.category = undefined;
+  }
+  Object.assign(product, updates);
 
   if (req.files && req.files.length > 0) {
     // Delete old stored images before replacing.
