@@ -23,7 +23,6 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import GroceryHero from '../components/GroceryHero';
 import CategorySidebar from '../components/CategorySidebar';
-import DealsCarousel from '../components/DealsCarousel';
 import DealCategoryBanners from '../components/DealCategoryBanners';
 import FeaturedCategoriesRow from '../components/FeaturedCategoriesRow';
 
@@ -106,19 +105,11 @@ export default function Home() {
       {/* Hero, full width (edge-to-edge like the navbar above it) */}
       <GroceryHero categories={categories} />
 
-      <Section className="section-py bg-ivory">
-        <div className="container-app">
+      <Section className="bg-ivory">
+        <div className="py-4 sm:py-6">
           <DealCategoryBanners categories={categories} deals={deals} />
         </div>
       </Section>
-
-      {deals.length > 0 && (
-        <Section className="section-py bg-ivory">
-          <div className="container-app">
-            <DealsCarousel deals={deals} />
-          </div>
-        </Section>
-      )}
 
       <section className="bg-creme">
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] items-stretch">

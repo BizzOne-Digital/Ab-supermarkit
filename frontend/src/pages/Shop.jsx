@@ -3,15 +3,18 @@ import { useSearchParams } from 'react-router-dom';
 import { SlidersHorizontal, X, Search } from 'lucide-react';
 import * as productService from '../services/productService';
 import * as categoryService from '../services/categoryService';
+import * as dealService from '../services/dealService';
 import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
+import DealsCarousel from '../components/DealsCarousel';
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [deals, setDeals] = useState([]);
   const [pagination, setPagination] = useState({ page: 1, totalPages: 1 });
   const [loading, setLoading] = useState(true);
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -37,6 +40,10 @@ export default function Shop() {
       .getCategories()
       .then((res) => setCategories((res.categories || []).filter((c) => c.isEnabled !== false)))
       .catch(() => setCategories([]));
+    dealService
+      .getDeals()
+      .then((res) => setDeals((res.deals || []).filter((d) => d.isActive)))
+      .catch(() => setDeals([]));
   }, []);
 
   useEffect(() => {
@@ -84,6 +91,12 @@ export default function Shop() {
       <p className="text-charcoal/60 mb-8">
         {search ? `Results for "${search}"` : sale ? 'This week\'s deals and discounted products.' : 'Browse our full range of premium groceries.'}
       </p>
+
+      {deals.length > 0 && (
+        <div className="mb-10">
+          <DealsCarousel deals={deals} />
+        </div>
+      )}
 
       <button
         onClick={() => setFiltersOpen((o) => !o)}
