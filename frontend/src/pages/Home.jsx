@@ -150,9 +150,9 @@ export default function Home() {
       </section>
 
       <section className="bg-creme">
-        <div className="container-app grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-6 items-start pt-6 sm:pt-8 pb-6 sm:pb-8">
-          <CategorySidebar categories={categories} />
-          <div>
+        <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] items-stretch">
+          <CategorySidebar categories={categories} className="lg:pb-6" />
+          <div className="container-app pt-6 sm:pt-8 pb-6 sm:pb-8">
             {/* Promo Tiles */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               {deals.length > 0 && (() => {
