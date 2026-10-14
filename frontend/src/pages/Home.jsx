@@ -33,9 +33,10 @@ const whyShop = [
   { icon: Leaf, title: 'A Healthier Tomorrow', desc: 'Good food, brighter lives' },
 ];
 
-function Section({ children, className = '' }) {
+function Section({ children, className = '', id }) {
   return (
     <motion.section
+      id={id}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-60px' }}
@@ -138,7 +139,7 @@ export default function Home() {
               })()}
 
               {offers.length > 0 && (
-                <Link to="/shop" className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
+                <a href="#special-offers" className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
                   <div className="h-14 w-14 rounded-full bg-creme flex items-center justify-center shrink-0">
                     <Megaphone className="h-6 w-6 text-gold-dark" />
                   </div>
@@ -146,7 +147,7 @@ export default function Home() {
                     <p className="text-charcoal/50 text-xs uppercase tracking-wide">Special Offer</p>
                     <p className="font-heading text-xl text-black line-clamp-1">{offers[0].heading}</p>
                   </div>
-                </Link>
+                </a>
               )}
 
               {siteSettings?.freeDeliveryThreshold != null && (
@@ -203,7 +204,7 @@ export default function Home() {
 
       {/* Special Offers */}
       {offers.length > 0 && (
-        <Section className="section-py bg-gold/10 border-y border-gold/20">
+        <Section id="special-offers" className="section-py bg-gold/10 border-y border-gold/20 scroll-mt-24">
           <div className="container-app">
             <h2 className="font-heading text-2xl sm:text-3xl text-black mb-5 flex items-center gap-2">
               <Megaphone className="h-6 w-6 text-gold-dark" /> Special Offers
