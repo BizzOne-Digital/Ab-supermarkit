@@ -33,7 +33,7 @@ export default function CategorySidebar({ categories, className = '', style }) {
   return (
     <aside
       style={style}
-      className={`hidden lg:flex flex-col bg-white overflow-hidden border-r border-charcoal/10 ${className}`}
+      className={`hidden lg:flex flex-col bg-ivory overflow-hidden border-r border-charcoal/10 ${className}`}
     >
       <div className="px-4 py-3 border-b border-charcoal/10">
         <h3 className="font-heading text-black text-base">Shop by Category</h3>
