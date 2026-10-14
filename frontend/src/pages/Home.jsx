@@ -12,7 +12,6 @@ import * as testimonialService from '../services/testimonialService';
 import * as faqService from '../services/faqService';
 import * as deliveryLinkService from '../services/deliveryLinkService';
 import * as newsletterService from '../services/newsletterService';
-import * as heroSlideService from '../services/heroSlideService';
 import resolveImageUrl from '../utils/resolveImageUrl';
 import { DELIVERY_PLATFORM_LOGOS } from '../utils/deliveryPlatforms';
 import * as settingsService from '../services/settingsService';
@@ -23,7 +22,7 @@ import TestimonialCard from '../components/TestimonialCard';
 import FaqAccordionItem from '../components/FaqAccordionItem';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
-import HeroCarousel from '../components/HeroCarousel';
+import GroceryHero from '../components/GroceryHero';
 import CategorySidebar from '../components/CategorySidebar';
 
 const whyShop = [
@@ -55,7 +54,6 @@ export default function Home() {
   const [testimonials, setTestimonials] = useState([]);
   const [faqs, setFaqs] = useState([]);
   const [deliveryLinks, setDeliveryLinks] = useState([]);
-  const [heroSlides, setHeroSlides] = useState([]);
   const [siteSettings, setSiteSettings] = useState(null);
   const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
@@ -69,9 +67,8 @@ export default function Home() {
       testimonialService.getTestimonials().catch(() => ({ testimonials: [] })),
       faqService.getFaqs().catch(() => ({ faqs: [] })),
       deliveryLinkService.getDeliveryLinks().catch(() => ({ deliveryLinks: [] })),
-      heroSlideService.getHeroSlides().catch(() => ({ slides: [] })),
       settingsService.getSettings().catch(() => ({ settings: null })),
-    ]).then(([catRes, prodRes, dealRes, offerRes, testRes, faqRes, delRes, slideRes, settingsRes]) => {
+    ]).then(([catRes, prodRes, dealRes, offerRes, testRes, faqRes, delRes, settingsRes]) => {
       setCategories((catRes.categories || []).filter((c) => c.isEnabled !== false));
       setFeatured(prodRes.products || []);
       setDeals((dealRes.deals || []).filter((d) => d.isActive));
@@ -80,7 +77,6 @@ export default function Home() {
       setFaqs((faqRes.faqs || []).filter((f) => f.isEnabled !== false).slice(0, 6));
       setDeliveryLinks((delRes.deliveryLinks || []).filter((l) => l.isEnabled));
       setSiteSettings(settingsRes.settings || null);
-      setHeroSlides(slideRes.slides || []);
       setLoading(false);
     });
   }, []);
@@ -101,53 +97,8 @@ export default function Home() {
 
   return (
     <div>
-      {/* Hero banner, full width (edge-to-edge like the navbar above it) */}
-      <section className="bg-creme">
-        {heroSlides.length > 0 ? (
-          <HeroCarousel slides={heroSlides} />
-        ) : (
-          <div className="relative w-full bg-ivory text-black overflow-hidden h-[480px] sm:h-[560px] flex items-center justify-center container-app">
-                <video
-                  className="absolute inset-0 h-full w-full object-cover"
-                  src="/hero.mp4"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-ivory via-ivory/60 to-ivory/10" />
-                <div className="relative max-w-xl text-center z-10">
-                  <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6 }}
-                    className="font-heading text-3xl sm:text-5xl font-bold leading-tight text-black"
-                  >
-                    <span className="block text-gold-dark">Best Quality,</span>
-                    <span className="block">Best Price,</span>
-                    <span className="block">Best Service</span>
-                  </motion.h1>
-                  <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.15 }}
-                    className="mt-4 text-charcoal/70 text-base sm:text-lg"
-                  >
-                    Your neighbourhood destination for fresh groceries, everyday essentials, international favourites and café delights.
-                  </motion.p>
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    className="mt-6 flex flex-wrap items-center justify-center gap-4"
-                  >
-                    <Link to="/shop" className="btn-gold">Shop Groceries</Link>
-                    <Link to="/about" className="btn-outline border-charcoal/30 text-black hover:bg-black hover:text-ivory">Explore Our Store</Link>
-                  </motion.div>
-                </div>
-              </div>
-        )}
-      </section>
+      {/* Hero, full width (edge-to-edge like the navbar above it) */}
+      <GroceryHero categories={categories} />
 
       <section className="bg-creme">
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] items-stretch">
