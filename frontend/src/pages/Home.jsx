@@ -24,6 +24,7 @@ import EmptyState from '../components/EmptyState';
 import GroceryHero from '../components/GroceryHero';
 import CategorySidebar from '../components/CategorySidebar';
 import DealsCarousel from '../components/DealsCarousel';
+import DealCategoryBanners from '../components/DealCategoryBanners';
 import FeaturedCategoriesRow from '../components/FeaturedCategoriesRow';
 
 const whyShop = [
@@ -104,6 +105,12 @@ export default function Home() {
     <div>
       {/* Hero, full width (edge-to-edge like the navbar above it) */}
       <GroceryHero categories={categories} />
+
+      <Section className="section-py bg-ivory">
+        <div className="container-app">
+          <DealCategoryBanners categories={categories} deals={deals} />
+        </div>
+      </Section>
 
       {deals.length > 0 && (
         <Section className="section-py bg-ivory">
