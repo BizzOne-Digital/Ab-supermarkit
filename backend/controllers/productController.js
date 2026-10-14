@@ -17,6 +17,7 @@ export const getProducts = asyncHandler(async (req, res) => {
   if (req.query.brand) query.brand = req.query.brand;
   if (req.query.sale === 'true') query.isOnSale = true;
   if (req.query.featured === 'true') query.isFeatured = true;
+  if (req.query.bestSeller === 'true') query.isBestSeller = true;
 
   if (req.query.minPrice || req.query.maxPrice) {
     query.regularPrice = {};

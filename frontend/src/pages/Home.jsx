@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Truck, ShieldCheck, Leaf, Clock, Send, Coffee, Tag, ShoppingBasket, Handshake, Flame, Percent, Megaphone } from 'lucide-react';
+import { Truck, ShieldCheck, Leaf, Send, Coffee, Percent, Megaphone, Award } from 'lucide-react';
 
 import * as categoryService from '../services/categoryService';
 import * as productService from '../services/productService';
@@ -17,19 +17,20 @@ import { DELIVERY_PLATFORM_LOGOS } from '../utils/deliveryPlatforms';
 import * as settingsService from '../services/settingsService';
 
 import ProductCard from '../components/ProductCard';
-import DealCard from '../components/DealCard';
 import TestimonialCard from '../components/TestimonialCard';
 import FaqAccordionItem from '../components/FaqAccordionItem';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import GroceryHero from '../components/GroceryHero';
 import CategorySidebar from '../components/CategorySidebar';
+import DealsCarousel from '../components/DealsCarousel';
+import FeaturedCategoriesRow from '../components/FeaturedCategoriesRow';
 
 const whyShop = [
-  { icon: Leaf, title: 'Freshness Guaranteed', desc: 'We source the freshest products daily for your family.' },
-  { icon: Tag, title: 'Great Value', desc: 'Competitive prices and weekly deals you’ll love.' },
-  { icon: ShoppingBasket, title: 'Diverse Selection', desc: 'From local favorites to global essentials.' },
-  { icon: Handshake, title: 'Friendly Service', desc: 'We’re here to make your shopping experience excellent.' },
+  { icon: Truck, title: 'Fast & Reliable Delivery', desc: 'Groceries at your doorstep' },
+  { icon: Percent, title: 'Great Prices', desc: 'Weekly deals & everyday savings' },
+  { icon: ShieldCheck, title: 'Quality Products', desc: 'Freshness you can trust' },
+  { icon: Leaf, title: 'A Healthier Tomorrow', desc: 'Good food, brighter lives' },
 ];
 
 function Section({ children, className = '' }) {
@@ -49,6 +50,8 @@ function Section({ children, className = '' }) {
 export default function Home() {
   const [categories, setCategories] = useState([]);
   const [featured, setFeatured] = useState([]);
+  const [bestSellers, setBestSellers] = useState([]);
+  const [activeCategory, setActiveCategory] = useState('');
   const [deals, setDeals] = useState([]);
   const [offers, setOffers] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
@@ -62,15 +65,17 @@ export default function Home() {
     Promise.all([
       categoryService.getCategories().catch(() => ({ categories: [] })),
       productService.getProducts({ featured: 'true', limit: 8 }).catch(() => ({ products: [] })),
+      productService.getProducts({ bestSeller: 'true', limit: 6 }).catch(() => ({ products: [] })),
       dealService.getDeals().catch(() => ({ deals: [] })),
       offerService.getOffers().catch(() => ({ offers: [] })),
       testimonialService.getTestimonials().catch(() => ({ testimonials: [] })),
       faqService.getFaqs().catch(() => ({ faqs: [] })),
       deliveryLinkService.getDeliveryLinks().catch(() => ({ deliveryLinks: [] })),
       settingsService.getSettings().catch(() => ({ settings: null })),
-    ]).then(([catRes, prodRes, dealRes, offerRes, testRes, faqRes, delRes, settingsRes]) => {
+    ]).then(([catRes, prodRes, bestRes, dealRes, offerRes, testRes, faqRes, delRes, settingsRes]) => {
       setCategories((catRes.categories || []).filter((c) => c.isEnabled !== false));
       setFeatured(prodRes.products || []);
+      setBestSellers(bestRes.products || []);
       setDeals((dealRes.deals || []).filter((d) => d.isActive));
       setOffers(offerRes.offers || []);
       setTestimonials((testRes.testimonials || []).filter((t) => t.isEnabled !== false));
@@ -99,6 +104,14 @@ export default function Home() {
     <div>
       {/* Hero, full width (edge-to-edge like the navbar above it) */}
       <GroceryHero categories={categories} />
+
+      {deals.length > 0 && (
+        <Section className="section-py bg-ivory">
+          <div className="container-app">
+            <DealsCarousel deals={deals} />
+          </div>
+        </Section>
+      )}
 
       <section className="bg-creme">
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] items-stretch">
@@ -153,61 +166,94 @@ export default function Home() {
 
             {/* Featured Products */}
             <div className="pt-4">
-              <h2 className="font-heading text-3xl sm:text-4xl text-black mb-8">Featured Products</h2>
-              {featured.length === 0 ? (
-                <EmptyState title="No featured products" message="Check back soon for featured picks." />
-              ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-                  {featured.map((p) => (
-                    <ProductCard key={p._id} product={p} compact />
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <h2 className="font-heading text-3xl sm:text-4xl text-black">Featured Products</h2>
+                <div className="flex items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                  <button
+                    onClick={() => setActiveCategory('')}
+                    className={`shrink-0 text-sm px-3 py-1.5 rounded-full transition-colors ${!activeCategory ? 'bg-gold text-black font-semibold' : 'text-charcoal/60 hover:bg-gold/10'}`}
+                  >
+                    All
+                  </button>
+                  {categories.slice(0, 6).map((c) => (
+                    <button
+                      key={c._id}
+                      onClick={() => setActiveCategory(c._id)}
+                      className={`shrink-0 text-sm px-3 py-1.5 rounded-full transition-colors ${activeCategory === c._id ? 'bg-gold text-black font-semibold' : 'text-charcoal/60 hover:bg-gold/10'}`}
+                    >
+                      {c.name}
+                    </button>
                   ))}
                 </div>
-              )}
+              </div>
+              {(() => {
+                const visible = activeCategory ? featured.filter((p) => p.category?._id === activeCategory || p.category === activeCategory) : featured;
+                return visible.length === 0 ? (
+                  <EmptyState title="No featured products" message="Check back soon for featured picks." />
+                ) : (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+                    {visible.map((p) => (
+                      <ProductCard key={p._id} product={p} compact />
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Deals & Offers */}
-      {(deals.length > 0 || offers.length > 0) && (
+      {/* Special Offers */}
+      {offers.length > 0 && (
         <Section className="section-py bg-gold/10 border-y border-gold/20">
-          <div className="container-app grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-            {deals.length > 0 && (
-              <div className={offers.length > 0 ? 'lg:col-span-1' : 'lg:col-span-3'}>
-                <div className="flex items-center justify-between mb-5">
-                  <h2 className="font-heading text-2xl text-black flex items-center gap-2">
-                    <Flame className="h-5 w-5 text-gold-dark" /> Weekly Deals
-                  </h2>
-                  <Link to="/shop?sale=true" className="text-xs font-semibold text-charcoal/50 hover:text-gold-dark">
-                    View all
-                  </Link>
+          <div className="container-app">
+            <h2 className="font-heading text-2xl sm:text-3xl text-black mb-5 flex items-center gap-2">
+              <Megaphone className="h-6 w-6 text-gold-dark" /> Special Offers
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {offers.slice(0, 4).map((o) => (
+                <div key={o._id} className="bg-white rounded-2xl overflow-hidden shadow-card">
+                  <div className="aspect-video bg-creme">
+                    {o.image?.url && <img src={resolveImageUrl(o.image.url)} alt={o.heading} className="h-full w-full object-cover" />}
+                  </div>
+                  <div className="p-4">
+                    <p className="font-heading text-lg text-black">{o.heading}</p>
+                    {o.discountText && <p className="text-sm text-gold-dark font-semibold">{o.discountText}</p>}
+                  </div>
                 </div>
-                <div className="bg-white rounded-2xl p-6 space-y-4 shadow-card">
-                  {deals.slice(0, 4).map((d) => (
-                    <DealCard key={d._id} deal={d} compact />
-                  ))}
-                </div>
-              </div>
-            )}
+              ))}
+            </div>
+          </div>
+        </Section>
+      )}
 
-            {offers.length > 0 && (
-              <div className={deals.length > 0 ? 'lg:col-span-2' : 'lg:col-span-3'}>
-                <h2 className="font-heading text-2xl text-black mb-5">Special Offers</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {offers.slice(0, 4).map((o) => (
-                    <div key={o._id} className="bg-white rounded-2xl overflow-hidden shadow-card">
-                      <div className="aspect-video bg-creme">
-                        {o.image?.url && <img src={resolveImageUrl(o.image.url)} alt={o.heading} className="h-full w-full object-cover" />}
-                      </div>
-                      <div className="p-4">
-                        <p className="font-heading text-lg text-black">{o.heading}</p>
-                        {o.discountText && <p className="text-sm text-gold-dark font-semibold">{o.discountText}</p>}
-                      </div>
-                    </div>
-                  ))}
-                </div>
+      {/* Featured Categories */}
+      <Section className="section-py bg-ivory">
+        <div className="container-app">
+          <h2 className="font-heading text-2xl sm:text-3xl text-black mb-1">Featured Categories</h2>
+          <p className="text-sm text-charcoal/60 mb-6">Everything you need, always fresh</p>
+          <FeaturedCategoriesRow categories={categories} />
+        </div>
+      </Section>
+
+      {/* Best Sellers */}
+      {bestSellers.length > 0 && (
+        <Section className="section-py bg-creme">
+          <div className="container-app">
+            <div className="flex items-center justify-between gap-4 mb-6">
+              <div>
+                <h2 className="font-heading text-2xl sm:text-3xl text-black flex items-center gap-2">
+                  <Award className="h-6 w-6 text-gold-dark" /> Best Sellers
+                </h2>
+                <p className="text-sm text-charcoal/60">Customer favorites, handpicked for you</p>
               </div>
-            )}
+              <Link to="/shop" className="btn-gold text-sm py-2 px-4 whitespace-nowrap">View All</Link>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+              {bestSellers.map((p) => (
+                <ProductCard key={p._id} product={p} compact />
+              ))}
+            </div>
           </div>
         </Section>
       )}
@@ -331,8 +377,8 @@ export default function Home() {
       {/* Newsletter */}
       <Section className="section-py bg-gold/10 border-y border-gold/20">
         <div className="container-app text-center max-w-xl mx-auto">
-          <h2 className="font-heading text-3xl text-black mb-3">Get Deals in Your Inbox</h2>
-          <p className="text-charcoal/60 mb-6">Subscribe for weekly offers and new arrivals.</p>
+          <h2 className="font-heading text-3xl sm:text-4xl text-black mb-3">Good Food Brings People Together</h2>
+          <p className="text-charcoal/60 mb-6">Subscribe to our newsletter for exclusive deals, fresh arrivals and more.</p>
           <form onSubmit={onSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"
