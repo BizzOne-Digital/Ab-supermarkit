@@ -49,10 +49,10 @@ export default function DealCategoryBanners({ categories, deals }) {
           <Link
             key={b.label}
             to={target}
-            className="group relative rounded-2xl overflow-hidden shadow-card h-40 sm:h-52 flex items-center"
+            className="group relative rounded-2xl overflow-hidden shadow-card h-40 sm:h-52 flex items-start"
             style={{ backgroundImage: `url('${b.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           >
-            <div className="relative z-10 p-6">
+            <div className="relative z-10 p-6 pt-5 sm:pt-7">
               <p className="font-heading text-xl sm:text-2xl text-black">{b.label}</p>
               <p className="text-sm font-semibold text-gold-dark mb-4">
                 {pct > 0 ? `Up to ${pct}% Off` : 'Shop Now'}
