@@ -204,10 +204,10 @@ export default function Home() {
 
       {/* Special Offers */}
       {offers.length > 0 && (
-        <Section id="special-offers" className="section-py bg-black scroll-mt-24">
+        <Section id="special-offers" className="section-py bg-gold-dark scroll-mt-24">
           <div className="container-app">
-            <h2 className="font-heading text-2xl sm:text-3xl text-ivory mb-5 flex items-center gap-2">
-              <Megaphone className="h-6 w-6 text-gold" /> Special Offers
+            <h2 className="font-heading text-2xl sm:text-3xl text-black mb-5 flex items-center gap-2">
+              <Megaphone className="h-6 w-6 text-black" /> Special Offers
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {offers.slice(0, 4).map((o) => (
@@ -293,9 +293,9 @@ export default function Home() {
       )}
 
       {/* Why Shop */}
-      <Section className="section-py bg-black">
+      <Section className="section-py bg-gold-dark">
         <div className="container-app">
-          <h2 className="font-heading text-3xl sm:text-4xl text-ivory text-center mb-10">Why Shop at AB&apos;s</h2>
+          <h2 className="font-heading text-3xl sm:text-4xl text-black text-center mb-10">Why Shop at AB&apos;s</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {whyShop.map(({ icon: Icon, title, desc }) => (
               <motion.div
@@ -333,11 +333,11 @@ export default function Home() {
       </Section>
 
       {/* Café Section */}
-      <Section className="section-py bg-black">
+      <Section className="section-py bg-gold-dark">
         <div className="container-app text-center max-w-2xl mx-auto">
-          <Coffee className="h-10 w-10 text-gold mx-auto mb-4" />
-          <h2 className="font-heading text-3xl sm:text-4xl text-ivory mb-4">Visit Our In-Store Café</h2>
-          <p className="text-ivory/70">
+          <Coffee className="h-10 w-10 text-black mx-auto mb-4" />
+          <h2 className="font-heading text-3xl sm:text-4xl text-black mb-4">Visit Our In-Store Café</h2>
+          <p className="text-black/70">
             Take a break while you shop — enjoy fresh coffee, pastries, and light bites at our in-store café.
           </p>
         </div>
@@ -374,10 +374,10 @@ export default function Home() {
       )}
 
       {/* Newsletter */}
-      <Section className="section-py bg-black">
+      <Section className="section-py bg-gold-dark">
         <div className="container-app text-center max-w-xl mx-auto">
-          <h2 className="font-heading text-3xl sm:text-4xl text-ivory mb-3">Good Food Brings People Together</h2>
-          <p className="text-ivory/60 mb-6">Subscribe to our newsletter for exclusive deals, fresh arrivals and more.</p>
+          <h2 className="font-heading text-3xl sm:text-4xl text-black mb-3">Good Food Brings People Together</h2>
+          <p className="text-black/60 mb-6">Subscribe to our newsletter for exclusive deals, fresh arrivals and more.</p>
           <form onSubmit={onSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
             <input
               type="email"

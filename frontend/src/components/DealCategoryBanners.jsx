@@ -39,10 +39,16 @@ export default function DealCategoryBanners({ categories, deals }) {
             }, 0)
           : 0;
 
+        const target = category
+          ? pct > 0
+            ? `/shop?category=${category._id}&sale=true`
+            : `/shop?category=${category._id}`
+          : '/shop?sale=true';
+
         return (
           <Link
             key={b.label}
-            to={category ? `/shop?category=${category._id}` : '/shop'}
+            to={target}
             className="group relative rounded-2xl overflow-hidden shadow-card h-40 sm:h-52 flex items-center"
             style={{ backgroundImage: `url('${b.image}')`, backgroundSize: 'cover', backgroundPosition: 'center' }}
           >
