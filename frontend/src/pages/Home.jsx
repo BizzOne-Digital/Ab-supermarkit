@@ -327,7 +327,7 @@ export default function Home() {
           </div>
           <div
             className="aspect-video bg-creme rounded-lg bg-cover bg-center border border-gold/10"
-            style={{ backgroundImage: "url('/store.png')" }}
+            style={{ backgroundImage: "url('/store-interior-clean-v1.png')" }}
           />
         </div>
       </Section>

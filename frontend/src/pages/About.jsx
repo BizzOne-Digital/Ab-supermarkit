@@ -39,7 +39,7 @@ export default function About() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           className="aspect-video bg-creme rounded-lg bg-cover bg-center border border-gold/10"
-          style={{ backgroundImage: "url('/store.png')" }}
+          style={{ backgroundImage: "url('/store-interior-clean-v1.png')" }}
         />
       </section>
 
