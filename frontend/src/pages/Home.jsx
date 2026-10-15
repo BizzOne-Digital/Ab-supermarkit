@@ -108,7 +108,7 @@ export default function Home() {
 
       <Section className="bg-ivory">
         <div className="py-4 sm:py-6 px-3 sm:px-4">
-          <DealCategoryBanners categories={categories} deals={deals} />
+          <DealCategoryBanners deals={deals} offers={offers} siteSettings={siteSettings} />
         </div>
       </Section>
 
