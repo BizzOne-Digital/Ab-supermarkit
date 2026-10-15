@@ -50,12 +50,20 @@ export default function GroceryHero({ categories }) {
   };
 
   return (
-    <section className="relative w-full overflow-hidden">
+    <section className="relative w-full overflow-hidden min-h-[640px] sm:min-h-0">
+      {/* Mobile: portrait image with its clear space at the top (where the text sits), so the
+          overlay fades top-to-bottom instead of the desktop's left-to-right. */}
       <div
-        className="absolute inset-0 bg-cover bg-center"
+        className="absolute inset-0 bg-cover bg-top sm:hidden"
+        style={{ backgroundImage: "url('/hero-groceries-mobile-v1.png')" }}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-ivory via-ivory/70 to-transparent sm:hidden" />
+
+      <div
+        className="absolute inset-0 bg-cover bg-center hidden sm:block"
         style={{ backgroundImage: "url('/hero-groceries-reference-v1.png')" }}
       />
-      <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/80 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/80 to-transparent hidden sm:block" />
 
       <div className="relative z-10 container-app py-10 sm:py-14">
         <div className="max-w-xl">
