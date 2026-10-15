@@ -107,7 +107,7 @@ export default function Home() {
       <GroceryHero categories={categories} />
 
       <Section className="bg-ivory">
-        <div className="py-4 sm:py-6">
+        <div className="py-4 sm:py-6 px-3 sm:px-4">
           <DealCategoryBanners categories={categories} deals={deals} />
         </div>
       </Section>
