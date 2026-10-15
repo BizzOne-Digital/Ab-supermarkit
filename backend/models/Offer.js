@@ -6,6 +6,7 @@ const offerSchema = new mongoose.Schema(
     image: {
       url: { type: String },
       publicId: { type: String },
+      mimeType: { type: String },
     },
     discountText: { type: String },
     startDate: { type: Date, default: Date.now },

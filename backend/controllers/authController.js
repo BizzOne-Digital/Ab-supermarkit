@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import User from '../models/User.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { sendTokenResponse } from '../utils/generateToken.js';
-import { sendPasswordResetEmail } from '../services/emailService.js';
+import { sendPasswordResetEmail, sendAdminTwoFactorCode } from '../services/emailService.js';
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -34,6 +34,44 @@ export const login = asyncHandler(async (req, res) => {
   if (!isMatch) {
     return res.status(401).json({ success: false, message: 'Invalid email or password' });
   }
+
+  // Admin accounts require a second factor (emailed code) before a session is issued.
+  // Customer accounts log straight in.
+  if (user.role === 'admin') {
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    user.twoFactorCode = code;
+    user.twoFactorExpire = Date.now() + 10 * 60 * 1000;
+    await user.save({ validateBeforeSave: false });
+
+    const result = await sendAdminTwoFactorCode(user, code);
+    if (!result.success) {
+      return res.status(500).json({ success: false, message: 'Could not send verification code, please try again later' });
+    }
+
+    return res.status(200).json({ success: true, mfaRequired: true, userId: user._id });
+  }
+
+  sendTokenResponse(user, 200, res);
+});
+
+// @desc    Verify the emailed code for an admin login and issue the session
+// @route   POST /api/auth/verify-2fa
+// @access  Public
+export const verifyTwoFactor = asyncHandler(async (req, res) => {
+  const { userId, code } = req.body;
+
+  const user = await User.findById(userId).select('+twoFactorCode +twoFactorExpire');
+  if (!user || !user.twoFactorCode || user.twoFactorExpire < Date.now()) {
+    return res.status(400).json({ success: false, message: 'Code expired, please log in again' });
+  }
+
+  if (user.twoFactorCode !== String(code)) {
+    return res.status(400).json({ success: false, message: 'Incorrect code' });
+  }
+
+  user.twoFactorCode = undefined;
+  user.twoFactorExpire = undefined;
+  await user.save({ validateBeforeSave: false });
 
   sendTokenResponse(user, 200, res);
 });

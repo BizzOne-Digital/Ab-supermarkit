@@ -5,6 +5,7 @@ import {
   login,
   logout,
   getMe,
+  verifyTwoFactor,
   forgotPassword,
   resetPassword,
   updateProfile,
@@ -34,6 +35,15 @@ router.post(
     body('password').notEmpty().withMessage('Password is required'),
   ]),
   login
+);
+
+router.post(
+  '/verify-2fa',
+  runValidation([
+    body('userId').notEmpty().withMessage('userId is required'),
+    body('code').isLength({ min: 6, max: 6 }).withMessage('Enter the 6-digit code'),
+  ]),
+  verifyTwoFactor
 );
 
 router.post('/logout', logout);

@@ -38,6 +38,8 @@ const userSchema = new mongoose.Schema(
     addresses: [addressSchema],
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpire: { type: Date, select: false },
+    twoFactorCode: { type: String, select: false },
+    twoFactorExpire: { type: Date, select: false },
   },
   {
     timestamps: true,

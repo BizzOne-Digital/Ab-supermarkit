@@ -66,7 +66,13 @@ export default function Offers() {
           {offers.map((o) => (
             <div key={o._id} className="bg-white rounded-lg shadow-card overflow-hidden">
               <div className="aspect-video bg-creme">
-                {o.image?.url && <img src={resolveImageUrl(o.image.url)} alt={o.heading} className="h-full w-full object-cover" />}
+                {o.image?.url && (
+                  o.image.mimeType?.startsWith('video/') ? (
+                    <video src={resolveImageUrl(o.image.url)} className="h-full w-full object-cover" autoPlay loop muted playsInline />
+                  ) : (
+                    <img src={resolveImageUrl(o.image.url)} alt={o.heading} className="h-full w-full object-cover" />
+                  )
+                )}
               </div>
               <div className="p-4">
                 <p className="font-heading text-black">{o.heading}</p>
@@ -100,8 +106,9 @@ export default function Offers() {
                 <input type="date" required value={form.expiryDate} onChange={(e) => setForm({ ...form, expiryDate: e.target.value })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2 px-3" />
               </div>
               <div>
-                <label className="text-sm font-medium text-charcoal/70">Image</label>
-                <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} className="w-full mt-1 text-sm" />
+                <label className="text-sm font-medium text-charcoal/70">Image or Short Video</label>
+                <input type="file" accept="image/*,video/mp4,video/webm" onChange={(e) => setFile(e.target.files[0])} className="w-full mt-1 text-sm" />
+                <p className="text-xs text-charcoal/40 mt-1">Videos up to 15MB (mp4 or webm).</p>
               </div>
               <div className="flex justify-end gap-3">
                 <button type="button" onClick={() => setModalOpen(false)} className="btn-outline text-sm py-2 px-4">Cancel</button>

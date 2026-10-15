@@ -14,9 +14,12 @@ const MIME_EXT = {
   'image/png': 'png',
   'image/webp': 'webp',
   'image/gif': 'gif',
+  'video/mp4': 'mp4',
+  'video/webm': 'webm',
 };
 
-const MAX_SIZE = 8 * 1024 * 1024; // 8MB
+// MongoDB documents are capped at 16MB; stay comfortably under that for video uploads.
+const MAX_SIZE = 15 * 1024 * 1024; // 15MB
 
 export const isValidFolder = (folder) => ALLOWED_FOLDERS.includes(folder);
 
@@ -39,11 +42,11 @@ export const uploadImage = async (file, folder = 'misc') => {
   }
   const ext = MIME_EXT[file.mimetype];
   if (!ext) {
-    throw new Error('Only image files (jpeg, jpg, png, webp, gif) are allowed');
+    throw new Error('Only image files (jpeg, jpg, png, webp, gif) or short videos (mp4, webm) are allowed');
   }
   const size = file.size ?? file.buffer.length;
   if (size > MAX_SIZE) {
-    throw new Error('File too large (max 8MB)');
+    throw new Error('File too large (max 15MB)');
   }
 
   const safeFolder = normalizeFolder(folder);
@@ -60,6 +63,7 @@ export const uploadImage = async (file, folder = 'misc') => {
   return {
     url: `/api/uploads/${safeFolder}/${filename}`,
     publicId: `${safeFolder}/${filename}`,
+    mimeType: file.mimetype,
   };
 };
 

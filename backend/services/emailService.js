@@ -183,6 +183,22 @@ export const sendPasswordResetEmail = async (user, resetUrl) => {
   });
 };
 
+export const sendAdminTwoFactorCode = async (user, code) => {
+  const body = `
+    <p>Hi ${user.name},</p>
+    <p>Your admin portal login code is:</p>
+    <p style="text-align:center; margin: 24px 0;">
+      <span style="font-size:32px; font-weight:bold; letter-spacing:8px; color:${BRAND_COLOR};">${code}</span>
+    </p>
+    <p>This code expires in 10 minutes. If you did not try to log in, you can ignore this email.</p>
+  `;
+  return sendMail({
+    to: user.email,
+    subject: `Your admin login code: ${code}`,
+    html: wrapTemplate('Admin Login Verification', body),
+  });
+};
+
 export default {
   sendOrderConfirmation,
   sendOrderStatusUpdate,
@@ -190,4 +206,5 @@ export default {
   sendContactFormEmail,
   sendPasswordResetEmail,
   sendBirthdayAlert,
+  sendAdminTwoFactorCode,
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Truck, ShieldCheck, Leaf, Send, Coffee, Percent, Megaphone, Award, ShoppingBasket } from 'lucide-react';
+import { Truck, ShieldCheck, Leaf, Send, Coffee, Percent, Megaphone, Award, ShoppingBasket, Beef } from 'lucide-react';
 
 import * as categoryService from '../services/categoryService';
 import * as productService from '../services/productService';
@@ -185,7 +185,13 @@ export default function Home() {
               {offers.slice(0, 4).map((o) => (
                 <div key={o._id} className="bg-white rounded-2xl overflow-hidden shadow-card">
                   <div className="aspect-video bg-creme">
-                    {o.image?.url && <img src={resolveImageUrl(o.image.url)} alt={o.heading} className="h-full w-full object-cover" />}
+                    {o.image?.url && (
+                      o.image.mimeType?.startsWith('video/') ? (
+                        <video src={resolveImageUrl(o.image.url)} className="h-full w-full object-cover" autoPlay loop muted playsInline />
+                      ) : (
+                        <img src={resolveImageUrl(o.image.url)} alt={o.heading} className="h-full w-full object-cover" />
+                      )
+                    )}
                   </div>
                   <div className="p-4">
                     <p className="font-heading text-lg text-black">{o.heading}</p>
@@ -312,6 +318,22 @@ export default function Home() {
           <p className="text-black/70">
             Take a break while you shop — enjoy fresh coffee, pastries, and light bites at our in-store café.
           </p>
+        </div>
+      </Section>
+
+      {/* Moga Meat Collaboration */}
+      <Section className="section-py bg-creme">
+        <div className="container-app">
+          <div className="bg-white rounded-2xl shadow-card p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 max-w-3xl mx-auto text-center sm:text-left">
+            <div className="h-16 w-16 rounded-full bg-gold/15 flex items-center justify-center shrink-0">
+              <Beef className="h-8 w-8 text-gold-dark" />
+            </div>
+            <div className="flex-1">
+              <p className="text-gold-dark text-xs font-semibold uppercase tracking-widest mb-1">In Collaboration With</p>
+              <h2 className="font-heading text-2xl sm:text-3xl text-black">Moga Meat Bar &amp; Grill</h2>
+              <p className="text-charcoal/70 mt-1">Fresh, quality meats now available in-store at AB&apos;s Supermarket.</p>
+            </div>
+          </div>
         </div>
       </Section>
 

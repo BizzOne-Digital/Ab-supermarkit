@@ -24,6 +24,16 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (credentials) => {
     const res = await authService.login(credentials);
+    // Admin logins come back with mfaRequired instead of a token — no session yet, so the
+    // caller (AdminLogin) needs to prompt for the emailed code before anything is set here.
+    if (res.mfaRequired) return res;
+    if (res.token) localStorage.setItem('ab_token', res.token);
+    setUser(res.user);
+    return res.user;
+  }, []);
+
+  const verifyTwoFactor = useCallback(async (userId, code) => {
+    const res = await authService.verifyTwoFactor({ userId, code });
     if (res.token) localStorage.setItem('ab_token', res.token);
     setUser(res.user);
     return res.user;
@@ -56,6 +66,7 @@ export function AuthProvider({ children }) {
         isAuthenticated: !!user,
         isAdmin: user?.role === 'admin',
         login,
+        verifyTwoFactor,
         register,
         logout,
         updateUser,
