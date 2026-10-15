@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Truck, ShieldCheck, Leaf, Send, Coffee, Percent, Megaphone, Award } from 'lucide-react';
+import { Truck, ShieldCheck, Leaf, Send, Coffee, Percent, Megaphone, Award, ShoppingBasket } from 'lucide-react';
 
 import * as categoryService from '../services/categoryService';
 import * as productService from '../services/productService';
@@ -116,51 +116,23 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] items-stretch">
           <CategorySidebar categories={categories} className="lg:pb-6" />
           <div className="px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-6 sm:pb-8">
-            {/* Promo Tiles */}
+            {/* Promo Tiles — top categories */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {deals.length > 0 && (() => {
-                const best = deals.reduce((max, d) => {
-                  const pct = d.product?.regularPrice ? ((d.product.regularPrice - d.salePrice) / d.product.regularPrice) * 100 : 0;
-                  const maxPct = max?.product?.regularPrice ? ((max.product.regularPrice - max.salePrice) / max.product.regularPrice) * 100 : -1;
-                  return pct > maxPct ? d : max;
-                }, null);
-                const pct = best?.product?.regularPrice ? Math.round(((best.product.regularPrice - best.salePrice) / best.product.regularPrice) * 100) : null;
-                return (
-                  <Link to="/shop?sale=true" className="group bg-creme rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
-                    <div className="h-14 w-14 rounded-full bg-white flex items-center justify-center shrink-0">
-                      <Percent className="h-6 w-6 text-gold-dark" />
-                    </div>
-                    <div>
-                      <p className="text-charcoal/50 text-xs uppercase tracking-wide">Weekly Deals</p>
-                      <p className="font-heading text-xl text-black">{pct ? `Up to ${pct}% Off` : 'Shop Deals'}</p>
-                    </div>
-                  </Link>
-                );
-              })()}
-
-              {offers.length > 0 && (
-                <a href="#special-offers" className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
+              {categories.slice(0, 3).map((c) => (
+                <Link
+                  key={c._id}
+                  to={`/shop?category=${c._id}`}
+                  className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow"
+                >
                   <div className="h-14 w-14 rounded-full bg-creme flex items-center justify-center shrink-0">
-                    <Megaphone className="h-6 w-6 text-gold-dark" />
+                    <ShoppingBasket className="h-6 w-6 text-gold-dark" />
                   </div>
                   <div>
-                    <p className="text-charcoal/50 text-xs uppercase tracking-wide">Special Offer</p>
-                    <p className="font-heading text-xl text-black line-clamp-1">{offers[0].heading}</p>
-                  </div>
-                </a>
-              )}
-
-              {siteSettings?.freeDeliveryThreshold != null && (
-                <Link to="/shop" className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow">
-                  <div className="h-14 w-14 rounded-full bg-creme flex items-center justify-center shrink-0">
-                    <Truck className="h-6 w-6 text-gold-dark" />
-                  </div>
-                  <div>
-                    <p className="text-charcoal/50 text-xs uppercase tracking-wide">Free Delivery</p>
-                    <p className="font-heading text-xl text-black">Over ${Number(siteSettings.freeDeliveryThreshold).toFixed(0)}</p>
+                    <p className="text-charcoal/50 text-xs uppercase tracking-wide">Category</p>
+                    <p className="font-heading text-xl text-black line-clamp-1">{c.name}</p>
                   </div>
                 </Link>
-              )}
+              ))}
             </div>
 
             {/* Featured Products */}
