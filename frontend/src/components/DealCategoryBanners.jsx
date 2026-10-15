@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
-// Three promo banners using the client's artwork, now labeled by deal TYPE (Weekly Deals /
-// Special Offer / Free Delivery) instead of product category, since that's what the client
-// asked these to represent. Numbers shown are always derived from real data, never invented.
+// Three promo banners with artwork matching the deal type (Weekly Deals /
+// Special Offer / Free Delivery). Promotional copy stays dynamic and
+// numbers are derived from real data.
 export default function DealCategoryBanners({ deals, offers, siteSettings }) {
   const bestPct = deals.reduce((max, d) => {
     const off = d.product?.regularPrice
@@ -14,19 +14,19 @@ export default function DealCategoryBanners({ deals, offers, siteSettings }) {
 
   const banners = [
     {
-      image: '/deal-produce-v1.png',
+      image: '/deal-weekly-v2.png',
       label: 'Weekly Deals',
       sub: bestPct > 0 ? `Up to ${bestPct}% Off` : 'Shop Now',
       to: '/shop?sale=true',
     },
     {
-      image: '/deal-dairy-v1.png',
+      image: '/deal-karvachauth-v2.png',
       label: 'Special Offer',
       sub: offers[0]?.heading || 'Shop Now',
       to: '#special-offers',
     },
     {
-      image: '/deal-snacks-v1.png',
+      image: '/deal-delivery-v2.png',
       label: 'Free Delivery',
       sub: siteSettings?.freeDeliveryThreshold != null ? `Over $${Number(siteSettings.freeDeliveryThreshold).toFixed(0)}` : 'Shop Now',
       to: '/shop',
