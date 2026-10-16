@@ -14,19 +14,19 @@ export default function DealCategoryBanners({ deals, offers, siteSettings }) {
 
   const banners = [
     {
-      image: '/deal-weekly-v2.png',
+      image: '/deal-weekly-v2.jpg',
       label: 'Weekly Deals',
       sub: bestPct > 0 ? `Up to ${bestPct}% Off` : 'Shop Now',
       to: '/shop?sale=true',
     },
     {
-      image: '/deal-karvachauth-v2.png',
+      image: '/deal-karvachauth-v2.jpg',
       label: 'Special Offer',
       sub: offers[0]?.heading || 'Shop Now',
       to: '#special-offers',
     },
     {
-      image: '/deal-delivery-v2.png',
+      image: '/deal-delivery-v2.jpg',
       label: 'Free Delivery',
       sub: siteSettings?.freeDeliveryThreshold != null ? `Over $${Number(siteSettings.freeDeliveryThreshold).toFixed(0)}` : 'Shop Now',
       to: '/shop',

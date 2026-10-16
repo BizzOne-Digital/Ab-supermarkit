@@ -55,13 +55,13 @@ export default function GroceryHero({ categories }) {
           overlay fades top-to-bottom instead of the desktop's left-to-right. */}
       <div
         className="absolute inset-0 bg-cover bg-top sm:hidden"
-        style={{ backgroundImage: "url('/hero-groceries-mobile-v1.png')" }}
+        style={{ backgroundImage: "url('/hero-groceries-mobile-v1.jpg')" }}
       />
       <div className="absolute inset-0 bg-gradient-to-b from-ivory via-ivory/70 to-transparent sm:hidden" />
 
       <div
         className="absolute inset-0 bg-cover bg-center hidden sm:block"
-        style={{ backgroundImage: "url('/hero-groceries-reference-v1.png')" }}
+        style={{ backgroundImage: "url('/hero-groceries-reference-v1.jpg')" }}
       />
       <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/80 to-transparent hidden sm:block" />
 

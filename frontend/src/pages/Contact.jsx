@@ -1,16 +1,23 @@
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { MapPin, Phone, Mail } from 'lucide-react';
 import * as contactService from '../services/contactService';
+import * as settingsService from '../services/settingsService';
 import { suggestDomainFix } from '../utils/validateEmail';
 
 export default function Contact() {
+  const [settings, setSettings] = useState(null);
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitting },
   } = useForm();
+
+  useEffect(() => {
+    settingsService.getSettings().then((res) => setSettings(res.settings || {})).catch(() => setSettings({}));
+  }, []);
 
   const onSubmit = async (data) => {
     try {
@@ -29,33 +36,39 @@ export default function Contact() {
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-10 max-w-5xl mx-auto">
         <div className="space-y-6">
-          <div className="flex items-start gap-4">
-            <div className="h-11 w-11 rounded-full bg-black flex items-center justify-center shrink-0">
-              <MapPin className="h-5 w-5 text-gold" />
+          {settings?.address && (
+            <div className="flex items-start gap-4">
+              <div className="h-11 w-11 rounded-full bg-black flex items-center justify-center shrink-0">
+                <MapPin className="h-5 w-5 text-gold" />
+              </div>
+              <div>
+                <h3 className="font-heading text-lg text-black">Visit Us</h3>
+                <p className="text-charcoal/70 text-sm">{settings.address}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-heading text-lg text-black">Visit Us</h3>
-              <p className="text-charcoal/70 text-sm">123 Market Street, Your City</p>
+          )}
+          {settings?.contactPhone && (
+            <div className="flex items-start gap-4">
+              <div className="h-11 w-11 rounded-full bg-black flex items-center justify-center shrink-0">
+                <Phone className="h-5 w-5 text-gold" />
+              </div>
+              <div>
+                <h3 className="font-heading text-lg text-black">Call Us</h3>
+                <p className="text-charcoal/70 text-sm">{settings.contactPhone}</p>
+              </div>
             </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <div className="h-11 w-11 rounded-full bg-black flex items-center justify-center shrink-0">
-              <Phone className="h-5 w-5 text-gold" />
+          )}
+          {settings?.contactEmail && (
+            <div className="flex items-start gap-4">
+              <div className="h-11 w-11 rounded-full bg-black flex items-center justify-center shrink-0">
+                <Mail className="h-5 w-5 text-gold" />
+              </div>
+              <div>
+                <h3 className="font-heading text-lg text-black">Email Us</h3>
+                <p className="text-charcoal/70 text-sm">{settings.contactEmail}</p>
+              </div>
             </div>
-            <div>
-              <h3 className="font-heading text-lg text-black">Call Us</h3>
-              <p className="text-charcoal/70 text-sm">(555) 123-4567</p>
-            </div>
-          </div>
-          <div className="flex items-start gap-4">
-            <div className="h-11 w-11 rounded-full bg-black flex items-center justify-center shrink-0">
-              <Mail className="h-5 w-5 text-gold" />
-            </div>
-            <div>
-              <h3 className="font-heading text-lg text-black">Email Us</h3>
-              <p className="text-charcoal/70 text-sm">hello@absupermarket.com</p>
-            </div>
-          </div>
+          )}
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="bg-white rounded-lg shadow-card p-6 space-y-4">

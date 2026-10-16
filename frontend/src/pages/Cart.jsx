@@ -61,7 +61,7 @@ export default function Cart() {
                 </Link>
                 <p className="text-sm text-charcoal/60">${item.price.toFixed(2)} each</p>
               </div>
-              <QuantitySelector value={item.qty} onChange={(v) => updateQty(item._id, v)} />
+              <QuantitySelector value={item.qty} onChange={(v) => updateQty(item._id, v)} max={item.stockQuantity || 99} />
               <p className="w-20 text-right font-semibold hidden sm:block">${(item.price * item.qty).toFixed(2)}</p>
               <button
                 onClick={() => removeItem(item._id)}

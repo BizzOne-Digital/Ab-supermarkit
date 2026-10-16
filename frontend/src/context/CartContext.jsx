@@ -38,7 +38,7 @@ export function CartProvider({ children }) {
       clamped = allowed < wanted;
 
       if (existing) {
-        return prev.map((i) => (i._id === product._id ? { ...i, qty: allowed } : i));
+        return prev.map((i) => (i._id === product._id ? { ...i, qty: allowed, stockQuantity: stock } : i));
       }
       const price = product.isOnSale && product.salePrice ? product.salePrice : product.regularPrice;
       return [
@@ -50,6 +50,7 @@ export function CartProvider({ children }) {
           price,
           image: product.images?.[0]?.url || '',
           qty: allowed,
+          stockQuantity: stock,
         },
       ];
     });
@@ -67,7 +68,15 @@ export function CartProvider({ children }) {
 
   const updateQty = useCallback((id, qty) => {
     setItems((prev) =>
-      prev.map((i) => (i._id === id ? { ...i, qty: Math.max(1, qty) } : i)).filter((i) => i.qty > 0)
+      prev
+        .map((i) => {
+          if (i._id !== id) return i;
+          const max = Number.isFinite(i.stockQuantity) ? i.stockQuantity : Infinity;
+          const next = Math.min(Math.max(1, qty), max);
+          if (next < qty) toast.error(`Only ${max} in stock`);
+          return { ...i, qty: next };
+        })
+        .filter((i) => i.qty > 0)
     );
   }, []);
 
