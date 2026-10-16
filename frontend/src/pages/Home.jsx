@@ -19,7 +19,6 @@ import * as settingsService from '../services/settingsService';
 import ProductCard from '../components/ProductCard';
 import TestimonialCard from '../components/TestimonialCard';
 import FaqAccordionItem from '../components/FaqAccordionItem';
-import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import GroceryHero from '../components/GroceryHero';
 import CategorySidebar from '../components/CategorySidebar';
@@ -59,32 +58,48 @@ export default function Home() {
   const [faqs, setFaqs] = useState([]);
   const [deliveryLinks, setDeliveryLinks] = useState([]);
   const [siteSettings, setSiteSettings] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [email, setEmail] = useState('');
 
+  // Each section fetches and renders independently instead of the whole homepage waiting
+  // behind one Promise.all — a single slow endpoint (or a cold serverless start) used to block
+  // every section, including the hero, behind a full-screen spinner.
   useEffect(() => {
-    Promise.all([
-      categoryService.getCategories().catch(() => ({ categories: [] })),
-      productService.getProducts({ featured: 'true', limit: 8 }).catch(() => ({ products: [] })),
-      productService.getProducts({ bestSeller: 'true', limit: 6 }).catch(() => ({ products: [] })),
-      dealService.getDeals().catch(() => ({ deals: [] })),
-      offerService.getOffers().catch(() => ({ offers: [] })),
-      testimonialService.getTestimonials().catch(() => ({ testimonials: [] })),
-      faqService.getFaqs().catch(() => ({ faqs: [] })),
-      deliveryLinkService.getDeliveryLinks().catch(() => ({ deliveryLinks: [] })),
-      settingsService.getSettings().catch(() => ({ settings: null })),
-    ]).then(([catRes, prodRes, bestRes, dealRes, offerRes, testRes, faqRes, delRes, settingsRes]) => {
-      setCategories((catRes.categories || []).filter((c) => c.isEnabled !== false));
-      setFeatured(prodRes.products || []);
-      setBestSellers(bestRes.products || []);
-      setDeals((dealRes.deals || []).filter((d) => d.isActive));
-      setOffers(offerRes.offers || []);
-      setTestimonials((testRes.testimonials || []).filter((t) => t.isEnabled !== false));
-      setFaqs((faqRes.faqs || []).filter((f) => f.isEnabled !== false).slice(0, 6));
-      setDeliveryLinks((delRes.deliveryLinks || []).filter((l) => l.isEnabled));
-      setSiteSettings(settingsRes.settings || null);
-      setLoading(false);
-    });
+    categoryService
+      .getCategories()
+      .then((res) => setCategories((res.categories || []).filter((c) => c.isEnabled !== false)))
+      .catch(() => setCategories([]));
+    productService
+      .getProducts({ featured: 'true', limit: 8 })
+      .then((res) => setFeatured(res.products || []))
+      .catch(() => setFeatured([]));
+    productService
+      .getProducts({ bestSeller: 'true', limit: 6 })
+      .then((res) => setBestSellers(res.products || []))
+      .catch(() => setBestSellers([]));
+    dealService
+      .getDeals()
+      .then((res) => setDeals((res.deals || []).filter((d) => d.isActive)))
+      .catch(() => setDeals([]));
+    offerService
+      .getOffers()
+      .then((res) => setOffers(res.offers || []))
+      .catch(() => setOffers([]));
+    testimonialService
+      .getTestimonials()
+      .then((res) => setTestimonials((res.testimonials || []).filter((t) => t.isEnabled !== false)))
+      .catch(() => setTestimonials([]));
+    faqService
+      .getFaqs()
+      .then((res) => setFaqs((res.faqs || []).filter((f) => f.isEnabled !== false).slice(0, 6)))
+      .catch(() => setFaqs([]));
+    deliveryLinkService
+      .getDeliveryLinks()
+      .then((res) => setDeliveryLinks((res.deliveryLinks || []).filter((l) => l.isEnabled)))
+      .catch(() => setDeliveryLinks([]));
+    settingsService
+      .getSettings()
+      .then((res) => setSiteSettings(res.settings || null))
+      .catch(() => setSiteSettings(null));
   }, []);
 
   const onSubscribe = async (e) => {
@@ -98,8 +113,6 @@ export default function Home() {
       toast.error(err.message || 'Subscription failed');
     }
   };
-
-  if (loading) return <LoadingSpinner full />;
 
   return (
     <div>
