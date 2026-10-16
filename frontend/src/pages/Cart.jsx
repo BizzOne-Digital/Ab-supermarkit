@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Trash2, ArrowRight } from 'lucide-react';
@@ -8,10 +8,15 @@ import EmptyState from '../components/EmptyState';
 import resolveImageUrl from '../utils/resolveImageUrl';
 
 export default function Cart() {
-  const { items, updateQty, removeItem, subtotal, coupon, discount, applyCoupon, removeCoupon } = useCart();
+  const { items, updateQty, removeItem, refreshStock, subtotal, coupon, discount, applyCoupon, removeCoupon } = useCart();
   const [code, setCode] = useState('');
   const [applying, setApplying] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    refreshStock();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const onApplyCoupon = async (e) => {
     e.preventDefault();

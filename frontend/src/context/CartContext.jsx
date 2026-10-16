@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import * as couponService from '../services/couponService';
+import * as productService from '../services/productService';
 
 const CartContext = createContext(null);
 const STORAGE_KEY = 'ab_cart';
@@ -80,6 +81,40 @@ export function CartProvider({ children }) {
     );
   }, []);
 
+  // Cart items persist in localStorage, so an item added before a price/stock change (or
+  // before this stock-limit field even existed) can carry stale data indefinitely. Called when
+  // the Cart page opens to re-sync against the live product, clamping qty down and refreshing
+  // price/stockQuantity rather than trusting whatever was cached.
+  const refreshStock = useCallback(async () => {
+    const current = loadCart().items || [];
+    if (current.length === 0) return;
+
+    const results = await Promise.all(
+      current.map((item) =>
+        productService
+          .getProductBySlug(item.slug)
+          .then((res) => ({ id: item._id, product: res.product }))
+          .catch(() => ({ id: item._id, product: null }))
+      )
+    );
+    const productById = new Map(results.map((r) => [r.id, r.product]));
+
+    setItems((prev) =>
+      prev
+        .map((item) => {
+          const product = productById.get(item._id);
+          if (!product || product.status !== 'active') return null;
+          const stock = Number.isFinite(product.stockQuantity) ? product.stockQuantity : Infinity;
+          if (stock <= 0) return null;
+          const price = product.isOnSale && product.salePrice ? product.salePrice : product.regularPrice;
+          const qty = Math.min(item.qty, stock);
+          if (qty < item.qty) toast.error(`Only ${stock} of ${product.name} in stock — updated your cart`);
+          return { ...item, qty, price, stockQuantity: stock };
+        })
+        .filter(Boolean)
+    );
+  }, []);
+
   const clearCart = useCallback(() => {
     setItems([]);
     setCoupon(null);
@@ -118,6 +153,7 @@ export function CartProvider({ children }) {
         addItem,
         removeItem,
         updateQty,
+        refreshStock,
         clearCart,
         applyCoupon,
         removeCoupon,
