@@ -51,18 +51,21 @@ export default function GroceryHero({ categories }) {
 
   return (
     <section className="relative w-full overflow-hidden min-h-[640px] sm:min-h-0">
+      {/* A <picture> with media-conditional <source>s only downloads the one image that
+          actually matches the viewport, instead of the CSS background-image approach which
+          can fetch both the mobile and desktop images regardless of which is shown. */}
+      <picture>
+        <source media="(min-width: 640px)" srcSet="/hero-groceries-reference-v1.jpg" />
+        <img
+          src="/hero-groceries-mobile-v1.jpg"
+          alt=""
+          fetchpriority="high"
+          className="absolute inset-0 h-full w-full object-cover object-top sm:object-center"
+        />
+      </picture>
       {/* Mobile: portrait image with its clear space at the top (where the text sits), so the
           overlay fades top-to-bottom instead of the desktop's left-to-right. */}
-      <div
-        className="absolute inset-0 bg-cover bg-top sm:hidden"
-        style={{ backgroundImage: "url('/hero-groceries-mobile-v1.jpg')" }}
-      />
       <div className="absolute inset-0 bg-gradient-to-b from-ivory via-ivory/70 to-transparent sm:hidden" />
-
-      <div
-        className="absolute inset-0 bg-cover bg-center hidden sm:block"
-        style={{ backgroundImage: "url('/hero-groceries-reference-v1.jpg')" }}
-      />
       <div className="absolute inset-0 bg-gradient-to-r from-ivory via-ivory/80 to-transparent hidden sm:block" />
 
       <div className="relative z-10 container-app py-10 sm:py-14">
