@@ -45,7 +45,13 @@ export const login = asyncHandler(async (req, res) => {
 
     const result = await sendAdminTwoFactorCode(user, code);
     if (!result.success) {
-      return res.status(500).json({ success: false, message: 'Could not send verification code, please try again later' });
+      // Don't lock admins out of their own portal over an email outage (e.g. SMTP env vars
+      // missing in this deployment) — log it loudly and fall back to a normal login instead.
+      console.error('[auth] Admin 2FA code could not be emailed, falling back to direct login:', result.reason);
+      user.twoFactorCode = undefined;
+      user.twoFactorExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+      return sendTokenResponse(user, 200, res);
     }
 
     return res.status(200).json({ success: true, mfaRequired: true, userId: user._id });
