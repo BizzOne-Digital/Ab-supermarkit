@@ -7,10 +7,11 @@ import {
 } from '../controllers/deliveryLinkController.js';
 import { protect } from '../middleware/auth.js';
 import { authorize } from '../middleware/admin.js';
+import { cacheControl } from '../middleware/cacheControl.js';
 
 const router = express.Router();
 
-router.get('/', getDeliveryLinks);
+router.get('/', cacheControl(15), getDeliveryLinks);
 router.post('/', protect, authorize, createDeliveryLink);
 router.put('/:id', protect, authorize, updateDeliveryLink);
 router.delete('/:id', protect, authorize, deleteDeliveryLink);

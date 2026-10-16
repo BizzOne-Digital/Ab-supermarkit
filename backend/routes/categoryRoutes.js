@@ -11,11 +11,12 @@ import { protect } from '../middleware/auth.js';
 import { authorize } from '../middleware/admin.js';
 import { upload } from '../middleware/upload.js';
 import { runValidation } from '../middleware/validate.js';
+import { cacheControl } from '../middleware/cacheControl.js';
 
 const router = express.Router();
 
-router.get('/', getCategories);
-router.get('/:idOrSlug', getCategory);
+router.get('/', cacheControl(15), getCategories);
+router.get('/:idOrSlug', cacheControl(15), getCategory);
 
 router.post(
   '/',

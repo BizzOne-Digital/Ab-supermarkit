@@ -12,11 +12,12 @@ import { protect } from '../middleware/auth.js';
 import { authorize } from '../middleware/admin.js';
 import { upload } from '../middleware/upload.js';
 import { runValidation } from '../middleware/validate.js';
+import { cacheControl } from '../middleware/cacheControl.js';
 
 const router = express.Router();
 
-router.get('/', getProducts);
-router.get('/:slug', getProductBySlug);
+router.get('/', cacheControl(15), getProducts);
+router.get('/:slug', cacheControl(15), getProductBySlug);
 
 router.post(
   '/',
