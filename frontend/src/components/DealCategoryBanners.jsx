@@ -17,7 +17,7 @@ export default function DealCategoryBanners({ deals, offers, siteSettings }) {
       image: '/deal-weekly-v2.jpg',
       label: 'Weekly Deals',
       sub: bestPct > 0 ? `Up to ${bestPct}% Off` : 'Shop Now',
-      to: '/shop?sale=true',
+      to: '/shop?sale=true#weekly-deals',
     },
     {
       image: '/deal-karvachauth-v2.jpg',

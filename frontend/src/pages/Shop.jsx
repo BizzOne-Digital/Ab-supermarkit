@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { SlidersHorizontal, X, Search } from 'lucide-react';
 import * as productService from '../services/productService';
 import * as categoryService from '../services/categoryService';
@@ -12,6 +12,7 @@ import DealsCarousel from '../components/DealsCarousel';
 
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { hash } = useLocation();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [deals, setDeals] = useState([]);
@@ -45,6 +46,13 @@ export default function Shop() {
       .then((res) => setDeals((res.deals || []).filter((d) => d.isActive)))
       .catch(() => setDeals([]));
   }, []);
+
+  // The Weekly Deals section only exists in the DOM once deals have loaded, so the browser's
+  // own hash-scroll (which fires on initial render) misses it — scroll manually once it's there.
+  useEffect(() => {
+    if (hash !== '#weekly-deals' || deals.length === 0) return;
+    document.getElementById('weekly-deals')?.scrollIntoView({ behavior: 'smooth' });
+  }, [hash, deals]);
 
   useEffect(() => {
     setLoading(true);
@@ -91,12 +99,6 @@ export default function Shop() {
       <p className="text-charcoal/60 mb-8">
         {search ? `Results for "${search}"` : sale ? 'This week\'s deals and discounted products.' : 'Browse our full range of premium groceries.'}
       </p>
-
-      {deals.length > 0 && (
-        <div className="mb-10">
-          <DealsCarousel deals={deals} />
-        </div>
-      )}
 
       <button
         onClick={() => setFiltersOpen((o) => !o)}
@@ -212,6 +214,12 @@ export default function Shop() {
           )}
         </div>
       </div>
+
+      {deals.length > 0 && (
+        <div id="weekly-deals" className="mt-12 scroll-mt-24">
+          <DealsCarousel deals={deals} />
+        </div>
+      )}
     </div>
   );
 }
