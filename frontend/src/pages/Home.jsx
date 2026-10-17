@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Truck, ShieldCheck, Leaf, Send, Coffee, Percent, Megaphone, Award, ShoppingBasket, Beef } from 'lucide-react';
+import { Truck, ShieldCheck, Leaf, Send, Coffee, Percent, Megaphone, Award, Beef } from 'lucide-react';
 
 import * as categoryService from '../services/categoryService';
 import * as productService from '../services/productService';
@@ -129,27 +129,8 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] items-stretch">
           <CategorySidebar categories={categories} className="lg:pb-6" />
           <div className="px-4 sm:px-6 lg:px-8 pt-6 sm:pt-8 pb-6 sm:pb-8">
-            {/* Promo Tiles — top categories */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {categories.slice(0, 3).map((c) => (
-                <Link
-                  key={c._id}
-                  to={`/shop?category=${c._id}`}
-                  className="group bg-white rounded-2xl p-6 flex items-center gap-4 shadow-card hover:shadow-xl transition-shadow"
-                >
-                  <div className="h-14 w-14 rounded-full bg-creme flex items-center justify-center shrink-0">
-                    <ShoppingBasket className="h-6 w-6 text-gold-dark" />
-                  </div>
-                  <div>
-                    <p className="text-charcoal/50 text-xs uppercase tracking-wide">Category</p>
-                    <p className="font-heading text-xl text-black line-clamp-1">{c.name}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
             {/* Featured Products */}
-            <div className="pt-4">
+            <div>
               <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <h2 className="font-heading text-3xl sm:text-4xl text-black">Featured Products</h2>
                 <div className="flex items-center gap-1 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
