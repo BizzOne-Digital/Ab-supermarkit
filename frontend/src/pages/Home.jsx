@@ -87,7 +87,7 @@ export default function Home() {
       .catch(() => setOffers([]));
     testimonialService
       .getTestimonials()
-      .then((res) => setTestimonials((res.testimonials || []).filter((t) => t.isEnabled !== false)))
+      .then((res) => setTestimonials((res.testimonials || []).filter((t) => t.isEnabled !== false && t.showOnHome)))
       .catch(() => setTestimonials([]));
     faqService
       .getFaqs()

@@ -7,6 +7,7 @@ const testimonialSchema = new mongoose.Schema(
     review: { type: String, required: true },
     date: { type: Date, default: Date.now },
     isEnabled: { type: Boolean, default: true },
+    showOnHome: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

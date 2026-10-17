@@ -56,6 +56,15 @@ export default function Testimonials() {
     }
   };
 
+  const toggleShowOnHome = async (t) => {
+    try {
+      await testimonialService.updateTestimonial(t._id, { showOnHome: !t.showOnHome });
+      load();
+    } catch (err) {
+      toast.error(err.message || 'Failed to update testimonial');
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
@@ -75,10 +84,15 @@ export default function Testimonials() {
               </div>
               <p className="text-sm text-charcoal/70 mb-2 line-clamp-3">{t.review}</p>
               <p className="font-heading text-black text-sm mb-3">{t.customerName}</p>
-              <div className="flex items-center justify-between">
-                <button onClick={() => toggleEnabled(t)} className={`text-xs px-2 py-0.5 rounded ${t.isEnabled ? 'bg-green-100 text-green-700' : 'bg-charcoal/10 text-charcoal/60'}`}>
-                  {t.isEnabled ? 'Enabled' : 'Disabled'}
-                </button>
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <button onClick={() => toggleEnabled(t)} className={`text-xs px-2 py-0.5 rounded ${t.isEnabled ? 'bg-green-100 text-green-700' : 'bg-charcoal/10 text-charcoal/60'}`}>
+                    {t.isEnabled ? 'Enabled' : 'Disabled'}
+                  </button>
+                  <button onClick={() => toggleShowOnHome(t)} className={`text-xs px-2 py-0.5 rounded ${t.showOnHome ? 'bg-gold/20 text-gold-dark' : 'bg-charcoal/10 text-charcoal/60'}`}>
+                    {t.showOnHome ? 'On Homepage' : 'Not on Homepage'}
+                  </button>
+                </div>
                 <button onClick={() => onDelete(t._id)} className="text-charcoal/50 hover:text-red-600"><Trash2 className="h-4 w-4" /></button>
               </div>
             </div>
