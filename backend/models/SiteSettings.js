@@ -17,6 +17,7 @@ const siteSettingsSchema = new mongoose.Schema(
     deliveryFee: { type: Number, default: 5 },
     freeDeliveryThreshold: { type: Number, default: 100 }, // order subtotal at/above which delivery is free
     freeDeliveryRadiusKm: { type: Number, default: 5 }, // informational only until address-distance calc is wired up
+    adminIdleLogoutMinutes: { type: Number, default: 30 }, // auto-logs admin out after this many minutes of inactivity
   },
   { timestamps: true }
 );

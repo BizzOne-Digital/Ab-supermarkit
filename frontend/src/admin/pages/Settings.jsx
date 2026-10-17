@@ -119,6 +119,22 @@ export default function Settings() {
           </div>
         </div>
 
+        <div className="pt-4 border-t border-charcoal/10">
+          <h2 className="font-heading text-lg text-black mb-3">Admin Security</h2>
+          <div>
+            <label className="text-sm font-medium text-charcoal/70">Auto-Logout After Inactivity (minutes)</label>
+            <input
+              type="number"
+              step="1"
+              min="1"
+              value={form.adminIdleLogoutMinutes ?? ''}
+              onChange={(e) => setForm({ ...form, adminIdleLogoutMinutes: e.target.value })}
+              className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold max-w-[160px]"
+            />
+            <p className="text-xs text-charcoal/40 mt-1">Admins are logged out automatically after this many minutes with no activity in the admin portal.</p>
+          </div>
+        </div>
+
         <button type="submit" disabled={saving} className="btn-gold disabled:opacity-60">
           {saving ? 'Saving...' : 'Save Settings'}
         </button>

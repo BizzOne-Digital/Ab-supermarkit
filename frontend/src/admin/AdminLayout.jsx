@@ -24,6 +24,7 @@ import {
   Handshake,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import useIdleLogout from './useIdleLogout';
 
 const navItems = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -50,6 +51,7 @@ export default function AdminLayout() {
   const [open, setOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  useIdleLogout();
 
   const onLogout = async () => {
     await logout();
