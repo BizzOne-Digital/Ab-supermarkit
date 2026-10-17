@@ -1,4 +1,5 @@
 import Product from '../models/Product.js';
+import Deal from '../models/Deal.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { uploadImage, deleteImage } from '../services/storedUploadService.js';
 import { paginate } from '../utils/apiFeatures.js';
@@ -173,6 +174,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   }
 
   await Promise.all((product.images || []).map((img) => deleteImage(img.publicId).catch(() => null)));
+  await Deal.deleteMany({ product: product._id });
   await product.deleteOne();
 
   res.status(200).json({ success: true, message: 'Product deleted successfully' });
