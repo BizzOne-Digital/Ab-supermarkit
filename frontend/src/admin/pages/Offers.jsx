@@ -2,14 +2,16 @@ import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { Plus, Trash2, X } from 'lucide-react';
 import * as offerService from '../../services/offerService';
+import * as productService from '../../services/productService';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import resolveImageUrl from '../../utils/resolveImageUrl';
 
-const emptyForm = { heading: '', discountText: '', expiryDate: '', isEnabled: true };
+const emptyForm = { heading: '', discountText: '', expiryDate: '', isEnabled: true, products: [] };
 
 export default function Offers() {
   const [offers, setOffers] = useState([]);
+  const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
@@ -20,14 +22,27 @@ export default function Offers() {
     setLoading(true);
     offerService.getOffers().then((res) => setOffers(res.offers || [])).catch(() => setOffers([])).finally(() => setLoading(false));
   };
-  useEffect(load, []);
+  useEffect(() => {
+    load();
+    productService.getProducts({ limit: 200 }).then((res) => setProducts(res.products || [])).catch(() => setProducts([]));
+  }, []);
+
+  const toggleProduct = (id) => {
+    setForm((f) => ({
+      ...f,
+      products: f.products.includes(id) ? f.products.filter((p) => p !== id) : [...f.products, id],
+    }));
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
       const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => fd.append(k, v));
+      Object.entries(form).forEach(([k, v]) => {
+        if (k === 'products') fd.append('products', JSON.stringify(v));
+        else fd.append(k, v);
+      });
       if (file) fd.append('image', file);
       await offerService.createOffer(fd);
       toast.success('Offer created');
@@ -78,6 +93,7 @@ export default function Offers() {
                 <p className="font-heading text-black">{o.heading}</p>
                 <p className="text-sm text-gold-dark">{o.discountText}</p>
                 <p className="text-xs text-charcoal/50 mt-1">Expires {new Date(o.expiryDate).toLocaleDateString()}</p>
+                <p className="text-xs text-charcoal/50 mt-1">{o.products?.length || 0} product{o.products?.length === 1 ? '' : 's'} linked</p>
                 <button onClick={() => onDelete(o._id)} className="text-charcoal/50 hover:text-red-600 mt-2"><Trash2 className="h-4 w-4 inline" /></button>
               </div>
             </div>
@@ -87,7 +103,7 @@ export default function Offers() {
 
       {modalOpen && (
         <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg max-w-md w-full">
+          <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between p-5 border-b border-charcoal/10">
               <h2 className="font-heading text-xl text-black">Add Offer</h2>
               <button onClick={() => setModalOpen(false)}><X className="h-5 w-5" /></button>
@@ -109,6 +125,26 @@ export default function Offers() {
                 <label className="text-sm font-medium text-charcoal/70">Image or Short Video</label>
                 <input type="file" accept="image/*,video/mp4,video/webm" onChange={(e) => setFile(e.target.files[0])} className="w-full mt-1 text-sm" />
                 <p className="text-xs text-charcoal/40 mt-1">Videos up to 15MB (mp4 or webm).</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-charcoal/70">Products in this offer</label>
+                <p className="text-xs text-charcoal/40 mb-1">Customers land on these when they open the offer.</p>
+                <div className="border border-charcoal/20 rounded-md max-h-48 overflow-y-auto divide-y divide-charcoal/10">
+                  {products.map((p) => (
+                    <label key={p._id} className="flex items-center gap-2 px-3 py-2 text-sm cursor-pointer hover:bg-creme">
+                      <input
+                        type="checkbox"
+                        checked={form.products.includes(p._id)}
+                        onChange={() => toggleProduct(p._id)}
+                        className="accent-gold"
+                      />
+                      {p.name}
+                    </label>
+                  ))}
+                </div>
+                {form.products.length > 0 && (
+                  <p className="text-xs text-gold-dark mt-1">{form.products.length} product{form.products.length === 1 ? '' : 's'} selected</p>
+                )}
               </div>
               <div className="flex justify-end gap-3">
                 <button type="button" onClick={() => setModalOpen(false)} className="btn-outline text-sm py-2 px-4">Cancel</button>

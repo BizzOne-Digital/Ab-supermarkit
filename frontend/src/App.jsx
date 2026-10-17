@@ -38,6 +38,7 @@ const AdminOffers = lazy(() => import('./admin/pages/Offers'));
 const AdminTestimonials = lazy(() => import('./admin/pages/Testimonials'));
 const AdminFAQ = lazy(() => import('./admin/pages/FAQ'));
 const AdminDeliveryLinks = lazy(() => import('./admin/pages/DeliveryLinks'));
+const AdminPartners = lazy(() => import('./admin/pages/Partners'));
 const ContactSubmissions = lazy(() => import('./admin/pages/ContactSubmissions'));
 const AdminNewsletter = lazy(() => import('./admin/pages/Newsletter'));
 const AdminSettings = lazy(() => import('./admin/pages/Settings'));
@@ -94,6 +95,7 @@ export default function App() {
           <Route path="testimonials" element={<AdminTestimonials />} />
           <Route path="faq" element={<AdminFAQ />} />
           <Route path="delivery-links" element={<AdminDeliveryLinks />} />
+          <Route path="partners" element={<AdminPartners />} />
           <Route path="contact-submissions" element={<ContactSubmissions />} />
           <Route path="newsletter" element={<AdminNewsletter />} />
           <Route path="settings" element={<AdminSettings />} />

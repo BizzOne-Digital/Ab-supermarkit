@@ -9,6 +9,7 @@ const offerSchema = new mongoose.Schema(
       mimeType: { type: String },
     },
     discountText: { type: String },
+    products: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }],
     startDate: { type: Date, default: Date.now },
     expiryDate: { type: Date, required: true },
     isEnabled: { type: Boolean, default: true },

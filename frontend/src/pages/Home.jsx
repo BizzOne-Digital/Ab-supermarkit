@@ -2,19 +2,19 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import { Truck, ShieldCheck, Leaf, Send, Coffee, Percent, Megaphone, Award, Beef } from 'lucide-react';
+import { Truck, ShieldCheck, Leaf, Send, Coffee, Percent, Megaphone, Award } from 'lucide-react';
 
 import * as categoryService from '../services/categoryService';
 import * as productService from '../services/productService';
-import * as dealService from '../services/dealService';
 import * as offerService from '../services/offerService';
+import * as heroSlideService from '../services/heroSlideService';
+import * as partnerService from '../services/partnerService';
 import * as testimonialService from '../services/testimonialService';
 import * as faqService from '../services/faqService';
 import * as deliveryLinkService from '../services/deliveryLinkService';
 import * as newsletterService from '../services/newsletterService';
 import resolveImageUrl from '../utils/resolveImageUrl';
 import { DELIVERY_PLATFORM_LOGOS } from '../utils/deliveryPlatforms';
-import * as settingsService from '../services/settingsService';
 
 import ProductCard from '../components/ProductCard';
 import TestimonialCard from '../components/TestimonialCard';
@@ -23,6 +23,7 @@ import EmptyState from '../components/EmptyState';
 import GroceryHero from '../components/GroceryHero';
 import CategorySidebar from '../components/CategorySidebar';
 import DealCategoryBanners from '../components/DealCategoryBanners';
+import PartnerBanner from '../components/PartnerBanner';
 import FeaturedCategoriesRow from '../components/FeaturedCategoriesRow';
 
 const whyShop = [
@@ -52,12 +53,12 @@ export default function Home() {
   const [featured, setFeatured] = useState([]);
   const [bestSellers, setBestSellers] = useState([]);
   const [activeCategory, setActiveCategory] = useState('');
-  const [deals, setDeals] = useState([]);
   const [offers, setOffers] = useState([]);
+  const [heroSlides, setHeroSlides] = useState([]);
   const [testimonials, setTestimonials] = useState([]);
   const [faqs, setFaqs] = useState([]);
   const [deliveryLinks, setDeliveryLinks] = useState([]);
-  const [siteSettings, setSiteSettings] = useState(null);
+  const [partners, setPartners] = useState([]);
   const [email, setEmail] = useState('');
 
   // Each section fetches and renders independently instead of the whole homepage waiting
@@ -76,10 +77,10 @@ export default function Home() {
       .getProducts({ bestSeller: 'true', limit: 6 })
       .then((res) => setBestSellers(res.products || []))
       .catch(() => setBestSellers([]));
-    dealService
-      .getDeals()
-      .then((res) => setDeals((res.deals || []).filter((d) => d.isActive)))
-      .catch(() => setDeals([]));
+    heroSlideService
+      .getHeroSlides()
+      .then((res) => setHeroSlides((res.slides || []).filter((s) => s.isEnabled !== false).sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))))
+      .catch(() => setHeroSlides([]));
     offerService
       .getOffers()
       .then((res) => setOffers(res.offers || []))
@@ -96,10 +97,10 @@ export default function Home() {
       .getDeliveryLinks()
       .then((res) => setDeliveryLinks((res.deliveryLinks || []).filter((l) => l.isEnabled)))
       .catch(() => setDeliveryLinks([]));
-    settingsService
-      .getSettings()
-      .then((res) => setSiteSettings(res.settings || null))
-      .catch(() => setSiteSettings(null));
+    partnerService
+      .getPartners()
+      .then((res) => setPartners(res.partners || []))
+      .catch(() => setPartners([]));
   }, []);
 
   const onSubscribe = async (e) => {
@@ -119,9 +120,11 @@ export default function Home() {
       {/* Hero, full width (edge-to-edge like the navbar above it) */}
       <GroceryHero categories={categories} />
 
+      <PartnerBanner partners={partners} />
+
       <Section className="bg-ivory">
         <div className="py-4 sm:py-6 px-3 sm:px-4">
-          <DealCategoryBanners deals={deals} offers={offers} siteSettings={siteSettings} />
+          <DealCategoryBanners slides={heroSlides} />
         </div>
       </Section>
 
@@ -177,21 +180,28 @@ export default function Home() {
             </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {offers.slice(0, 4).map((o) => (
-                <div key={o._id} className="bg-white rounded-2xl overflow-hidden shadow-card">
+                <Link
+                  key={o._id}
+                  to={`/shop?offer=${o._id}`}
+                  className="group bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-xl transition-shadow block"
+                >
                   <div className="aspect-video bg-creme">
                     {o.image?.url && (
                       o.image.mimeType?.startsWith('video/') ? (
                         <video src={resolveImageUrl(o.image.url)} className="h-full w-full object-cover" autoPlay loop muted playsInline />
                       ) : (
-                        <img src={resolveImageUrl(o.image.url)} alt={o.heading} className="h-full w-full object-cover" />
+                        <img src={resolveImageUrl(o.image.url)} alt={o.heading} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
                       )
                     )}
                   </div>
                   <div className="p-4">
-                    <p className="font-heading text-lg text-black">{o.heading}</p>
+                    <p className="font-heading text-lg text-black group-hover:text-gold-dark">{o.heading}</p>
                     {o.discountText && <p className="text-sm text-gold-dark font-semibold">{o.discountText}</p>}
+                    {o.products?.length > 0 && (
+                      <p className="text-xs text-charcoal/50 mt-1">{o.products.length} product{o.products.length === 1 ? '' : 's'} &rarr;</p>
+                    )}
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
@@ -312,22 +322,6 @@ export default function Home() {
           <p className="text-black/70">
             Take a break while you shop — enjoy fresh coffee, pastries, and light bites at our in-store café.
           </p>
-        </div>
-      </Section>
-
-      {/* Moga Meat Collaboration */}
-      <Section className="section-py bg-creme">
-        <div className="container-app">
-          <div className="bg-white rounded-2xl shadow-card p-6 sm:p-8 flex flex-col sm:flex-row items-center gap-6 max-w-3xl mx-auto text-center sm:text-left">
-            <div className="h-16 w-16 rounded-full bg-gold/15 flex items-center justify-center shrink-0">
-              <Beef className="h-8 w-8 text-gold-dark" />
-            </div>
-            <div className="flex-1">
-              <p className="text-gold-dark text-xs font-semibold uppercase tracking-widest mb-1">In Collaboration With</p>
-              <h2 className="font-heading text-2xl sm:text-3xl text-black">Moga Meat Bar &amp; Grill</h2>
-              <p className="text-charcoal/70 mt-1">Fresh, quality meats now available in-store at AB&apos;s Supermarket.</p>
-            </div>
-          </div>
         </div>
       </Section>
 

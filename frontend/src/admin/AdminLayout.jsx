@@ -21,6 +21,7 @@ import {
   X,
   LogOut,
   Images,
+  Handshake,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
@@ -38,6 +39,7 @@ const navItems = [
   { to: '/admin/testimonials', label: 'Testimonials', icon: MessageSquareQuote },
   { to: '/admin/faq', label: 'FAQ', icon: HelpCircle },
   { to: '/admin/delivery-links', label: 'Delivery Links', icon: Truck },
+  { to: '/admin/partners', label: 'Collaborations', icon: Handshake },
   { to: '/admin/contact-submissions', label: 'Contact Submissions', icon: Mail },
   { to: '/admin/newsletter', label: 'Newsletter', icon: Send },
   { to: '/admin/settings', label: 'Settings', icon: Settings },

@@ -4,6 +4,7 @@ import { SlidersHorizontal, X, Search } from 'lucide-react';
 import * as productService from '../services/productService';
 import * as categoryService from '../services/categoryService';
 import * as dealService from '../services/dealService';
+import * as offerService from '../services/offerService';
 import ProductCard from '../components/ProductCard';
 import Pagination from '../components/Pagination';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -27,9 +28,11 @@ export default function Shop() {
   const minPrice = searchParams.get('minPrice') || '';
   const maxPrice = searchParams.get('maxPrice') || '';
   const sale = searchParams.get('sale') || '';
+  const offerId = searchParams.get('offer') || '';
   const [minPriceInput, setMinPriceInput] = useState(minPrice);
   const [maxPriceInput, setMaxPriceInput] = useState(maxPrice);
   const [searchInput, setSearchInput] = useState(search);
+  const [offer, setOffer] = useState(null);
 
   const onSearchSubmit = (e) => {
     e.preventDefault();
@@ -56,6 +59,27 @@ export default function Shop() {
 
   useEffect(() => {
     setLoading(true);
+
+    // An offer link shows exactly the products the admin attached to that offer, not the
+    // regular filtered/paginated catalog search.
+    if (offerId) {
+      offerService
+        .getOffers()
+        .then((res) => {
+          const matched = (res.offers || []).find((o) => o._id === offerId);
+          setOffer(matched || null);
+          setProducts(matched?.products || []);
+          setPagination({ page: 1, totalPages: 1 });
+        })
+        .catch(() => {
+          setOffer(null);
+          setProducts([]);
+        })
+        .finally(() => setLoading(false));
+      return;
+    }
+
+    setOffer(null);
     const params = { page, limit: 12, sort };
     if (category) params.category = category;
     if (search) params.search = search;
@@ -72,7 +96,7 @@ export default function Shop() {
         setProducts([]);
       })
       .finally(() => setLoading(false));
-  }, [category, search, sort, page, minPrice, maxPrice, sale]);
+  }, [category, search, sort, page, minPrice, maxPrice, sale, offerId]);
 
   const applyPriceFilter = (e) => {
     e.preventDefault();
@@ -95,9 +119,15 @@ export default function Shop() {
 
   return (
     <div className="container-app section-py">
-      <h1 className="font-heading text-3xl sm:text-4xl text-black mb-2">Shop</h1>
+      <h1 className="font-heading text-3xl sm:text-4xl text-black mb-2">{offer ? offer.heading : 'Shop'}</h1>
       <p className="text-charcoal/60 mb-8">
-        {search ? `Results for "${search}"` : sale ? 'This week\'s deals and discounted products.' : 'Browse our full range of premium groceries.'}
+        {offer
+          ? offer.discountText || 'Special offer products.'
+          : search
+          ? `Results for "${search}"`
+          : sale
+          ? 'This week\'s deals and discounted products.'
+          : 'Browse our full range of premium groceries.'}
       </p>
 
       <button
