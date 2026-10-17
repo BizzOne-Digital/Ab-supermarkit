@@ -182,7 +182,7 @@ export default function Home() {
               {offers.slice(0, 4).map((o) => (
                 <Link
                   key={o._id}
-                  to={`/shop?offer=${o._id}`}
+                  to={`/shop?offer=${o._id}#special-offer`}
                   className="group bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-xl transition-shadow block"
                 >
                   <div className="aspect-video bg-creme">

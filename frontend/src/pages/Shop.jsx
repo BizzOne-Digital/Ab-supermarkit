@@ -27,7 +27,6 @@ export default function Shop() {
   const page = Number(searchParams.get('page')) || 1;
   const minPrice = searchParams.get('minPrice') || '';
   const maxPrice = searchParams.get('maxPrice') || '';
-  const sale = searchParams.get('sale') || '';
   const offerId = searchParams.get('offer') || '';
   const [minPriceInput, setMinPriceInput] = useState(minPrice);
   const [maxPriceInput, setMaxPriceInput] = useState(maxPrice);
@@ -50,42 +49,37 @@ export default function Shop() {
       .catch(() => setDeals([]));
   }, []);
 
-  // The Weekly Deals section only exists in the DOM once deals have loaded, so the browser's
-  // own hash-scroll (which fires on initial render) misses it — scroll manually once it's there.
+  // Fetch the linked offer (for the dedicated "Special Offer" section below the catalog) —
+  // this no longer replaces the main grid, it's an extra section alongside it.
   useEffect(() => {
-    if (hash !== '#weekly-deals' || deals.length === 0) return;
-    document.getElementById('weekly-deals')?.scrollIntoView({ behavior: 'smooth' });
-  }, [hash, deals]);
+    if (!offerId) {
+      setOffer(null);
+      return;
+    }
+    offerService
+      .getOffers()
+      .then((res) => setOffer((res.offers || []).find((o) => o._id === offerId) || null))
+      .catch(() => setOffer(null));
+  }, [offerId]);
+
+  // The Weekly Deals/Special Offer sections only exist in the DOM once their data has loaded,
+  // so the browser's own hash-scroll (which fires on initial render) misses them — scroll
+  // manually once the target is there.
+  useEffect(() => {
+    if (hash === '#weekly-deals' && deals.length > 0) {
+      document.getElementById('weekly-deals')?.scrollIntoView({ behavior: 'smooth' });
+    } else if (hash === '#special-offer' && offer) {
+      document.getElementById('special-offer')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [hash, deals, offer]);
 
   useEffect(() => {
     setLoading(true);
-
-    // An offer link shows exactly the products the admin attached to that offer, not the
-    // regular filtered/paginated catalog search.
-    if (offerId) {
-      offerService
-        .getOffers()
-        .then((res) => {
-          const matched = (res.offers || []).find((o) => o._id === offerId);
-          setOffer(matched || null);
-          setProducts(matched?.products || []);
-          setPagination({ page: 1, totalPages: 1 });
-        })
-        .catch(() => {
-          setOffer(null);
-          setProducts([]);
-        })
-        .finally(() => setLoading(false));
-      return;
-    }
-
-    setOffer(null);
     const params = { page, limit: 12, sort };
     if (category) params.category = category;
     if (search) params.search = search;
     if (minPrice) params.minPrice = minPrice;
     if (maxPrice) params.maxPrice = maxPrice;
-    if (sale) params.sale = sale;
     productService
       .getProducts(params)
       .then((res) => {
@@ -96,7 +90,7 @@ export default function Shop() {
         setProducts([]);
       })
       .finally(() => setLoading(false));
-  }, [category, search, sort, page, minPrice, maxPrice, sale, offerId]);
+  }, [category, search, sort, page, minPrice, maxPrice]);
 
   const applyPriceFilter = (e) => {
     e.preventDefault();
@@ -119,15 +113,9 @@ export default function Shop() {
 
   return (
     <div className="container-app section-py">
-      <h1 className="font-heading text-3xl sm:text-4xl text-black mb-2">{offer ? offer.heading : 'Shop'}</h1>
+      <h1 className="font-heading text-3xl sm:text-4xl text-black mb-2">Shop</h1>
       <p className="text-charcoal/60 mb-8">
-        {offer
-          ? offer.discountText || 'Special offer products.'
-          : search
-          ? `Results for "${search}"`
-          : sale
-          ? 'This week\'s deals and discounted products.'
-          : 'Browse our full range of premium groceries.'}
+        {search ? `Results for "${search}"` : 'Browse our full range of premium groceries.'}
       </p>
 
       <button
@@ -248,6 +236,18 @@ export default function Shop() {
       {deals.length > 0 && (
         <div id="weekly-deals" className="mt-12 scroll-mt-24">
           <DealsCarousel deals={deals} />
+        </div>
+      )}
+
+      {offer && offer.products?.length > 0 && (
+        <div id="special-offer" className="mt-12 scroll-mt-24">
+          <h2 className="font-heading text-2xl sm:text-3xl text-black mb-1">{offer.heading}</h2>
+          {offer.discountText && <p className="text-sm text-gold-dark font-semibold mb-5">{offer.discountText}</p>}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+            {offer.products.map((p) => (
+              <ProductCard key={p._id} product={p} />
+            ))}
+          </div>
         </div>
       )}
     </div>

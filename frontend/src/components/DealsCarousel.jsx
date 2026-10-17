@@ -63,7 +63,7 @@ export default function DealsCarousel({ deals }) {
               <CountdownUnit value={countdown.secs} label="Sec" />
             </div>
           )}
-          <Link to="/shop?sale=true" className="btn-gold text-sm py-2 px-4 whitespace-nowrap">
+          <Link to="/shop#weekly-deals" className="btn-gold text-sm py-2 px-4 whitespace-nowrap">
             View All Deals
           </Link>
         </div>
