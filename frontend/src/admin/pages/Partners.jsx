@@ -6,7 +6,7 @@ import LoadingSpinner from '../../components/LoadingSpinner';
 import EmptyState from '../../components/EmptyState';
 import resolveImageUrl from '../../utils/resolveImageUrl';
 
-const emptyForm = { name: '', tagline: '', menuLink: '', isEnabled: true, sortOrder: 0 };
+const emptyForm = { name: '', tagline: '', menuLink: '', menuComingSoon: false, isEnabled: true, sortOrder: 0 };
 
 export default function Partners() {
   const [partners, setPartners] = useState([]);
@@ -32,7 +32,7 @@ export default function Partners() {
 
   const openEdit = (p) => {
     setEditing(p);
-    setForm({ name: p.name, tagline: p.tagline || '', menuLink: p.menuLink || '', isEnabled: p.isEnabled, sortOrder: p.sortOrder ?? 0 });
+    setForm({ name: p.name, tagline: p.tagline || '', menuLink: p.menuLink || '', menuComingSoon: !!p.menuComingSoon, isEnabled: p.isEnabled, sortOrder: p.sortOrder ?? 0 });
     setFile(null);
     setModalOpen(true);
   };
@@ -148,6 +148,10 @@ export default function Partners() {
                 <input type="url" value={form.menuLink} onChange={(e) => setForm({ ...form, menuLink: e.target.value })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2 px-3" placeholder="https://..." />
                 <p className="text-xs text-charcoal/40 mt-1">Opens in a new tab when the "View Menu" button is clicked.</p>
               </div>
+              <label className="flex items-center gap-2 text-sm">
+                <input type="checkbox" checked={form.menuComingSoon} onChange={(e) => setForm({ ...form, menuComingSoon: e.target.checked })} className="accent-gold" />
+                Menu Coming Soon (button shows "Coming Soon" instead of opening the link)
+              </label>
               <div>
                 <label className="text-sm font-medium text-charcoal/70">Logo {editing ? '(leave blank to keep current)' : ''}</label>
                 <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} className="w-full mt-1 text-sm" />

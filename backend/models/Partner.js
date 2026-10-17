@@ -11,6 +11,7 @@ const partnerSchema = new mongoose.Schema(
       publicId: { type: String },
     },
     menuLink: { type: String, default: '' },
+    menuComingSoon: { type: Boolean, default: false },
     isEnabled: { type: Boolean, default: true },
     sortOrder: { type: Number, default: 0 },
   },
