@@ -75,7 +75,7 @@ export default function Shop() {
 
   useEffect(() => {
     setLoading(true);
-    const params = { page, limit: 12, sort };
+    const params = { page, limit: 24, sort };
     if (category) params.category = category;
     if (search) params.search = search;
     if (minPrice) params.minPrice = minPrice;
