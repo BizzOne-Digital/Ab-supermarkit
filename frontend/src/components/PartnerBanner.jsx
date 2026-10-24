@@ -12,7 +12,8 @@ export default function PartnerBanner({ partners }) {
       <div className="container-app py-3 sm:py-4">
         <div className="flex flex-col gap-3">
           {partners.map((p) => {
-            const showComingSoon = p.menuComingSoon || !p.menuLink;
+            const menuHref = p.menuImage?.url ? resolveImageUrl(p.menuImage.url) : p.menuLink || '';
+            const showComingSoon = p.menuComingSoon || !menuHref;
             return (
               <div
                 key={p._id}
@@ -40,7 +41,7 @@ export default function PartnerBanner({ partners }) {
                   </button>
                 ) : (
                   <a
-                    href={p.menuLink}
+                    href={menuHref}
                     target="_blank"
                     rel="noreferrer"
                     className="btn-gold text-sm py-2 px-4 whitespace-nowrap shrink-0"

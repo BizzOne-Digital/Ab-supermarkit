@@ -15,6 +15,7 @@ export default function Partners() {
   const [editing, setEditing] = useState(null);
   const [form, setForm] = useState(emptyForm);
   const [file, setFile] = useState(null);
+  const [menuImageFile, setMenuImageFile] = useState(null);
   const [saving, setSaving] = useState(false);
 
   const load = () => {
@@ -27,6 +28,7 @@ export default function Partners() {
     setEditing(null);
     setForm(emptyForm);
     setFile(null);
+    setMenuImageFile(null);
     setModalOpen(true);
   };
 
@@ -34,6 +36,7 @@ export default function Partners() {
     setEditing(p);
     setForm({ name: p.name, tagline: p.tagline || '', menuLink: p.menuLink || '', menuComingSoon: !!p.menuComingSoon, isEnabled: p.isEnabled, sortOrder: p.sortOrder ?? 0 });
     setFile(null);
+    setMenuImageFile(null);
     setModalOpen(true);
   };
 
@@ -44,6 +47,7 @@ export default function Partners() {
       const fd = new FormData();
       Object.entries(form).forEach(([k, v]) => fd.append(k, v));
       if (file) fd.append('logo', file);
+      if (menuImageFile) fd.append('menuImage', menuImageFile);
       if (editing) {
         await partnerService.updatePartner(editing._id, fd);
         toast.success('Partner updated');
@@ -108,7 +112,11 @@ export default function Partners() {
               <div className="p-4">
                 <p className="font-heading text-black">{p.name}</p>
                 {p.tagline && <p className="text-sm text-charcoal/60">{p.tagline}</p>}
-                {p.menuLink && <p className="text-xs text-gold-dark truncate mt-1">{p.menuLink}</p>}
+                {p.menuImage?.url ? (
+                  <p className="text-xs text-gold-dark mt-1">Menu image uploaded</p>
+                ) : (
+                  p.menuLink && <p className="text-xs text-gold-dark truncate mt-1">{p.menuLink}</p>
+                )}
                 <div className="flex items-center justify-between mt-3">
                   <button
                     onClick={() => toggleEnabled(p)}
@@ -144,13 +152,20 @@ export default function Partners() {
                 <input value={form.tagline} onChange={(e) => setForm({ ...form, tagline: e.target.value })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2 px-3" placeholder="Fresh, quality meats now available in-store" />
               </div>
               <div>
-                <label className="text-sm font-medium text-charcoal/70">Menu Link</label>
+                <label className="text-sm font-medium text-charcoal/70">Menu Image (e.g. a menu poster/PDF page as an image)</label>
+                <input type="file" accept="image/*" onChange={(e) => setMenuImageFile(e.target.files[0])} className="w-full mt-1 text-sm" />
+                {editing?.menuImage?.url && !menuImageFile && (
+                  <p className="text-xs text-charcoal/40 mt-1">A menu image is already uploaded — choose a file to replace it.</p>
+                )}
+                <p className="text-xs text-charcoal/40 mt-1">If set, "View Menu" opens this image. Takes priority over the link below.</p>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-charcoal/70">Menu Link (used only if no menu image is set)</label>
                 <input type="url" value={form.menuLink} onChange={(e) => setForm({ ...form, menuLink: e.target.value })} className="w-full mt-1 border border-charcoal/20 rounded-md py-2 px-3" placeholder="https://..." />
-                <p className="text-xs text-charcoal/40 mt-1">Opens in a new tab when the "View Menu" button is clicked.</p>
               </div>
               <label className="flex items-center gap-2 text-sm">
                 <input type="checkbox" checked={form.menuComingSoon} onChange={(e) => setForm({ ...form, menuComingSoon: e.target.checked })} className="accent-gold" />
-                Menu Coming Soon (button shows "Coming Soon" instead of opening the link)
+                Menu Coming Soon (button shows "Coming Soon" instead of opening the image/link)
               </label>
               <div>
                 <label className="text-sm font-medium text-charcoal/70">Logo {editing ? '(leave blank to keep current)' : ''}</label>

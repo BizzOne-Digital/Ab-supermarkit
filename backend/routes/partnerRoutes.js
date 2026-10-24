@@ -8,8 +8,13 @@ import { cacheControl } from '../middleware/cacheControl.js';
 const router = express.Router();
 
 router.get('/', cacheControl(15), getPartners);
-router.post('/', protect, authorize, upload.single('logo'), createPartner);
-router.put('/:id', protect, authorize, upload.single('logo'), updatePartner);
+const uploadFields = upload.fields([
+  { name: 'logo', maxCount: 1 },
+  { name: 'menuImage', maxCount: 1 },
+]);
+
+router.post('/', protect, authorize, uploadFields, createPartner);
+router.put('/:id', protect, authorize, uploadFields, updatePartner);
 router.delete('/:id', protect, authorize, deletePartner);
 
 export default router;
