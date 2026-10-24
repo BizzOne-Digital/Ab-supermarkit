@@ -22,6 +22,7 @@ import {
   LogOut,
   Images,
   Handshake,
+  UtensilsCrossed,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import useIdleLogout from './useIdleLogout';
@@ -41,6 +42,7 @@ const navItems = [
   { to: '/admin/faq', label: 'FAQ', icon: HelpCircle },
   { to: '/admin/delivery-links', label: 'Delivery Links', icon: Truck },
   { to: '/admin/partners', label: 'Collaborations', icon: Handshake },
+  { to: '/admin/menu-items', label: 'Partner Menu', icon: UtensilsCrossed },
   { to: '/admin/contact-submissions', label: 'Contact Submissions', icon: Mail },
   { to: '/admin/newsletter', label: 'Newsletter', icon: Send },
   { to: '/admin/settings', label: 'Settings', icon: Settings },

@@ -9,6 +9,7 @@ import * as productService from '../services/productService';
 import * as offerService from '../services/offerService';
 import * as heroSlideService from '../services/heroSlideService';
 import * as partnerService from '../services/partnerService';
+import * as menuItemService from '../services/menuItemService';
 import * as testimonialService from '../services/testimonialService';
 import * as faqService from '../services/faqService';
 import * as deliveryLinkService from '../services/deliveryLinkService';
@@ -59,6 +60,7 @@ export default function Home() {
   const [faqs, setFaqs] = useState([]);
   const [deliveryLinks, setDeliveryLinks] = useState([]);
   const [partners, setPartners] = useState([]);
+  const [partnerIdsWithMenu, setPartnerIdsWithMenu] = useState(new Set());
   const [email, setEmail] = useState('');
 
   // Each section fetches and renders independently instead of the whole homepage waiting
@@ -101,6 +103,10 @@ export default function Home() {
       .getPartners()
       .then((res) => setPartners(res.partners || []))
       .catch(() => setPartners([]));
+    menuItemService
+      .getMenuItems()
+      .then((res) => setPartnerIdsWithMenu(new Set((res.menuItems || []).map((m) => m.partner))))
+      .catch(() => setPartnerIdsWithMenu(new Set()));
   }, []);
 
   const onSubscribe = async (e) => {
@@ -120,7 +126,7 @@ export default function Home() {
       {/* Hero, full width (edge-to-edge like the navbar above it) */}
       <GroceryHero categories={categories} />
 
-      <PartnerBanner partners={partners} />
+      <PartnerBanner partners={partners} partnerIdsWithMenu={partnerIdsWithMenu} />
 
       <Section className="bg-ivory">
         <div className="py-4 sm:py-6 px-3 sm:px-4">

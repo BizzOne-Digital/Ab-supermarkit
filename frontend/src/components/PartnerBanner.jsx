@@ -1,10 +1,15 @@
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 import { ExternalLink, Handshake } from 'lucide-react';
 import resolveImageUrl from '../utils/resolveImageUrl';
 
-// Shown directly below the hero. Fully admin-managed (Admin > Collaborations) — logo, name,
-// tagline, and the menu link/coming-soon state all come from the Partner record.
-export default function PartnerBanner({ partners }) {
+// Shown directly below the hero. Fully admin-managed (Admin > Collaborations/Partner Menu) —
+// logo, name, tagline, and the "View Menu" destination all come from real data:
+// 1. A real in-site menu (Admin > Partner Menu items) if any exist for this partner — preferred.
+// 2. Else an uploaded menu image, opened in a new tab.
+// 3. Else an external menu link.
+// 4. Else "coming soon".
+export default function PartnerBanner({ partners, partnerIdsWithMenu = new Set() }) {
   if (partners.length === 0) return null;
 
   return (
@@ -12,8 +17,10 @@ export default function PartnerBanner({ partners }) {
       <div className="container-app py-3 sm:py-4">
         <div className="flex flex-col gap-3">
           {partners.map((p) => {
-            const menuHref = p.menuImage?.url ? resolveImageUrl(p.menuImage.url) : p.menuLink || '';
-            const showComingSoon = p.menuComingSoon || !menuHref;
+            const hasMenuPage = partnerIdsWithMenu.has(p._id);
+            const externalHref = p.menuImage?.url ? resolveImageUrl(p.menuImage.url) : p.menuLink || '';
+            const showComingSoon = p.menuComingSoon || (!hasMenuPage && !externalHref);
+
             return (
               <div
                 key={p._id}
@@ -39,9 +46,13 @@ export default function PartnerBanner({ partners }) {
                   >
                     View Menu
                   </button>
+                ) : hasMenuPage ? (
+                  <Link to={`/partners/${p._id}/menu`} className="btn-gold text-sm py-2 px-4 whitespace-nowrap shrink-0">
+                    View Menu
+                  </Link>
                 ) : (
                   <a
-                    href={menuHref}
+                    href={externalHref}
                     target="_blank"
                     rel="noreferrer"
                     className="btn-gold text-sm py-2 px-4 whitespace-nowrap shrink-0"

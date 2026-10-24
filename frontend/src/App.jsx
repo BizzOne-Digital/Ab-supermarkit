@@ -13,6 +13,7 @@ const Cart = lazy(() => import('./pages/Cart'));
 const Checkout = lazy(() => import('./pages/Checkout'));
 const OrderConfirmation = lazy(() => import('./pages/OrderConfirmation'));
 const About = lazy(() => import('./pages/About'));
+const PartnerMenu = lazy(() => import('./pages/PartnerMenu'));
 const Contact = lazy(() => import('./pages/Contact'));
 const FAQPage = lazy(() => import('./pages/FAQ'));
 const Login = lazy(() => import('./pages/Login'));
@@ -39,6 +40,7 @@ const AdminTestimonials = lazy(() => import('./admin/pages/Testimonials'));
 const AdminFAQ = lazy(() => import('./admin/pages/FAQ'));
 const AdminDeliveryLinks = lazy(() => import('./admin/pages/DeliveryLinks'));
 const AdminPartners = lazy(() => import('./admin/pages/Partners'));
+const AdminMenuItems = lazy(() => import('./admin/pages/MenuItems'));
 const ContactSubmissions = lazy(() => import('./admin/pages/ContactSubmissions'));
 const AdminNewsletter = lazy(() => import('./admin/pages/Newsletter'));
 const AdminSettings = lazy(() => import('./admin/pages/Settings'));
@@ -56,6 +58,7 @@ export default function App() {
           <Route path="/checkout" element={<Checkout />} />
           <Route path="/order-confirmation" element={<OrderConfirmation />} />
           <Route path="/about" element={<About />} />
+          <Route path="/partners/:partnerId/menu" element={<PartnerMenu />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/faq" element={<FAQPage />} />
           <Route path="/login" element={<Login />} />
@@ -96,6 +99,7 @@ export default function App() {
           <Route path="faq" element={<AdminFAQ />} />
           <Route path="delivery-links" element={<AdminDeliveryLinks />} />
           <Route path="partners" element={<AdminPartners />} />
+          <Route path="menu-items" element={<AdminMenuItems />} />
           <Route path="contact-submissions" element={<ContactSubmissions />} />
           <Route path="newsletter" element={<AdminNewsletter />} />
           <Route path="settings" element={<AdminSettings />} />
