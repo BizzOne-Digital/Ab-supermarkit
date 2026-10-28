@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useNavigate, Link } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -8,6 +8,7 @@ import * as orderService from '../services/orderService';
 import * as settingsService from '../services/settingsService';
 import { suggestDomainFix } from '../utils/validateEmail';
 import EmptyState from '../components/EmptyState';
+import CloverCardField from '../components/CloverCardField';
 
 const TAX_RATE = 0.13;
 
@@ -17,6 +18,8 @@ export default function Checkout() {
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
   const [deliverySettings, setDeliverySettings] = useState({ deliveryFee: 5, freeDeliveryThreshold: 100 });
+  const [paymentMethod, setPaymentMethod] = useState('card');
+  const cardFieldRef = useRef(null);
 
   useEffect(() => {
     settingsService
@@ -69,6 +72,17 @@ export default function Checkout() {
   const onSubmit = async (data) => {
     setSubmitting(true);
     try {
+      let cardToken;
+      if (paymentMethod === 'card') {
+        try {
+          cardToken = await cardFieldRef.current?.getToken();
+        } catch (err) {
+          toast.error(err.message || 'Invalid card details');
+          setSubmitting(false);
+          return;
+        }
+      }
+
       const payload = {
         items: items.map((i) => ({ product: i._id, name: i.name, qty: i.qty, price: i.price })),
         customerInfo: {
@@ -88,6 +102,7 @@ export default function Checkout() {
         deliveryFee,
         total,
         couponCode: coupon?.code,
+        cardToken,
       };
       const res = await orderService.createOrder(payload);
       clearCart();
@@ -189,6 +204,21 @@ export default function Checkout() {
           <div className="bg-white rounded-lg shadow-card p-6">
             <label className="text-sm font-medium text-charcoal/70">Order Notes (optional)</label>
             <textarea {...register('orderNotes')} rows={3} className="w-full mt-1 border border-charcoal/20 rounded-md py-2.5 px-3 focus:outline-none focus:border-gold" />
+          </div>
+
+          <div className="bg-white rounded-lg shadow-card p-6">
+            <h2 className="font-heading text-xl text-black mb-4">Payment</h2>
+            <div className="flex gap-4 mb-4">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" checked={paymentMethod === 'card'} onChange={() => setPaymentMethod('card')} className="accent-gold" />
+                <span>Pay by Card</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input type="radio" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} className="accent-gold" />
+                <span>Cash on Pickup/Delivery</span>
+              </label>
+            </div>
+            {paymentMethod === 'card' && <CloverCardField ref={cardFieldRef} />}
           </div>
         </div>
 

@@ -5,6 +5,7 @@ import SiteSettings from '../models/SiteSettings.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { paginate } from '../utils/apiFeatures.js';
 import { deductCloverInventory } from '../services/cloverService.js';
+import { chargeCloverCard } from '../services/cloverPaymentService.js';
 import { sendOrderConfirmation, sendAdminOrderNotification, sendOrderStatusUpdate } from '../services/emailService.js';
 
 const TAX_RATE = 0.13; // default rate (adjust per province as needed)
@@ -13,7 +14,7 @@ const TAX_RATE = 0.13; // default rate (adjust per province as needed)
 // @route   POST /api/orders
 // @access  Public
 export const createOrder = asyncHandler(async (req, res) => {
-  const { items, customerInfo, deliveryMethod, orderNotes, couponCode } = req.body;
+  const { items, customerInfo, deliveryMethod, orderNotes, couponCode, cardToken } = req.body;
 
   if (!items || !Array.isArray(items) || items.length === 0) {
     return res.status(400).json({ success: false, message: 'Order must contain at least one item' });
@@ -68,6 +69,21 @@ export const createOrder = asyncHandler(async (req, res) => {
   const tax = Number((taxableAmount * TAX_RATE).toFixed(2));
   const total = Number((taxableAmount + tax + deliveryFee).toFixed(2));
 
+  // If a card token was provided, charge it before creating the order — a paid order
+  // must never be created from a charge that actually failed.
+  let paymentStatus = 'Pending';
+  if (cardToken) {
+    const charge = await chargeCloverCard({
+      source: cardToken,
+      amount: Math.round(total * 100),
+      currency: 'usd',
+    });
+    if (!charge.success) {
+      return res.status(402).json({ success: false, message: charge.message || 'Card payment failed' });
+    }
+    paymentStatus = 'Paid';
+  }
+
   const order = await Order.create({
     user: req.user ? req.user._id : null,
     items: orderItems,
@@ -79,6 +95,7 @@ export const createOrder = asyncHandler(async (req, res) => {
     tax,
     deliveryFee,
     total,
+    paymentStatus,
     couponCode: couponCode ? couponCode.toUpperCase() : undefined,
   });
 
