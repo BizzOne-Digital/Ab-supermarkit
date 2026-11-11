@@ -28,6 +28,8 @@ export default function Shop() {
   const minPrice = searchParams.get('minPrice') || '';
   const maxPrice = searchParams.get('maxPrice') || '';
   const offerId = searchParams.get('offer') || '';
+  const featured = searchParams.get('featured') || '';
+  const bestSeller = searchParams.get('bestSeller') || '';
   const [minPriceInput, setMinPriceInput] = useState(minPrice);
   const [maxPriceInput, setMaxPriceInput] = useState(maxPrice);
   const [searchInput, setSearchInput] = useState(search);
@@ -80,6 +82,8 @@ export default function Shop() {
     if (search) params.search = search;
     if (minPrice) params.minPrice = minPrice;
     if (maxPrice) params.maxPrice = maxPrice;
+    if (featured) params.featured = featured;
+    if (bestSeller) params.bestSeller = bestSeller;
     productService
       .getProducts(params)
       .then((res) => {
@@ -90,7 +94,7 @@ export default function Shop() {
         setProducts([]);
       })
       .finally(() => setLoading(false));
-  }, [category, search, sort, page, minPrice, maxPrice]);
+  }, [category, search, sort, page, minPrice, maxPrice, featured, bestSeller]);
 
   const applyPriceFilter = (e) => {
     e.preventDefault();
