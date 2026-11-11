@@ -3,6 +3,7 @@ import Deal from '../models/Deal.js';
 import asyncHandler from '../utils/asyncHandler.js';
 import { uploadImage, deleteImage } from '../services/storedUploadService.js';
 import { paginate } from '../utils/apiFeatures.js';
+import { syncProductToClover } from '../services/cloverService.js';
 
 // @desc    List products with pagination/filter/search/sort
 // @route   GET /api/products
@@ -82,6 +83,16 @@ export const createProduct = asyncHandler(async (req, res) => {
   }
 
   const product = await Product.create(productData);
+
+  syncProductToClover(product)
+    .then((result) => {
+      if (result.success && result.cloverItemId && !product.cloverItemId) {
+        product.cloverItemId = result.cloverItemId;
+        return product.save();
+      }
+    })
+    .catch((err) => console.error('Clover sync error (create):', err.message));
+
   res.status(201).json({ success: true, product });
 });
 
@@ -112,6 +123,9 @@ export const updateProduct = asyncHandler(async (req, res) => {
   }
 
   await product.save();
+
+  syncProductToClover(product).catch((err) => console.error('Clover sync error (update):', err.message));
+
   res.status(200).json({ success: true, product });
 });
 

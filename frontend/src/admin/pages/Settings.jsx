@@ -1,18 +1,43 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import * as settingsService from '../../services/settingsService';
+import * as cloverService from '../../services/cloverService';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
 export default function Settings() {
   const [form, setForm] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [cloverStatus, setCloverStatus] = useState(null);
+  const [syncing, setSyncing] = useState(false);
+  const [lastSync, setLastSync] = useState(null);
 
   useEffect(() => {
     settingsService
       .getSettings()
       .then((res) => setForm(res.settings || {}))
       .catch(() => setForm({}));
+    cloverService
+      .getSyncStatus()
+      .then((res) => setCloverStatus(res))
+      .catch(() => setCloverStatus({ configured: false }));
   }, []);
+
+  const onSyncNow = async () => {
+    setSyncing(true);
+    try {
+      const res = await cloverService.triggerSync();
+      if (!res.configured) {
+        toast.error('Clover is not configured on the server.');
+      } else {
+        setLastSync(res);
+        toast.success(`Synced ${res.synced} products to Clover${res.failed ? ` (${res.failed} failed)` : ''}.`);
+      }
+    } catch (err) {
+      toast.error(err.message || 'Sync failed');
+    } finally {
+      setSyncing(false);
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -139,6 +164,29 @@ export default function Settings() {
           {saving ? 'Saving...' : 'Save Settings'}
         </button>
       </form>
+
+      <div className="bg-white rounded-lg shadow-card p-6 mt-6">
+        <h2 className="font-heading text-lg text-black mb-3">Clover Inventory Sync</h2>
+        {cloverStatus && (
+          <p className="text-sm mb-3">
+            Status:{' '}
+            <span className={cloverStatus.configured ? 'text-green-700 font-semibold' : 'text-red-600 font-semibold'}>
+              {cloverStatus.configured ? 'Connected' : 'Not configured'}
+            </span>
+          </p>
+        )}
+        <p className="text-xs text-charcoal/50 mb-4">
+          Products are pushed to Clover automatically whenever one is created or updated. Use this button to push all active products now (e.g. after a bulk import).
+        </p>
+        <button type="button" onClick={onSyncNow} disabled={syncing || !cloverStatus?.configured} className="btn-outline disabled:opacity-60">
+          {syncing ? 'Syncing...' : 'Sync All Products Now'}
+        </button>
+        {lastSync && (
+          <p className="text-xs text-charcoal/50 mt-2">
+            Last manual sync: {lastSync.synced} succeeded, {lastSync.failed} failed.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
